@@ -6,7 +6,13 @@ export async function POST(request: NextRequest) {
     const pdf = formData.get('pdf') as File
 
     if (!pdf) {
-      return NextResponse.json({ error: 'Niciun fișier PDF primit.' }, { status: 400 })
+      const analizeNormalizate = parsed.analize.map((a: any) => ({
+  ...a,
+  nume: normalizeazaNume(a.nume)
+}))
+
+return NextResponse.json({
+  analize: analizeNormalizate, error: 'Niciun fișier PDF primit.' }, { status: 400 })
     }
 
     const bytes = await pdf.arrayBuffer()
@@ -46,7 +52,13 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const err = await response.text()
       console.error('Anthropic error:', err)
-      return NextResponse.json({ error: 'Eroare API.' }, { status: 500 })
+      const analizeNormalizate = parsed.analize.map((a: any) => ({
+  ...a,
+  nume: normalizeazaNume(a.nume)
+}))
+
+return NextResponse.json({
+  analize: analizeNormalizate, error: 'Eroare API.' }, { status: 500 })
     }
 
     const aiResponse = await response.json()
@@ -57,7 +69,13 @@ export async function POST(request: NextRequest) {
     
     const parsed = JSON.parse(text)
 
-    return NextResponse.json({
+    const analizeNormalizate = parsed.analize.map((a: any) => ({
+  ...a,
+  nume: normalizeazaNume(a.nume)
+}))
+
+return NextResponse.json({
+  analize: analizeNormalizate,
       analize: parsed.analize || [],
       laborator: parsed.laborator,
       data_buletin: parsed.data_buletin
@@ -65,6 +83,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Extract error:', error)
-    return NextResponse.json({ error: 'A aparut o eroare la procesare.' }, { status: 500 })
+    const analizeNormalizate = parsed.analize.map((a: any) => ({
+  ...a,
+  nume: normalizeazaNume(a.nume)
+}))
+
+return NextResponse.json({
+  analize: analizeNormalizate, error: 'A aparut o eroare la procesare.' }, { status: 500 })
   }
 }
