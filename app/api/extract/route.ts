@@ -1,14 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const NORMALIZARE: Record<string, string> = {
+  'limfocit (%)': 'Limfocite %',
+  'limfocit %': 'Limfocite %',
+  'limfocit (#)': 'Limfocite absolute',
+  'limfocit (abs)': 'Limfocite absolute',
+  'limfocit abs': 'Limfocite absolute',
+  'neutrofil (%)': 'Neutrofile %',
+  'neutrofil %': 'Neutrofile %',
+  'neutrofil (#)': 'Neutrofile absolute',
+  'neutrofil (abs)': 'Neutrofile absolute',
+  'neutrofil abs': 'Neutrofile absolute',
+  'monocit (%)': 'Monocite %',
+  'monocit %': 'Monocite %',
+  'monocit (#)': 'Monocite absolute',
+  'monocit (abs)': 'Monocite absolute',
+  'monocit abs': 'Monocite absolute',
+  'eozinofil (%)': 'Eozinofile %',
+  'eozinofil %': 'Eozinofile %',
+  'eozinofil (#)': 'Eozinofile absolute',
+  'eozinofil (abs)': 'Eozinofile absolute',
+  'eozinofil abs': 'Eozinofile absolute',
+  'bazofil (%)': 'Bazofile %',
+  'bazofil %': 'Bazofile %',
+  'bazofil (#)': 'Bazofile absolute',
+  'bazofil (abs)': 'Bazofile absolute',
+  'bazofil abs': 'Bazofile absolute',
+  'glucoza serica': 'Glucoza',
+  'glicemie': 'Glucoza',
+  'glucoza': 'Glucoza',
+  'nr. leucocite': 'Leucocite',
+  'leucocite': 'Leucocite',
+  'nr. eritrocite': 'Eritrocite',
+  'eritrocite': 'Eritrocite',
+  'nr. trombocite': 'Trombocite',
+  'trombocite': 'Trombocite',
+  'alaninaminotransferaza (gpt/alat/alt)': 'ALT (TGP)',
+  'alt': 'ALT (TGP)',
+  'tgp': 'ALT (TGP)',
+  'alat': 'ALT (TGP)',
+  'aspartataminotransferaza (got/asat/ast)': 'AST (TGO)',
+  'ast': 'AST (TGO)',
+  'tgo': 'AST (TGO)',
+  'asat': 'AST (TGO)',
+  'calciu seric': 'Calciu',
+  'calciu': 'Calciu',
+  'vsh': 'VSH',
+}
+
+function normalizeazaNume(nume: string): string {
+  const numeLower = nume.toLowerCase().trim()
+  return NORMALIZARE[numeLower] || nume
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const pdf = formData.get('pdf') as File
 
     if (!pdf) {
-
-return NextResponse.json({
-  analize: analizeNormalizate, error: 'Niciun fișier PDF primit.' }, { status: 400 })
+      return NextResponse.json({ error: 'Niciun fișier PDF primit.' }, { status: 400 })
     }
 
     const bytes = await pdf.arrayBuffer()
@@ -48,43 +99,28 @@ return NextResponse.json({
     if (!response.ok) {
       const err = await response.text()
       console.error('Anthropic error:', err)
-      const analizeNormalizate = parsed.analize.map((a: any) => ({
-  ...a,
-  nume: normalizeazaNume(a.nume)
-}))
-
-return NextResponse.json({
-  analize: analizeNormalizate, error: 'Eroare API.' }, { status: 500 })
+      return NextResponse.json({ error: 'Eroare API.' }, { status: 500 })
     }
 
     const aiResponse = await response.json()
     let text = aiResponse.content[0].text.trim()
-    
-    // Curatam orice markdown
     text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-    
+
     const parsed = JSON.parse(text)
 
-    const analizeNormalizate = parsed.analize.map((a: any) => ({
-  ...a,
-  nume: normalizeazaNume(a.nume)
-}))
+    const analizeNormalizate = (parsed.analize || []).map((a: any) => ({
+      ...a,
+      nume: normalizeazaNume(a.nume)
+    }))
 
-return NextResponse.json({
-  analize: analizeNormalizate,
-      analize: parsed.analize || [],
+    return NextResponse.json({
+      analize: analizeNormalizate,
       laborator: parsed.laborator,
       data_buletin: parsed.data_buletin
     })
 
   } catch (error) {
     console.error('Extract error:', error)
-    const analizeNormalizate = parsed.analize.map((a: any) => ({
-  ...a,
-  nume: normalizeazaNume(a.nume)
-}))
-
-return NextResponse.json({
-  analize: analizeNormalizate, error: 'A aparut o eroare la procesare.' }, { status: 500 })
+    return NextResponse.json({ error: 'A aparut o eroare la procesare.' }, { status: 500 })
   }
 }
