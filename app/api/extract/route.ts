@@ -6,10 +6,6 @@ export async function POST(request: NextRequest) {
     const pdf = formData.get('pdf') as File
 
     if (!pdf) {
-      const analizeNormalizate = parsed.analize.map((a: any) => ({
-  ...a,
-  nume: normalizeazaNume(a.nume)
-}))
 
 return NextResponse.json({
   analize: analizeNormalizate, error: 'Niciun fișier PDF primit.' }, { status: 400 })
