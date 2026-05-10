@@ -34,8 +34,8 @@ function getStatus(observatii: string): string {
   return 'normal'
 }
 
-const COL_WIDTH = 70
-const ROW_HEIGHT = 20
+const COL_WIDTH = 90
+const ROW_HEIGHT = 24
 const LABEL_WIDTH = 220
 
 export default function Panoramic() {
