@@ -34,8 +34,8 @@ function getStatus(observatii: string): string {
   return 'normal'
 }
 
-const COL_WIDTH = 90
-const ROW_HEIGHT = 24
+const COL_WIDTH = 70
+const ROW_HEIGHT = 20
 const LABEL_WIDTH = 220
 
 export default function Panoramic() {
@@ -74,13 +74,11 @@ export default function Panoramic() {
     return getCategorieAnaliza(nume) === categorieActiva
   })
 
-  const totalWidth = LABEL_WIDTH + (toateDatele.length * (COL_WIDTH + 3))
-
   return (
-    <main style={{fontFamily:'Arial', padding:'1.5rem', overflowX:'auto', minWidth:totalWidth}}>
+    <main style={{fontFamily:'Arial', padding:'1.5rem', overflowX:'auto'}}>
       <div style={{display:'flex', alignItems:'center', gap:'1rem', marginBottom:'1.5rem'}}>
         <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'14px'}}>← Dosar</Link>
-        <h1 style={{fontSize:'1.4rem', margin:0}}>📊 Vizualizare panoramică</h1>
+        <h1 style={{fontSize:'1.4rem', margin:0}}>📊 Vizualizare panoramica v2</h1>
       </div>
 
       <div style={{display:'flex', gap:'1.5rem', marginBottom:'1rem', fontSize:'13px', flexWrap:'wrap'}}>
@@ -101,51 +99,65 @@ export default function Panoramic() {
         ))}
       </div>
 
-      {/* Header date — fix aliniere */}
-      <div style={{display:'flex', alignItems:'center', marginBottom:6}}>
-        <div style={{width:LABEL_WIDTH, minWidth:LABEL_WIDTH, flexShrink:0, marginRight:0}}></div>
-        {toateDatele.map(d => (
-          <div key={d} style={{width:COL_WIDTH, minWidth:COL_WIDTH, flexShrink:0, marginRight:3, fontSize:11, color:'#555', textAlign:'center', fontWeight:'500', marginRight:3}}>
-            {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
-          </div>
-        ))}
-      </div>
+      <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
+        <colgroup>
+          <col style={{width:LABEL_WIDTH}} />
+          {toateDatele.map(d => (
+            <col key={d} style={{width:COL_WIDTH}} />
+          ))}
+        </colgroup>
+        <thead>
+          <tr>
+            <th style={{width:LABEL_WIDTH}}></th>
+            {toateDatele.map(d => (
+              <th key={d} style={{width:COL_WIDTH, fontSize:11, color:'#555', textAlign:'center', fontWeight:'500', paddingBottom:6}}>
+                {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {numeAfisate.length === 0 ? (
+            <tr><td colSpan={toateDatele.length + 1} style={{textAlign:'center', padding:'2rem', color:'#888'}}>Nicio analiză în această categorie.</td></tr>
+          ) : (
+            numeAfisate.map(nume => {
+              const analizeNume = grupate[nume]
+              const mapData: Record<string, any> = {}
+              analizeNume.forEach(a => { mapData[a.data_analiza] = a })
 
-      {/* Rânduri analize */}
-      {numeAfisate.length === 0 ? (
-        <p style={{color:'#888', textAlign:'center', padding:'2rem'}}>Nicio analiză în această categorie.</p>
-      ) : (
-        numeAfisate.map(nume => {
-          const analizeNume = grupate[nume]
-          const mapData: Record<string, any> = {}
-          analizeNume.forEach(a => { mapData[a.data_analiza] = a })
-
-          return (
-            <div key={nume} style={{display:'flex', alignItems:'center', marginBottom:3}}>
-              <div style={{width:LABEL_WIDTH, minWidth:LABEL_WIDTH, flexShrink:0, fontSize:12, color:'#333', textAlign:'right', paddingRight:12, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}} title={nume}>
-                {nume}
-              </div>
-              {toateDatele.map(data => {
-                const a = mapData[data]
-                if (!a) return (
-                  <div key={data} style={{width:COL_WIDTH, minWidth:COL_WIDTH, height:ROW_HEIGHT, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:4, flexShrink:0, marginRight:3}}></div>
-                )
-                const status = getStatus(a.observatii)
-                const culoare = status === 'normal' ? '#1D9E75' : status === 'peste' ? '#E24B4A' : '#EF9F27'
-                return (
-                  <div key={data}
-                    onClick={() => setSelected(selected?.id === a.id ? null : a)}
-                    style={{width:COL_WIDTH, minWidth:COL_WIDTH, height:ROW_HEIGHT, background:culoare, borderRadius:4, cursor:'pointer', marginRight:3, flexShrink:0,
-                      display:'flex', alignItems:'center', justifyContent:'center', opacity: selected?.id === a.id ? 0.7 : 1}}
-                    title={`${nume}: ${a.valoare} ${a.unitate} (${data})`}>
-                    <span style={{fontSize:13, color:'white', fontWeight:'bold'}}>{a.valoare}</span>
-                  </div>
-                )
-              })}
-            </div>
-          )
-        })
-      )}
+              return (
+                <tr key={nume}>
+                  <td style={{width:LABEL_WIDTH, fontSize:12, color:'#333', textAlign:'right', paddingRight:12, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:LABEL_WIDTH}} title={nume}>
+                    {nume}
+                  </td>
+                  {toateDatele.map(data => {
+                    const a = mapData[data]
+                    if (!a) return (
+                      <td key={data} style={{padding:2}}>
+                        <div style={{height:ROW_HEIGHT, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:4}}></div>
+                      </td>
+                    )
+                    const status = getStatus(a.observatii)
+                    const culoare = status === 'normal' ? '#1D9E75' : status === 'peste' ? '#E24B4A' : '#EF9F27'
+                    return (
+                      <td key={data} style={{padding:2}}>
+                        <div
+                          onClick={() => setSelected(selected?.id === a.id ? null : a)}
+                          style={{height:ROW_HEIGHT, background:culoare, borderRadius:4, cursor:'pointer',
+                            display:'flex', alignItems:'center', justifyContent:'center',
+                            opacity: selected?.id === a.id ? 0.7 : 1}}
+                          title={`${nume}: ${a.valoare} ${a.unitate} (${data})`}>
+                          <span style={{fontSize:11, color:'white', fontWeight:'bold'}}>{a.valoare}</span>
+                        </div>
+                      </td>
+                    )
+                  })}
+                </tr>
+              )
+            })
+          )}
+        </tbody>
+      </table>
 
       {selected && (
         <div style={{position:'fixed', bottom:20, right:20, background:'white', border:'1px solid #ddd', borderRadius:12, padding:'1.2rem', minWidth:240, boxShadow:'0 4px 20px rgba(0,0,0,0.1)', zIndex:100}}>
