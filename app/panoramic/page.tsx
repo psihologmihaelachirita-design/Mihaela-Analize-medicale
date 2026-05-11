@@ -34,15 +34,12 @@ function getStatus(observatii: string): string {
   return 'normal'
 }
 
-const COL_WIDTH = 85
-const ROW_HEIGHT = 23
-const LABEL_WIDTH = 220
-
 export default function Panoramic() {
   const [analize, setAnalize] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [categorieActiva, setCategorieActiva] = useState('Toate')
   const [selected, setSelected] = useState<any>(null)
+  const [filtreVisible, setFiltreVisible] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
@@ -74,33 +71,49 @@ export default function Panoramic() {
     return getCategorieAnaliza(nume) === categorieActiva
   })
 
+  const COL_WIDTH = 85
+  const ROW_HEIGHT = 23
+  const LABEL_WIDTH = 140
+
   return (
-    <main style={{fontFamily:'Arial', padding:'1.5rem'}}>
-      <div style={{display:'flex', alignItems:'center', gap:'1rem', marginBottom:'1.5rem'}}>
-        <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'14px'}}>← Dosar</Link>
-        <h1 style={{fontSize:'1.4rem', margin:0}}>📊 Vizualizare panoramică</h1>
+    <main style={{fontFamily:'Arial', padding:'0.75rem'}}>
+      {/* Header compact */}
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'0.75rem'}}>
+        <div style={{display:'flex', alignItems:'center', gap:'0.75rem'}}>
+          <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'13px'}}>← Dosar</Link>
+          <span style={{fontSize:'1rem', fontWeight:500}}>📊 Panoramic</span>
+        </div>
+        <button
+          onClick={() => setFiltreVisible(!filtreVisible)}
+          style={{fontSize:'12px', padding:'4px 10px', border:'1px solid #ddd', borderRadius:20, background:'white', cursor:'pointer', color:'#555'}}>
+          {filtreVisible ? '▲ Ascunde filtre' : '▼ Filtre'}
+        </button>
       </div>
 
-      <div style={{display:'flex', gap:'1.5rem', marginBottom:'1rem', fontSize:'13px', flexWrap:'wrap'}}>
-        <span><span style={{display:'inline-block', width:14, height:14, background:'#1D9E75', borderRadius:3, marginRight:5, verticalAlign:'middle'}}></span>Normal</span>
-        <span><span style={{display:'inline-block', width:14, height:14, background:'#E24B4A', borderRadius:3, marginRight:5, verticalAlign:'middle'}}></span>Peste limită</span>
-        <span><span style={{display:'inline-block', width:14, height:14, background:'#EF9F27', borderRadius:3, marginRight:5, verticalAlign:'middle'}}></span>Sub limită</span>
-        <span><span style={{display:'inline-block', width:14, height:14, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:3, marginRight:5, verticalAlign:'middle'}}></span>Lipsă</span>
-      </div>
+      {/* Filtre colapsabile */}
+      {filtreVisible && (
+        <div>
+          <div style={{display:'flex', gap:'1rem', marginBottom:'0.5rem', fontSize:'12px', flexWrap:'wrap'}}>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#1D9E75', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Normal</span>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#E24B4A', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Peste</span>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#EF9F27', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Sub</span>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Lipsă</span>
+          </div>
+          <div style={{display:'flex', gap:'6px', flexWrap:'wrap', marginBottom:'0.75rem'}}>
+            {toateCategoriile.map(cat => (
+              <button key={cat} onClick={() => setCategorieActiva(cat)}
+                style={{padding:'3px 10px', borderRadius:20, fontSize:12, border:'1px solid #ddd', cursor:'pointer',
+                  background: categorieActiva === cat ? '#0070f3' : 'white',
+                  color: categorieActiva === cat ? 'white' : '#555'}}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-      <div style={{display:'flex', gap:'8px', flexWrap:'wrap', marginBottom:'1.5rem'}}>
-        {toateCategoriile.map(cat => (
-          <button key={cat} onClick={() => setCategorieActiva(cat)}
-            style={{padding:'5px 14px', borderRadius:20, fontSize:13, border:'1px solid #ddd', cursor:'pointer',
-              background: categorieActiva === cat ? '#0070f3' : 'white',
-              color: categorieActiva === cat ? 'white' : '#555'}}>
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Container cu scroll pe ambele axe */}
-      <div style={{overflow:'auto', maxHeight:'calc(100vh - 280px)', position:'relative'}}>
+      {/* Tabel cu freeze */}
+      <div style={{overflow:'auto', maxHeight: filtreVisible ? 'calc(100vh - 220px)' : 'calc(100vh - 100px)'}}>
         <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
           <colgroup>
             <col style={{width:LABEL_WIDTH}} />
@@ -110,7 +123,6 @@ export default function Panoramic() {
           </colgroup>
           <thead>
             <tr>
-              {/* Coltul stanga sus - freeze */}
               <th style={{
                 width:LABEL_WIDTH,
                 position:'sticky',
@@ -127,13 +139,14 @@ export default function Panoramic() {
                   color:'#555',
                   textAlign:'center',
                   fontWeight:'500',
-                  paddingBottom:6,
-                  paddingTop:6,
+                  paddingBottom:4,
+                  paddingTop:4,
                   position:'sticky',
                   top:0,
                   zIndex:2,
                   background:'white',
-                  borderBottom:'2px solid #eee'
+                  borderBottom:'2px solid #eee',
+                  whiteSpace:'nowrap'
                 }}>
                   {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
                 </th>
@@ -151,21 +164,21 @@ export default function Panoramic() {
 
                 return (
                   <tr key={nume}>
-                    {/* Prima coloana cu nume - freeze */}
                     <td style={{
                       width:LABEL_WIDTH,
-                      fontSize:12,
+                      fontSize:11,
                       color:'#333',
                       textAlign:'right',
-                      paddingRight:12,
-                      overflow:'hidden',
-                      textOverflow:'ellipsis',
-                      whiteSpace:'nowrap',
-                      maxWidth:LABEL_WIDTH,
+                      paddingRight:8,
+                      whiteSpace:'normal',
+                      wordWrap:'break-word',
+                      lineHeight:1.3,
+                      verticalAlign:'middle',
                       position:'sticky',
                       left:0,
                       zIndex:1,
-                      background:'white'
+                      background:'white',
+                      borderRight:'1px solid #eee'
                     }} title={nume}>
                       {nume}
                     </td>
@@ -200,16 +213,16 @@ export default function Panoramic() {
       </div>
 
       {selected && (
-        <div style={{position:'fixed', bottom:20, right:20, background:'white', border:'1px solid #ddd', borderRadius:12, padding:'1.2rem', minWidth:240, boxShadow:'0 4px 20px rgba(0,0,0,0.1)', zIndex:100}}>
+        <div style={{position:'fixed', bottom:20, right:20, background:'white', border:'1px solid #ddd', borderRadius:12, padding:'1rem', minWidth:220, boxShadow:'0 4px 20px rgba(0,0,0,0.1)', zIndex:100}}>
           <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
-            <strong style={{fontSize:14}}>{selected.nume_analiza}</strong>
+            <strong style={{fontSize:13}}>{selected.nume_analiza}</strong>
             <button onClick={() => setSelected(null)} style={{border:'none', background:'none', cursor:'pointer', fontSize:16}}>×</button>
           </div>
-          <div style={{fontSize:13, color:'#555'}}>
+          <div style={{fontSize:12, color:'#555'}}>
             <div>Valoare: <strong>{selected.valoare} {selected.unitate}</strong></div>
             <div>Data: {selected.data_analiza}</div>
             <div style={{marginTop:6, color: getStatus(selected.observatii) === 'normal' ? '#1D9E75' : getStatus(selected.observatii) === 'peste' ? '#E24B4A' : '#EF9F27', fontWeight:500}}>
-              {getStatus(selected.observatii) === 'normal' ? '✓ În limite normale' : getStatus(selected.observatii) === 'peste' ? '↑ Peste limită' : '↓ Sub limită'}
+              {getStatus(selected.observatii) === 'normal' ? '✓ Normal' : getStatus(selected.observatii) === 'peste' ? '↑ Peste limită' : '↓ Sub limită'}
             </div>
           </div>
         </div>
