@@ -34,7 +34,7 @@ function getStatus(observatii: string): string {
   return 'normal'
 }
 
-const COL_WIDTH = 70
+const COL_WIDTH = 75
 const ROW_HEIGHT = 23
 const LABEL_WIDTH = 220
 
