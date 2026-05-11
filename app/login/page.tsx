@@ -78,7 +78,7 @@ export default function Login() {
       redirectTo: 'https://mihaela-analize-medicale.vercel.app/reset-password'
     })
     if (error) setEroare(error.message)
-    else setMesaj('Email de resetare trimis! Verifică inbox-ul.')
+    else setEroare('Email de resetare trimis! Verifică inbox-ul.')
   }} style={{background:'none', border:'none', color:'#0070f3', cursor:'pointer', fontSize:'14px'}}>
     Am uitat parola
   </button>
