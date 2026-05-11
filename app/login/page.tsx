@@ -71,7 +71,19 @@ export default function Login() {
 
       <p style={{textAlign:'center', marginTop:'1rem', fontSize:'14px', color:'#666'}}>
         Nu ai cont?{' '}
-        <Link href="/register" style={{color:'#0070f3'}}>Creează cont nou</Link>
+        <p style={{textAlign:'center', marginTop:'0.5rem', fontSize:'14px'}}>
+  <button onClick={async () => {
+    if (!email) { setEroare('Introdu emailul mai întâi.'); return }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://mihaela-analize-medicale.vercel.app/reset-password'
+    })
+    if (error) setEroare(error.message)
+    else setMesaj('Email de resetare trimis! Verifică inbox-ul.')
+  }} style={{background:'none', border:'none', color:'#0070f3', cursor:'pointer', fontSize:'14px'}}>
+    Am uitat parola
+  </button>
+</p>
+<Link href="/register" style={{color:'#0070f3'}}>Creează cont nou</Link>
       </p>
     </main>
   )
