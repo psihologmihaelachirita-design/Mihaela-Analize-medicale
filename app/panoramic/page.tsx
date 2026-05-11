@@ -35,7 +35,7 @@ function getStatus(observatii: string): string {
 }
 
 const COL_WIDTH = 70
-const ROW_HEIGHT = 20
+const ROW_HEIGHT = 23
 const LABEL_WIDTH = 220
 
 export default function Panoramic() {
@@ -147,7 +147,7 @@ export default function Panoramic() {
                             display:'flex', alignItems:'center', justifyContent:'center',
                             opacity: selected?.id === a.id ? 0.7 : 1}}
                           title={`${nume}: ${a.valoare} ${a.unitate} (${data})`}>
-                          <span style={{fontSize:11, color:'white', fontWeight:'bold'}}>{a.valoare}</span>
+                          <span style={{fontSize:12, color:'white', fontWeight:'bold'}}>{a.valoare}</span>
                         </div>
                       </td>
                     )
