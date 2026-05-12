@@ -17,10 +17,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session) {
-        router.push('/login')
-        return
-      }
+      if (!session) { router.push('/login'); return }
       setUser(session.user)
       const { data } = await supabase
         .from('analize')
@@ -49,11 +46,14 @@ export default function Dashboard() {
           <h1 style={{fontSize:'1.5rem', margin:0}}>🏥 Dosarul meu medical</h1>
           <p style={{color:'#666', margin:'4px 0 0', fontSize:'14px'}}>{user?.email}</p>
         </div>
-        <button onClick={handleLogout} style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', cursor:'pointer', fontSize:'14px'}}>
-          Ieșire
-        </button>
-        <Link href="/profil" style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', cursor:'pointer', fontSize:'14px', textDecoration:'none', color:'#333'}}>
-          👤 Profil
+        <div style={{display:'flex', gap:'10px'}}>
+          <Link href="/profil" style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', fontSize:'14px', textDecoration:'none', color:'#333'}}>
+            👤 Profil
+          </Link>
+          <button onClick={handleLogout} style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', cursor:'pointer', fontSize:'14px'}}>
+            Ieșire
+          </button>
+        </div>
       </div>
 
       <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'1rem', marginBottom:'2rem'}}>
