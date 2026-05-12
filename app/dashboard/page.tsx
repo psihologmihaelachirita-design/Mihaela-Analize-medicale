@@ -54,13 +54,6 @@ export default function Dashboard() {
         </button>
         <Link href="/profil" style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', cursor:'pointer', fontSize:'14px', textDecoration:'none', color:'#333'}}>
           👤 Profil
-        </Link>
-        <Link href="/profil" style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', cursor:'pointer', fontSize:'14px', textDecoration:'none', color:'#333'}}>
-          👤 Profil
-        </Link>
-        <Link href="/profil" style={{padding:'8px 16px', background:'#fff', border:'1px solid #ddd', borderRadius:'6px', cursor:'pointer', fontSize:'14px', textDecoration:'none', color:'#333'}}>
-          👤 Profil
-        </Link>
       </div>
 
       <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'1rem', marginBottom:'2rem'}}>
