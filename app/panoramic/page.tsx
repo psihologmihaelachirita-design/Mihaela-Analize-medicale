@@ -10,14 +10,23 @@ const supabase = createClient(
 )
 
 const CATEGORII: Record<string, string[]> = {
-  'Sânge': ['leucocite', 'hemoglobina', 'hematocrit', 'trombocite', 'eritrocite', 'vsh', 'reticulocite', 'volum eritrocitar', 'volum trombocitar', 'concentratie medie', 'hemoglobina eritrocitara', 'largimea', 'granulocite'],
-  'Metabolism': ['glicemie', 'glucoza', 'colesterol', 'trigliceride', 'hdl', 'ldl', 'insulina', 'homa', 'amilaza', 'lipaza'],
-  'Ficat': ['tgo', 'tgp', 'alt', 'ast', 'ggt', 'bilirubina', 'fosfataza', 'fibrinogen', 'protrombina', 'inr', 'aptt'],
-  'Rinichi': ['creatinina', 'uree', 'acid uric', 'egfr', 'sodiu', 'potasiu', 'calciu', 'magneziu', 'fosfor', 'fier'],
-  'Tiroidă': ['tsh', 't3', 't4', 'ft3', 'ft4', 'anti tpo', 'anti-tpo', 'tiroglobulina', 'anti tiroglobulina'],
-  'Vitamine': ['vitamina', 'feritina', 'b12', 'folat', 'homocisteina'],
-  'Hormoni': ['testosteron', 'dhea', 'cortizol', 'insulina', 'pth', 'parathormon'],
-  'Imunologie': ['igg', 'igm', 'iga', 'anticorp', 'virus', 'toxoplasma', 'citomegalovirus', 'epstein', 'crp', 'proteina c']
+  'Hematologie': ['leucocite', 'hemoglobina', 'hematocrit', 'trombocite', 'eritrocite', 'vsh', 'reticulocite', 'volum eritrocitar', 'volum trombocitar', 'concentratie medie', 'hemoglobina eritrocitara', 'largimea', 'granulocite', 'neutrofile', 'limfocite', 'monocite', 'eozinofile', 'bazofile', 'inr', 'aptt', 'fibrinogen', 'protrombina', 'd-dimeri'],
+  'Biochimie': ['glucoza', 'glicemie', 'colesterol', 'trigliceride', 'hdl', 'ldl', 'uree', 'creatinina', 'acid uric', 'egfr', 'alt', 'ast', 'tgp', 'tgo', 'ggt', 'bilirubina', 'fosfataza', 'calciu', 'sodiu', 'potasiu', 'magneziu', 'fosfor', 'fier', 'feritina', 'transferina', 'proteina', 'albumina'],
+  'Endocrinologie': ['tsh', 't3', 't4', 'ft3', 'ft4', 'anti tpo', 'anti-tpo', 'tiroglobulina', 'anti tiroglobulina', 'cortizol', 'dhea', 'pth', 'parathormon', 'insulina', 'homa', 'peptid c', 'vitamina d'],
+  'Fertilitate': ['fsh', 'lh', 'estradiol', 'progesteron', 'prolactina', 'amh', 'inhibina', 'testosteron', 'beta-hcg', 'hcg'],
+  'Imunologie': ['igg', 'igm', 'iga', 'ige', 'complement', 'ana', 'anca', 'factor reumatoid', 'anti-ccp', 'crp', 'proteina c reactiva', 'anti-ds', 'anticorp'],
+  'Alergologie': ['ige specific', 'rast', 'alergen', 'alergie'],
+  'Microbiologie': ['cultura', 'antibiograma', 'streptococ', 'exudat', 'urocult', 'coprocult', 'hemocult'],
+  'Virologie': ['hepatita', 'hbsag', 'anti-hbs', 'anti-hcv', 'hiv', 'cmv', 'ebv', 'toxoplasma', 'rubeola', 'treponema', 'vdrl', 'virus epstein', 'citomegalovirus', 'anti toxoplasma', 'anti virus'],
+  'Markeri tumorali': ['psa', 'cea', 'afp', 'ca125', 'ca19', 'ca15', 'nse', 'cromogranina', 'calcitonina'],
+  'Cardiologie': ['troponina', 'bnp', 'nt-probnp', 'ck-mb', 'mioglobina', 'homocisteina'],
+  'Nutritie': ['vitamina b12', 'vitamina b', 'folat', 'vitamina a', 'vitamina e', 'vitamina k', 'zinc', 'seleniu', 'cupru'],
+  'Biologie moleculara': ['pcr', 'hpv', 'chlamydia', 'gonoree', 'tbc', 'covid', 'sars'],
+  'Genetica': ['cariotip', 'brca', 'mthfr', 'factor v leiden', 'mutatie', 'polimorfism', 'genetica', 'fish'],
+  'Urina': ['sumar urina', 'sediment', 'proteinurie', 'microalbuminurie', 'densitate urinara', 'creatinina urinara'],
+  'Imagistica': ['ecografie', 'rmn', 'ct', 'radiografie', 'mamografie', 'scintigrafie', 'pet'],
+  'Anatomie patologica': ['biopsie', 'citologie', 'papanicolaou', 'histopatologie', 'imunohistochimie'],
+  'Farmacologie': ['digoxina', 'litiu', 'valproat', 'ciclosporina', 'nivel seric', 'drog', 'alcool', 'plumb', 'mercur'],
 }
 
 function getCategorieAnaliza(nume: string): string {
@@ -28,7 +37,13 @@ function getCategorieAnaliza(nume: string): string {
   return 'Altele'
 }
 
-function getStatus(observatii: string): string {
+function getStatus(observatii: string, tip_rezultat?: string, rezultat_text?: string): string {
+  if (tip_rezultat === 'calitativ') {
+    const text = (rezultat_text || '').toLowerCase()
+    if (text.includes('negativ') || text.includes('absent') || text.includes('neractiv')) return 'negativ'
+    if (text.includes('pozitiv') || text.includes('prezent') || text.includes('reactiv')) return 'pozitiv'
+    return 'calitativ'
+  }
   if (observatii?.includes('peste')) return 'peste'
   if (observatii?.includes('sub')) return 'sub'
   return 'normal'
@@ -77,7 +92,6 @@ export default function Panoramic() {
 
   return (
     <main style={{fontFamily:'Arial', padding:'0.75rem'}}>
-      {/* Header compact */}
       <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'0.75rem'}}>
         <div style={{display:'flex', alignItems:'center', gap:'0.75rem'}}>
           <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'13px'}}>← Dosar</Link>
@@ -86,34 +100,30 @@ export default function Panoramic() {
         <button
           onClick={() => setFiltreVisible(!filtreVisible)}
           style={{fontSize:'12px', padding:'4px 10px', border:'1px solid #ddd', borderRadius:20, background:'white', cursor:'pointer', color:'#555'}}>
-          {filtreVisible ? '▲ Ascunde filtre' : '▼ Filtre'}
+          {filtreVisible ? '▲ Ascunde' : '▼ Filtre'}
         </button>
       </div>
 
-      {/* Filtre colapsabile */}
       {filtreVisible && (
-        <div>
+        <div style={{marginBottom:'0.75rem'}}>
           <div style={{display:'flex', gap:'1rem', marginBottom:'0.5rem', fontSize:'12px', flexWrap:'wrap'}}>
             <span><span style={{display:'inline-block', width:12, height:12, background:'#1D9E75', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Normal</span>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#E24B4A', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Peste</span>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#EF9F27', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Sub</span>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#E24B4A', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Peste / Pozitiv</span>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#EF9F27', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Sub limită</span>
             <span><span style={{display:'inline-block', width:12, height:12, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Lipsă</span>
           </div>
-          <div style={{display:'flex', gap:'6px', flexWrap:'wrap', marginBottom:'0.75rem'}}>
+          <select
+            value={categorieActiva}
+            onChange={e => setCategorieActiva(e.target.value)}
+            style={{width:'100%', padding:'8px 12px', borderRadius:8, border:'1px solid #ddd', fontSize:13, background:'white', cursor:'pointer'}}>
             {toateCategoriile.map(cat => (
-              <button key={cat} onClick={() => setCategorieActiva(cat)}
-                style={{padding:'3px 10px', borderRadius:20, fontSize:12, border:'1px solid #ddd', cursor:'pointer',
-                  background: categorieActiva === cat ? '#0070f3' : 'white',
-                  color: categorieActiva === cat ? 'white' : '#555'}}>
-                {cat}
-              </button>
+              <option key={cat} value={cat}>{cat}</option>
             ))}
-          </div>
+          </select>
         </div>
       )}
 
-      {/* Tabel cu freeze */}
-      <div style={{overflow:'auto', maxHeight: filtreVisible ? 'calc(100vh - 220px)' : 'calc(100vh - 100px)'}}>
+      <div style={{overflow:'auto', maxHeight: filtreVisible ? 'calc(100vh - 200px)' : 'calc(100vh - 80px)'}}>
         <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
           <colgroup>
             <col style={{width:LABEL_WIDTH}} />
@@ -123,31 +133,9 @@ export default function Panoramic() {
           </colgroup>
           <thead>
             <tr>
-              <th style={{
-                width:LABEL_WIDTH,
-                position:'sticky',
-                top:0,
-                left:0,
-                zIndex:3,
-                background:'white',
-                borderBottom:'2px solid #eee'
-              }}></th>
+              <th style={{width:LABEL_WIDTH, position:'sticky', top:0, left:0, zIndex:3, background:'white', borderBottom:'2px solid #eee'}}></th>
               {toateDatele.map(d => (
-                <th key={d} style={{
-                  width:COL_WIDTH,
-                  fontSize:11,
-                  color:'#555',
-                  textAlign:'center',
-                  fontWeight:'500',
-                  paddingBottom:4,
-                  paddingTop:4,
-                  position:'sticky',
-                  top:0,
-                  zIndex:2,
-                  background:'white',
-                  borderBottom:'2px solid #eee',
-                  whiteSpace:'nowrap'
-                }}>
+                <th key={d} style={{width:COL_WIDTH, fontSize:11, color:'#555', textAlign:'center', fontWeight:'500', paddingBottom:4, paddingTop:4, position:'sticky', top:0, zIndex:2, background:'white', borderBottom:'2px solid #eee', whiteSpace:'nowrap'}}>
                   {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
                 </th>
               ))}
@@ -164,22 +152,7 @@ export default function Panoramic() {
 
                 return (
                   <tr key={nume}>
-                    <td style={{
-                      width:LABEL_WIDTH,
-                      fontSize:11,
-                      color:'#333',
-                      textAlign:'right',
-                      paddingRight:8,
-                      whiteSpace:'normal',
-                      wordWrap:'break-word',
-                      lineHeight:1.3,
-                      verticalAlign:'middle',
-                      position:'sticky',
-                      left:0,
-                      zIndex:1,
-                      background:'white',
-                      borderRight:'1px solid #eee'
-                    }} title={nume}>
+                    <td style={{width:LABEL_WIDTH, fontSize:11, color:'#333', textAlign:'right', paddingRight:8, whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.3, verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'1px solid #eee'}} title={nume}>
                       {nume}
                     </td>
                     {toateDatele.map(data => {
@@ -189,17 +162,21 @@ export default function Panoramic() {
                           <div style={{height:ROW_HEIGHT, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:4}}></div>
                         </td>
                       )
-                      const status = getStatus(a.observatii)
-                      const culoare = status === 'normal' ? '#1D9E75' : status === 'peste' ? '#E24B4A' : '#EF9F27'
+                      const status = getStatus(a.observatii, a.tip_rezultat, a.rezultat_text)
+                      const culoare = status === 'normal' || status === 'negativ' ? '#1D9E75' :
+                                     status === 'peste' || status === 'pozitiv' ? '#E24B4A' :
+                                     status === 'sub' ? '#EF9F27' : '#888'
+                      const afisaj = a.tip_rezultat === 'calitativ'
+                        ? (a.rezultat_text?.slice(0, 3)?.toUpperCase() || '?')
+                        : a.valoare
+
                       return (
                         <td key={data} style={{padding:2}}>
                           <div
                             onClick={() => setSelected(selected?.id === a.id ? null : a)}
-                            style={{height:ROW_HEIGHT, background:culoare, borderRadius:4, cursor:'pointer',
-                              display:'flex', alignItems:'center', justifyContent:'center',
-                              opacity: selected?.id === a.id ? 0.7 : 1}}
-                            title={`${nume}: ${a.valoare} ${a.unitate} (${data})`}>
-                            <span style={{fontSize:12, color:'white', fontWeight:'bold'}}>{a.valoare}</span>
+                            style={{height:ROW_HEIGHT, background:culoare, borderRadius:4, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', opacity: selected?.id === a.id ? 0.7 : 1}}
+                            title={`${nume}: ${a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare + ' ' + (a.unitate || '')} (${data})`}>
+                            <span style={{fontSize:12, color:'white', fontWeight:'bold'}}>{afisaj}</span>
                           </div>
                         </td>
                       )
@@ -219,10 +196,23 @@ export default function Panoramic() {
             <button onClick={() => setSelected(null)} style={{border:'none', background:'none', cursor:'pointer', fontSize:16}}>×</button>
           </div>
           <div style={{fontSize:12, color:'#555'}}>
-            <div>Valoare: <strong>{selected.valoare} {selected.unitate}</strong></div>
+            {selected.tip_rezultat === 'calitativ' ? (
+              <div>Rezultat: <strong>{selected.rezultat_text}</strong></div>
+            ) : (
+              <>
+                <div>Valoare: <strong>{selected.valoare} {selected.unitate}</strong></div>
+                {selected.referinta_min && selected.referinta_max && (
+                  <div style={{color:'#888'}}>Ref: {selected.referinta_min} — {selected.referinta_max} {selected.unitate}</div>
+                )}
+              </>
+            )}
             <div>Data: {selected.data_analiza}</div>
-            <div style={{marginTop:6, color: getStatus(selected.observatii) === 'normal' ? '#1D9E75' : getStatus(selected.observatii) === 'peste' ? '#E24B4A' : '#EF9F27', fontWeight:500}}>
-              {getStatus(selected.observatii) === 'normal' ? '✓ Normal' : getStatus(selected.observatii) === 'peste' ? '↑ Peste limită' : '↓ Sub limită'}
+            <div style={{marginTop:6, color: getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' || getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '#1D9E75' : '#E24B4A', fontWeight:500}}>
+              {getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' ? '✓ Normal' :
+               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '✓ Negativ' :
+               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'pozitiv' ? '⚠ Pozitiv' :
+               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'peste' ? '↑ Peste limită' :
+               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'sub' ? '↓ Sub limită' : '— Necunoscut'}
             </div>
           </div>
         </div>

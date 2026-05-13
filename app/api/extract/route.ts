@@ -88,8 +88,8 @@ export async function POST(request: NextRequest) {
             },
             {
               type: 'text',
-              text: `Extrage TOATE analizele din acest buletin medical PDF. Returneaza STRICT un obiect JSON valid, fara text inainte sau dupa, fara markdown, fara backticks. Doar JSON pur:
-{"analize":[{"nume":"numele analizei","valoare":"valoarea numerica","unitate":"unitatea","referinta_min":"min sau null","referinta_max":"max sau null","status":"normal sau peste sau sub","data":"YYYY-MM-DD sau null"}],"laborator":"numele laboratorului sau null","data_buletin":"YYYY-MM-DD sau null"}`
+              text: `Extrage TOATE analizele din acest buletin medical PDF. Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru analize cu rezultat text (negativ/pozitiv/prezent/absent/reactiv/neractiv) foloseste tip_rezultat "calitativ" si pune rezultatul in rezultat_text. Returneaza STRICT JSON valid fara text suplimentar:
+{"analize":[{"nume":"numele analizei","valoare":"valoarea numerica sau null","unitate":"unitatea sau null","referinta_min":"valoarea minima normala sau null","referinta_max":"valoarea maxima normala sau null","tip_rezultat":"numeric sau calitativ","rezultat_text":"rezultatul text sau null","status":"normal sau peste sau sub sau negativ sau pozitiv","data":"YYYY-MM-DD sau null"}],"laborator":"numele laboratorului sau null","data_buletin":"YYYY-MM-DD sau null"}`
             }
           ]
         }]

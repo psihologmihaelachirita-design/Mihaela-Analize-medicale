@@ -76,10 +76,14 @@ export default function Upload() {
       const inserts = rezultat.map(a => ({
         user_id: session.user.id,
         nume_analiza: a.nume,
-        valoare: parseFloat(a.valoare) || 0,
+        valoare: a.tip_rezultat === 'calitativ' ? null : (parseFloat(a.valoare) || 0),
         unitate: a.unitate || '',
         data_analiza: dataBuletin || a.data || new Date().toISOString().split('T')[0],
-        observatii: `Laborator: ${laborator || 'necunoscut'} | Status: ${a.status}`
+        observatii: `Laborator: ${laborator || 'necunoscut'} | Status: ${a.status}`,
+        referinta_min: a.referinta_min ? parseFloat(a.referinta_min) : null,
+        referinta_max: a.referinta_max ? parseFloat(a.referinta_max) : null,
+        tip_rezultat: a.tip_rezultat || 'numeric',
+        rezultat_text: a.rezultat_text || null
       }))
 
       const { error } = await supabase.from('analize').insert(inserts)
