@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -11,7 +11,7 @@ const supabase = createClient(
 
 const CATEGORII: Record<string, string[]> = {
   'Hematologie': ['leucocite', 'hemoglobina', 'hematocrit', 'trombocite', 'eritrocite', 'vsh', 'reticulocite', 'volum eritrocitar', 'volum trombocitar', 'concentratie medie', 'hemoglobina eritrocitara', 'largimea', 'granulocite', 'neutrofile', 'limfocite', 'monocite', 'eozinofile', 'bazofile', 'inr', 'aptt', 'fibrinogen', 'protrombina', 'd-dimeri'],
-  'Biochimie': ['glucoza', 'glicemie', 'colesterol', 'trigliceride', 'hdl', 'ldl', 'uree', 'creatinina', 'acid uric', 'egfr', 'alt', 'ast', 'tgp', 'tgo', 'ggt', 'bilirubina', 'fosfataza', 'calciu', 'sodiu', 'potasiu', 'magneziu', 'fosfor', 'fier', 'feritina', 'transferina', 'proteina', 'albumina'],
+  'Biochimie': ['glucoza', 'glicemie', 'colesterol', 'trigliceride', 'hdl', 'ldl', 'uree', 'creatinina', 'acid uric', 'egfr', 'alt', 'ast', 'tgp', 'tgo', 'ggt', 'bilirubina', 'fosfataza', 'calciu', 'sodiu', 'potasiu', 'magneziu', 'fosfor', 'fier', 'feritina', 'transferina', 'proteina', 'albumina', 'amilaza', 'lipaza'],
   'Endocrinologie': ['tsh', 't3', 't4', 'ft3', 'ft4', 'anti tpo', 'anti-tpo', 'tiroglobulina', 'anti tiroglobulina', 'cortizol', 'dhea', 'pth', 'parathormon', 'insulina', 'homa', 'peptid c', 'vitamina d'],
   'Fertilitate': ['fsh', 'lh', 'estradiol', 'progesteron', 'prolactina', 'amh', 'inhibina', 'testosteron', 'beta-hcg', 'hcg'],
   'Imunologie': ['igg', 'igm', 'iga', 'ige', 'complement', 'ana', 'anca', 'factor reumatoid', 'anti-ccp', 'crp', 'proteina c reactiva', 'anti-ds', 'anticorp'],
@@ -23,10 +23,10 @@ const CATEGORII: Record<string, string[]> = {
   'Nutritie': ['vitamina b12', 'vitamina b', 'folat', 'vitamina a', 'vitamina e', 'vitamina k', 'zinc', 'seleniu', 'cupru'],
   'Biologie moleculara': ['pcr', 'hpv', 'chlamydia', 'gonoree', 'tbc', 'covid', 'sars'],
   'Genetica': ['cariotip', 'brca', 'mthfr', 'factor v leiden', 'mutatie', 'polimorfism', 'genetica', 'fish'],
-  'Urina': ['sumar urina', 'sediment', 'proteinurie', 'microalbuminurie', 'densitate urinara', 'creatinina urinara'],
-  'Imagistica': ['ecografie', 'rmn', 'ct', 'radiografie', 'mamografie', 'scintigrafie', 'pet'],
-  'Anatomie patologica': ['biopsie', 'citologie', 'papanicolaou', 'histopatologie', 'imunohistochimie'],
-  'Farmacologie': ['digoxina', 'litiu', 'valproat', 'ciclosporina', 'nivel seric', 'drog', 'alcool', 'plumb', 'mercur'],
+  'Urina': ['sumar urina', 'sediment', 'proteinurie', 'microalbuminurie', 'densitate urinara'],
+  'Imagistica': ['ecografie', 'rmn', 'ct', 'radiografie', 'mamografie', 'scintigrafie'],
+  'Anatomie patologica': ['biopsie', 'citologie', 'papanicolaou', 'histopatologie'],
+  'Farmacologie': ['digoxina', 'litiu', 'valproat', 'ciclosporina', 'nivel seric', 'plumb', 'mercur'],
 }
 
 function getCategorieAnaliza(nume: string): string {
@@ -52,9 +52,11 @@ function getStatus(observatii: string, tip_rezultat?: string, rezultat_text?: st
 export default function Panoramic() {
   const [analize, setAnalize] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [categorieActiva, setCategorieActiva] = useState('Toate')
+  const [categoriiActive, setCategoriiActive] = useState<string[]>([])
   const [selected, setSelected] = useState<any>(null)
   const [filtreVisible, setFiltreVisible] = useState(true)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -68,6 +70,14 @@ export default function Panoramic() {
       setAnalize(data || [])
       setLoading(false)
     })
+
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   if (loading) return <p style={{fontFamily:'Arial', padding:'2rem'}}>Se încarcă...</p>
@@ -79,16 +89,30 @@ export default function Panoramic() {
   })
 
   const toateDatele = [...new Set(analize.map(a => a.data_analiza))].sort()
-  const toateCategoriile = ['Toate', ...Object.keys(CATEGORII), 'Altele']
+  const toateCategoriile = [...Object.keys(CATEGORII), 'Altele']
+
+  function toggleCategorie(cat: string) {
+    setCategoriiActive(prev =>
+      prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+    )
+  }
+
+  function selectAll() { setCategoriiActive([]) }
 
   const numeAfisate = Object.keys(grupate).filter(nume => {
-    if (categorieActiva === 'Toate') return true
-    return getCategorieAnaliza(nume) === categorieActiva
+    if (categoriiActive.length === 0) return true
+    return categoriiActive.includes(getCategorieAnaliza(nume))
   })
 
   const COL_WIDTH = 85
   const ROW_HEIGHT = 23
   const LABEL_WIDTH = 140
+
+  const labelFiltru = categoriiActive.length === 0
+    ? 'Toate categoriile'
+    : categoriiActive.length === 1
+    ? categoriiActive[0]
+    : `${categoriiActive.length} categorii selectate`
 
   return (
     <main style={{fontFamily:'Arial', padding:'0.75rem'}}>
@@ -107,23 +131,49 @@ export default function Panoramic() {
       {filtreVisible && (
         <div style={{marginBottom:'0.75rem'}}>
           <div style={{display:'flex', gap:'1rem', marginBottom:'0.5rem', fontSize:'12px', flexWrap:'wrap'}}>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#1D9E75', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Normal</span>
+            <span><span style={{display:'inline-block', width:12, height:12, background:'#1D9E75', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Normal / Negativ</span>
             <span><span style={{display:'inline-block', width:12, height:12, background:'#E24B4A', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Peste / Pozitiv</span>
             <span><span style={{display:'inline-block', width:12, height:12, background:'#EF9F27', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Sub limită</span>
             <span><span style={{display:'inline-block', width:12, height:12, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Lipsă</span>
           </div>
-          <select
-            value={categorieActiva}
-            onChange={e => setCategorieActiva(e.target.value)}
-            style={{width:'100%', padding:'8px 12px', borderRadius:8, border:'1px solid #ddd', fontSize:13, background:'white', cursor:'pointer'}}>
-            {toateCategoriile.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+
+          {/* Dropdown cu checkbox */}
+          <div ref={dropdownRef} style={{position:'relative'}}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              style={{width:'100%', padding:'8px 12px', borderRadius:8, border:'1px solid #ddd', fontSize:13, background:'white', cursor:'pointer', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+              <span>{labelFiltru}</span>
+              <span>{dropdownOpen ? '▲' : '▼'}</span>
+            </button>
+
+            {dropdownOpen && (
+              <div style={{position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #ddd', borderRadius:8, boxShadow:'0 4px 12px rgba(0,0,0,0.1)', zIndex:10, maxHeight:300, overflowY:'auto', marginTop:4}}>
+                <div
+                  onClick={selectAll}
+                  style={{padding:'8px 12px', cursor:'pointer', display:'flex', alignItems:'center', gap:8, borderBottom:'1px solid #eee', fontWeight:500, fontSize:13}}>
+                  <span style={{width:16, height:16, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#0070f3' : 'white', color:'white', fontSize:11}}>
+                    {categoriiActive.length === 0 ? '✓' : ''}
+                  </span>
+                  Toate categoriile
+                </div>
+                {toateCategoriile.map(cat => (
+                  <div
+                    key={cat}
+                    onClick={() => toggleCategorie(cat)}
+                    style={{padding:'7px 12px', cursor:'pointer', display:'flex', alignItems:'center', gap:8, fontSize:13, background: categoriiActive.includes(cat) ? '#f0f7ff' : 'white'}}>
+                    <span style={{width:16, height:16, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.includes(cat) ? '#0070f3' : 'white', color:'white', fontSize:11, flexShrink:0}}>
+                      {categoriiActive.includes(cat) ? '✓' : ''}
+                    </span>
+                    {cat}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      <div style={{overflow:'auto', maxHeight: filtreVisible ? 'calc(100vh - 200px)' : 'calc(100vh - 80px)'}}>
+      <div style={{overflow:'auto', maxHeight: filtreVisible ? 'calc(100vh - 220px)' : 'calc(100vh - 80px)'}}>
         <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
           <colgroup>
             <col style={{width:LABEL_WIDTH}} />
@@ -207,7 +257,10 @@ export default function Panoramic() {
               </>
             )}
             <div>Data: {selected.data_analiza}</div>
-            <div style={{marginTop:6, color: getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' || getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '#1D9E75' : '#E24B4A', fontWeight:500}}>
+            <div style={{marginTop:6, fontWeight:500, color:
+              getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' ? '#1D9E75' :
+              getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '#1D9E75' :
+              '#E24B4A'}}>
               {getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' ? '✓ Normal' :
                getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '✓ Negativ' :
                getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'pozitiv' ? '⚠ Pozitiv' :
