@@ -137,7 +137,7 @@ export default function Panoramic() {
             <span><span style={{display:'inline-block', width:12, height:12, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Lipsă</span>
           </div>
 
-          {/* Dropdown cu checkbox */}
+          {/* Panel categorii cu grid */}
           <div ref={dropdownRef} style={{position:'relative'}}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -147,26 +147,28 @@ export default function Panoramic() {
             </button>
 
             {dropdownOpen && (
-              <div style={{position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #ddd', borderRadius:8, boxShadow:'0 4px 12px rgba(0,0,0,0.1)', zIndex:10, maxHeight:300, overflowY:'auto', marginTop:4}}>
+              <div style={{position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #ddd', borderRadius:8, boxShadow:'0 4px 12px rgba(0,0,0,0.1)', zIndex:10, padding:'10px', marginTop:4}}>
                 <div
                   onClick={selectAll}
-                  style={{padding:'8px 12px', cursor:'pointer', display:'flex', alignItems:'center', gap:8, borderBottom:'1px solid #eee', fontWeight:500, fontSize:13}}>
-                  <span style={{width:16, height:16, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#0070f3' : 'white', color:'white', fontSize:11}}>
+                  style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, borderBottom:'1px solid #eee', marginBottom:8, fontWeight:500, fontSize:12}}>
+                  <span style={{width:14, height:14, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#0070f3' : 'white', color:'white', fontSize:10, flexShrink:0}}>
                     {categoriiActive.length === 0 ? '✓' : ''}
                   </span>
                   Toate categoriile
                 </div>
-                {toateCategoriile.map(cat => (
-                  <div
-                    key={cat}
-                    onClick={() => toggleCategorie(cat)}
-                    style={{padding:'7px 12px', cursor:'pointer', display:'flex', alignItems:'center', gap:8, fontSize:13, background: categoriiActive.includes(cat) ? '#f0f7ff' : 'white'}}>
-                    <span style={{width:16, height:16, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.includes(cat) ? '#0070f3' : 'white', color:'white', fontSize:11, flexShrink:0}}>
-                      {categoriiActive.includes(cat) ? '✓' : ''}
-                    </span>
-                    {cat}
-                  </div>
-                ))}
+                <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'4px'}}>
+                  {toateCategoriile.map(cat => (
+                    <div
+                      key={cat}
+                      onClick={() => toggleCategorie(cat)}
+                      style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontSize:12, borderRadius:6, background: categoriiActive.includes(cat) ? '#f0f7ff' : 'transparent'}}>
+                      <span style={{width:14, height:14, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.includes(cat) ? '#0070f3' : 'white', color:'white', fontSize:10, flexShrink:0}}>
+                        {categoriiActive.includes(cat) ? '✓' : ''}
+                      </span>
+                      {cat}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
