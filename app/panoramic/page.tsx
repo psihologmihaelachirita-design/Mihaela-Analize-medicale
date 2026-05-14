@@ -54,9 +54,10 @@ export default function Panoramic() {
   const [loading, setLoading] = useState(true)
   const [categoriiActive, setCategoriiActive] = useState<string[]>([])
   const [selected, setSelected] = useState<any>(null)
-  const [filtreVisible, setFiltreVisible] = useState(true)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const hoverTimeout = useRef<any>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -70,14 +71,6 @@ export default function Panoramic() {
       setAnalize(data || [])
       setLoading(false)
     })
-
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   if (loading) return <p style={{fontFamily:'Arial', padding:'2rem'}}>Se încarcă...</p>
@@ -99,83 +92,158 @@ export default function Panoramic() {
 
   function selectAll() { setCategoriiActive([]) }
 
+  function handleMouseEnter() {
+    clearTimeout(hoverTimeout.current)
+    setDropdownOpen(true)
+  }
+
+  function handleMouseLeave() {
+    hoverTimeout.current = setTimeout(() => setDropdownOpen(false), 300)
+  }
+
   const numeAfisate = Object.keys(grupate).filter(nume => {
-    if (categoriiActive.length === 0) return true
-    return categoriiActive.includes(getCategorieAnaliza(nume))
+    const catOk = categoriiActive.length === 0 || categoriiActive.includes(getCategorieAnaliza(nume))
+    const searchOk = search === '' || nume.toLowerCase().includes(search.toLowerCase())
+    return catOk && searchOk
   })
 
   const COL_WIDTH = 85
   const ROW_HEIGHT = 23
   const LABEL_WIDTH = 140
 
-  const labelFiltru = categoriiActive.length === 0
-    ? 'Toate categoriile'
-    : categoriiActive.length === 1
-    ? categoriiActive[0]
-    : `${categoriiActive.length} categorii selectate`
-
   return (
     <main style={{fontFamily:'Arial', padding:'0.75rem'}}>
+      {/* Header */}
       <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'0.75rem'}}>
         <div style={{display:'flex', alignItems:'center', gap:'0.75rem'}}>
           <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'13px'}}>← Dosar</Link>
           <span style={{fontSize:'1rem', fontWeight:500}}>📊 Panoramic</span>
         </div>
-        <button
-          onClick={() => setFiltreVisible(!filtreVisible)}
-          style={{fontSize:'12px', padding:'4px 10px', border:'1px solid #ddd', borderRadius:20, background:'white', cursor:'pointer', color:'#555'}}>
-          {filtreVisible ? '▲ Ascunde' : '▼ Filtre'}
-        </button>
       </div>
 
-      {filtreVisible && (
-        <div style={{marginBottom:'0.75rem'}}>
-          <div style={{display:'flex', gap:'1rem', marginBottom:'0.5rem', fontSize:'12px', flexWrap:'wrap'}}>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#1D9E75', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Normal / Negativ</span>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#E24B4A', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Peste / Pozitiv</span>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#EF9F27', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Sub limită</span>
-            <span><span style={{display:'inline-block', width:12, height:12, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:2, marginRight:4, verticalAlign:'middle'}}></span>Lipsă</span>
-          </div>
+      {/* Search + Filtre pe acelasi rand */}
+      <div style={{display:'flex', gap:'8px', marginBottom:'0.5rem', alignItems:'center'}}>
+        {/* Search */}
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="🔍 Caută analiză..."
+          style={{flex:1, padding:'7px 12px', borderRadius:8, border:'1px solid #ddd', fontSize:13, outline:'none'}}
+        />
 
-          {/* Panel categorii cu grid */}
-          <div ref={dropdownRef} style={{position:'relative'}}>
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              style={{width:'100%', padding:'8px 12px', borderRadius:8, border:'1px solid #ddd', fontSize:13, background:'white', cursor:'pointer', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-              <span>{labelFiltru}</span>
-              <span>{dropdownOpen ? '▲' : '▼'}</span>
-            </button>
-
-            {dropdownOpen && (
-              <div style={{position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #ddd', borderRadius:8, boxShadow:'0 4px 12px rgba(0,0,0,0.1)', zIndex:10, padding:'10px', marginTop:4}}>
-                <div
-                  onClick={selectAll}
-                  style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, borderBottom:'1px solid #eee', marginBottom:8, fontWeight:500, fontSize:12}}>
-                  <span style={{width:14, height:14, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#0070f3' : 'white', color:'white', fontSize:10, flexShrink:0}}>
-                    {categoriiActive.length === 0 ? '✓' : ''}
+        {/* Filtre cu hover */}
+        <div
+          ref={dropdownRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          style={{position:'relative', flexShrink:0}}>
+          <div style={{
+            padding:'7px 12px',
+            borderRadius:8,
+            border:'1px solid #ddd',
+            fontSize:13,
+            background:'white',
+            cursor:'pointer',
+            display:'flex',
+            alignItems:'center',
+            gap:6,
+            whiteSpace:'nowrap'
+          }}>
+            {/* Categorii active vizibile */}
+            {categoriiActive.length === 0 ? (
+              <span style={{color:'#555'}}>Filtre ▼</span>
+            ) : (
+              <>
+                {categoriiActive.slice(0, 2).map(cat => (
+                  <span key={cat} style={{background:'#0070f3', color:'white', padding:'2px 8px', borderRadius:12, fontSize:11}}>
+                    {cat}
                   </span>
-                  Toate categoriile
-                </div>
-                <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'4px'}}>
-                  {toateCategoriile.map(cat => (
-                    <div
-                      key={cat}
-                      onClick={() => toggleCategorie(cat)}
-                      style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontSize:12, borderRadius:6, background: categoriiActive.includes(cat) ? '#f0f7ff' : 'transparent'}}>
-                      <span style={{width:14, height:14, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.includes(cat) ? '#0070f3' : 'white', color:'white', fontSize:10, flexShrink:0}}>
-                        {categoriiActive.includes(cat) ? '✓' : ''}
-                      </span>
-                      {cat}
-                    </div>
-                  ))}
-                </div>
-              </div>
+                ))}
+                {categoriiActive.length > 2 && (
+                  <span style={{background:'#eee', color:'#555', padding:'2px 8px', borderRadius:12, fontSize:11}}>
+                    +{categoriiActive.length - 2}
+                  </span>
+                )}
+                <span style={{color:'#555'}}>▼</span>
+              </>
             )}
           </div>
-        </div>
-      )}
 
-      <div style={{overflow:'auto', maxHeight: filtreVisible ? 'calc(100vh - 220px)' : 'calc(100vh - 80px)'}}>
+          {/* Panel cu grid categorii */}
+          {dropdownOpen && (
+            <div style={{
+              position:'absolute',
+              top:'100%',
+              right:0,
+              background:'white',
+              border:'1px solid #ddd',
+              borderRadius:8,
+              boxShadow:'0 4px 16px rgba(0,0,0,0.12)',
+              zIndex:20,
+              padding:'10px',
+              marginTop:4,
+              minWidth:420
+            }}>
+              {/* Toate */}
+              <div
+                onClick={selectAll}
+                style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, borderBottom:'1px solid #eee', marginBottom:8, fontWeight:500, fontSize:12}}>
+                <span style={{width:14, height:14, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#0070f3' : 'white', color:'white', fontSize:10, flexShrink:0}}>
+                  {categoriiActive.length === 0 ? '✓' : ''}
+                </span>
+                Toate categoriile
+              </div>
+
+              {/* Grid 3 coloane */}
+              <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'3px'}}>
+                {toateCategoriile.map(cat => (
+                  <div
+                    key={cat}
+                    onClick={() => toggleCategorie(cat)}
+                    style={{
+                      padding:'5px 8px',
+                      cursor:'pointer',
+                      display:'flex',
+                      alignItems:'center',
+                      gap:6,
+                      fontSize:12,
+                      borderRadius:6,
+                      background: categoriiActive.includes(cat) ? '#f0f7ff' : 'transparent'
+                    }}>
+                    <span style={{
+                      width:14, height:14,
+                      border:'1px solid #ddd',
+                      borderRadius:3,
+                      display:'inline-flex',
+                      alignItems:'center',
+                      justifyContent:'center',
+                      background: categoriiActive.includes(cat) ? '#0070f3' : 'white',
+                      color:'white',
+                      fontSize:10,
+                      flexShrink:0
+                    }}>
+                      {categoriiActive.includes(cat) ? '✓' : ''}
+                    </span>
+                    {cat}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Legenda */}
+      <div style={{display:'flex', gap:'1rem', marginBottom:'0.5rem', fontSize:'11px', flexWrap:'wrap'}}>
+        <span><span style={{display:'inline-block', width:10, height:10, background:'#1D9E75', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Normal/Negativ</span>
+        <span><span style={{display:'inline-block', width:10, height:10, background:'#E24B4A', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Peste/Pozitiv</span>
+        <span><span style={{display:'inline-block', width:10, height:10, background:'#EF9F27', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Sub limită</span>
+        <span><span style={{display:'inline-block', width:10, height:10, background:'#f0f0f0', border:'1px dashed #ccc', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Lipsă</span>
+      </div>
+
+      {/* Tabel */}
+      <div style={{overflow:'auto', maxHeight:'calc(100vh - 160px)'}}>
         <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
           <colgroup>
             <col style={{width:LABEL_WIDTH}} />
@@ -195,7 +263,7 @@ export default function Panoramic() {
           </thead>
           <tbody>
             {numeAfisate.length === 0 ? (
-              <tr><td colSpan={toateDatele.length + 1} style={{textAlign:'center', padding:'2rem', color:'#888'}}>Nicio analiză în această categorie.</td></tr>
+              <tr><td colSpan={toateDatele.length + 1} style={{textAlign:'center', padding:'2rem', color:'#888'}}>Nicio analiză găsită.</td></tr>
             ) : (
               numeAfisate.map(nume => {
                 const analizeNume = grupate[nume]
@@ -260,9 +328,7 @@ export default function Panoramic() {
             )}
             <div>Data: {selected.data_analiza}</div>
             <div style={{marginTop:6, fontWeight:500, color:
-              getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' ? '#1D9E75' :
-              getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '#1D9E75' :
-              '#E24B4A'}}>
+              ['normal','negativ'].includes(getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text)) ? '#1D9E75' : '#E24B4A'}}>
               {getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' ? '✓ Normal' :
                getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '✓ Negativ' :
                getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'pozitiv' ? '⚠ Pozitiv' :
