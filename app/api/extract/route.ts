@@ -450,7 +450,7 @@ const NOMENCLATOR: Record<string, string> = {
   'tiroglobulina': 'Tiroglobulina',
   'tiroglobulina high sensitive (hstg)': 'Tiroglobulina',
   'thyroglobulin': 'Tiroglobulina',
-  'tg': 'Tiroglobulina',
+  
 
   // Paratiroide
   'pth': 'PTH intact',
