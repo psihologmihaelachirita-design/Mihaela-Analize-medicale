@@ -49,6 +49,11 @@ function getStatus(observatii: string, tip_rezultat?: string, rezultat_text?: st
   return 'normal'
 }
 
+function getLaborator(observatii: string): string {
+  const match = observatii?.match(/Laborator: ([^|]+)/)
+  return match ? match[1].trim() : 'necunoscut'
+}
+
 export default function Panoramic() {
   const [analize, setAnalize] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -73,7 +78,12 @@ export default function Panoramic() {
     })
   }, [])
 
-  if (loading) return <p style={{fontFamily:'Arial', padding:'2rem'}}>Se încarcă...</p>
+  async function deschidePDF(pdfUrl: string) {
+    const { data } = await supabase.storage.from('documente').createSignedUrl(pdfUrl, 60)
+    if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+  }
+
+  if (loading) return <p style={{fontFamily:'system-ui', padding:'2rem', color:'#888'}}>Se încarcă...</p>
 
   const grupate: Record<string, any[]> = {}
   analize.forEach(a => {
@@ -85,12 +95,8 @@ export default function Panoramic() {
   const toateCategoriile = [...Object.keys(CATEGORII), 'Altele']
 
   function toggleCategorie(cat: string) {
-    setCategoriiActive(prev =>
-      prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
-    )
+    setCategoriiActive(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
   }
-
-  function selectAll() { setCategoriiActive([]) }
 
   function handleMouseEnter() {
     clearTimeout(hoverTimeout.current)
@@ -111,118 +117,68 @@ export default function Panoramic() {
   const ROW_HEIGHT = 23
   const LABEL_WIDTH = 140
 
+  const labelFiltru = categoriiActive.length === 0 ? 'Toate categoriile' :
+    categoriiActive.length === 1 ? categoriiActive[0] : `${categoriiActive.length} categorii`
+
+  const selectedStatus = selected ? getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) : ''
+  const selectedLab = selected ? getLaborator(selected.observatii) : ''
+
+  // Grafic mini evolutie pentru analiza selectata
+  const evolutieSelectata = selected ? (grupate[selected.nume_analiza] || [])
+    .filter(a => a.tip_rezultat !== 'calitativ' && a.valoare)
+    .sort((a: any, b: any) => a.data_analiza.localeCompare(b.data_analiza)) : []
+
+  const maxVal = Math.max(...evolutieSelectata.map((a: any) => parseFloat(a.valoare) || 0))
+
   return (
-    <main style={{fontFamily:'Arial', padding:'0.75rem'}}>
-      {/* Header */}
-      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'0.75rem'}}>
-        <div style={{display:'flex', alignItems:'center', gap:'0.75rem'}}>
-          <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'13px'}}>← Dosar</Link>
-          <span style={{fontSize:'1rem', fontWeight:500}}>📊 Panoramic</span>
+    <div style={{fontFamily:'system-ui, -apple-system, sans-serif', background:'#f8f9fa', height:'100vh', display:'flex', flexDirection:'column'}}>
+
+      {/* Topbar */}
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 1.5rem', height:'52px', display:'flex', alignItems:'center', gap:'12px', flexShrink:0}}>
+        <Link href="/dashboard" style={{color:'#1D9E75', textDecoration:'none', fontSize:'13px'}}>← Dosar</Link>
+        <span style={{fontSize:'14px', fontWeight:500, color:'#111'}}>Vizualizare panoramică</span>
+        <div style={{marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px'}}>
+          <span style={{fontSize:'12px', color:'#888'}}>{numeAfisate.length} analize</span>
         </div>
       </div>
 
-      {/* Search + Filtre pe acelasi rand */}
-      <div style={{display:'flex', gap:'8px', marginBottom:'0.5rem', alignItems:'center'}}>
-        {/* Search */}
+      {/* Toolbar */}
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'8px 1.5rem', display:'flex', alignItems:'center', gap:'8px', flexShrink:0}}>
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="🔍 Caută analiză..."
-          style={{flex:1, padding:'7px 12px', borderRadius:8, border:'1px solid #ddd', fontSize:13, outline:'none'}}
+          placeholder="Caută analiză..."
+          style={{flex:1, maxWidth:'280px', padding:'6px 12px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', outline:'none', background:'#f8f9fa'}}
         />
 
-        {/* Filtre cu hover */}
-        <div
-          ref={dropdownRef}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          style={{position:'relative', flexShrink:0}}>
-          <div style={{
-            padding:'7px 12px',
-            borderRadius:8,
-            border:'1px solid #ddd',
-            fontSize:13,
-            background:'white',
-            cursor:'pointer',
-            display:'flex',
-            alignItems:'center',
-            gap:6,
-            whiteSpace:'nowrap'
-          }}>
-            {/* Categorii active vizibile */}
+        <div ref={dropdownRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{position:'relative'}}>
+          <div style={{padding:'6px 12px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', background:'white', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', whiteSpace:'nowrap'}}>
             {categoriiActive.length === 0 ? (
               <span style={{color:'#555'}}>Filtre ▼</span>
             ) : (
               <>
                 {categoriiActive.slice(0, 2).map(cat => (
-                  <span key={cat} style={{background:'#0070f3', color:'white', padding:'2px 8px', borderRadius:12, fontSize:11}}>
-                    {cat}
-                  </span>
+                  <span key={cat} style={{background:'#E1F5EE', color:'#0F6E56', padding:'2px 8px', borderRadius:'12px', fontSize:'11px', fontWeight:500}}>{cat}</span>
                 ))}
-                {categoriiActive.length > 2 && (
-                  <span style={{background:'#eee', color:'#555', padding:'2px 8px', borderRadius:12, fontSize:11}}>
-                    +{categoriiActive.length - 2}
-                  </span>
-                )}
+                {categoriiActive.length > 2 && <span style={{background:'#f0f0f0', color:'#555', padding:'2px 8px', borderRadius:'12px', fontSize:'11px'}}>+{categoriiActive.length - 2}</span>}
                 <span style={{color:'#555'}}>▼</span>
               </>
             )}
           </div>
 
-          {/* Panel cu grid categorii */}
           {dropdownOpen && (
-            <div style={{
-              position:'absolute',
-              top:'100%',
-              right:0,
-              background:'white',
-              border:'1px solid #ddd',
-              borderRadius:8,
-              boxShadow:'0 4px 16px rgba(0,0,0,0.12)',
-              zIndex:20,
-              padding:'10px',
-              marginTop:4,
-              minWidth:420
-            }}>
-              {/* Toate */}
-              <div
-                onClick={selectAll}
-                style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, borderBottom:'1px solid #eee', marginBottom:8, fontWeight:500, fontSize:12}}>
-                <span style={{width:14, height:14, border:'1px solid #ddd', borderRadius:3, display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#0070f3' : 'white', color:'white', fontSize:10, flexShrink:0}}>
+            <div style={{position:'absolute', top:'100%', left:0, background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:20, padding:'10px', marginTop:'4px', minWidth:'420px'}}>
+              <div onClick={() => setCategoriiActive([])} style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'8px', fontWeight:500, fontSize:'12px', color:'#111'}}>
+                <span style={{width:'14px', height:'14px', border:'0.5px solid #e5e7eb', borderRadius:'3px', display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#1D9E75' : 'white', color:'white', fontSize:'10px', flexShrink:0}}>
                   {categoriiActive.length === 0 ? '✓' : ''}
                 </span>
                 Toate categoriile
               </div>
-
-              {/* Grid 3 coloane */}
-              <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'3px'}}>
+              <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'2px'}}>
                 {toateCategoriile.map(cat => (
-                  <div
-                    key={cat}
-                    onClick={() => toggleCategorie(cat)}
-                    style={{
-                      padding:'5px 8px',
-                      cursor:'pointer',
-                      display:'flex',
-                      alignItems:'center',
-                      gap:6,
-                      fontSize:12,
-                      borderRadius:6,
-                      background: categoriiActive.includes(cat) ? '#f0f7ff' : 'transparent'
-                    }}>
-                    <span style={{
-                      width:14, height:14,
-                      border:'1px solid #ddd',
-                      borderRadius:3,
-                      display:'inline-flex',
-                      alignItems:'center',
-                      justifyContent:'center',
-                      background: categoriiActive.includes(cat) ? '#0070f3' : 'white',
-                      color:'white',
-                      fontSize:10,
-                      flexShrink:0
-                    }}>
+                  <div key={cat} onClick={() => toggleCategorie(cat)} style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', fontSize:'12px', borderRadius:'6px', background: categoriiActive.includes(cat) ? '#f0fdf8' : 'transparent', color:'#333'}}>
+                    <span style={{width:'14px', height:'14px', border:'0.5px solid #e5e7eb', borderRadius:'3px', display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.includes(cat) ? '#1D9E75' : 'white', color:'white', fontSize:'10px', flexShrink:0}}>
                       {categoriiActive.includes(cat) ? '✓' : ''}
                     </span>
                     {cat}
@@ -232,54 +188,53 @@ export default function Panoramic() {
             </div>
           )}
         </div>
+
+        {/* Legenda */}
+        <div style={{marginLeft:'auto', display:'flex', gap:'12px', fontSize:'11px', color:'#888'}}>
+          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#1D9E75', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Normal/Negativ</span>
+          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#E24B4A', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Peste/Pozitiv</span>
+          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#EF9F27', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Sub</span>
+          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#f0f0f0', border:'0.5px dashed #ccc', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Lipsă</span>
+        </div>
       </div>
 
-      {/* Legenda */}
-      <div style={{display:'flex', gap:'1rem', marginBottom:'0.5rem', fontSize:'11px', flexWrap:'wrap'}}>
-        <span><span style={{display:'inline-block', width:10, height:10, background:'#1D9E75', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Normal/Negativ</span>
-        <span><span style={{display:'inline-block', width:10, height:10, background:'#E24B4A', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Peste/Pozitiv</span>
-        <span><span style={{display:'inline-block', width:10, height:10, background:'#EF9F27', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Sub limită</span>
-        <span><span style={{display:'inline-block', width:10, height:10, background:'#f0f0f0', border:'1px dashed #ccc', borderRadius:2, marginRight:3, verticalAlign:'middle'}}></span>Lipsă</span>
-      </div>
+      {/* Continut principal */}
+      <div style={{flex:1, display:'flex', overflow:'hidden'}}>
 
-      {/* Tabel */}
-      <div style={{overflow:'auto', maxHeight:'calc(100vh - 160px)'}}>
-        <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
-          <colgroup>
-            <col style={{width:LABEL_WIDTH}} />
-            {toateDatele.map(d => (
-              <col key={d} style={{width:COL_WIDTH}} />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              <th style={{width:LABEL_WIDTH, position:'sticky', top:0, left:0, zIndex:3, background:'white', borderBottom:'2px solid #eee'}}></th>
-              {toateDatele.map(d => (
-                <th key={d} style={{width:COL_WIDTH, fontSize:11, color:'#555', textAlign:'center', fontWeight:'500', paddingBottom:4, paddingTop:4, position:'sticky', top:0, zIndex:2, background:'white', borderBottom:'2px solid #eee', whiteSpace:'nowrap'}}>
-                  {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {numeAfisate.length === 0 ? (
-              <tr><td colSpan={toateDatele.length + 1} style={{textAlign:'center', padding:'2rem', color:'#888'}}>Nicio analiză găsită.</td></tr>
-            ) : (
-              numeAfisate.map(nume => {
-                const analizeNume = grupate[nume]
+        {/* Tabel */}
+        <div style={{flex:1, overflow:'auto'}}>
+          <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
+            <colgroup>
+              <col style={{width:LABEL_WIDTH}} />
+              {toateDatele.map(d => <col key={d} style={{width:COL_WIDTH}} />)}
+            </colgroup>
+            <thead>
+              <tr>
+                <th style={{width:LABEL_WIDTH, position:'sticky', top:0, left:0, zIndex:3, background:'white', borderBottom:'0.5px solid #e5e7eb', borderRight:'0.5px solid #e5e7eb'}}></th>
+                {toateDatele.map(d => (
+                  <th key={d} style={{width:COL_WIDTH, fontSize:'11px', color:'#888', textAlign:'center', fontWeight:500, padding:'8px 4px', position:'sticky', top:0, zIndex:2, background:'white', borderBottom:'0.5px solid #e5e7eb', whiteSpace:'nowrap'}}>
+                    {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {numeAfisate.length === 0 ? (
+                <tr><td colSpan={toateDatele.length + 1} style={{textAlign:'center', padding:'3rem', color:'#888', fontSize:'13px'}}>Nicio analiză găsită.</td></tr>
+              ) : numeAfisate.map(nume => {
                 const mapData: Record<string, any> = {}
-                analizeNume.forEach(a => { mapData[a.data_analiza] = a })
+                grupate[nume].forEach(a => { mapData[a.data_analiza] = a })
 
                 return (
-                  <tr key={nume}>
-                    <td style={{width:LABEL_WIDTH, fontSize:11, color:'#333', textAlign:'right', paddingRight:8, whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.3, verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'1px solid #eee'}} title={nume}>
+                  <tr key={nume} style={{borderBottom:'0.5px solid #f0f0f0'}}>
+                    <td style={{width:LABEL_WIDTH, fontSize:'11px', color:'#333', textAlign:'right', paddingRight:'10px', whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.3, verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'0.5px solid #e5e7eb'}} title={nume}>
                       {nume}
                     </td>
                     {toateDatele.map(data => {
                       const a = mapData[data]
                       if (!a) return (
-                        <td key={data} style={{padding:2}}>
-                          <div style={{height:ROW_HEIGHT, background:'#f0f0f0', border:'1px dashed #ddd', borderRadius:4}}></div>
+                        <td key={data} style={{padding:'2px'}}>
+                          <div style={{height:ROW_HEIGHT, background:'#f8f9fa', border:'0.5px dashed #e5e7eb', borderRadius:'4px'}}></div>
                         </td>
                       )
                       const status = getStatus(a.observatii, a.tip_rezultat, a.rezultat_text)
@@ -287,57 +242,101 @@ export default function Panoramic() {
                                      status === 'peste' || status === 'pozitiv' ? '#E24B4A' :
                                      status === 'sub' ? '#EF9F27' : '#888'
                       const afisaj = a.tip_rezultat === 'calitativ'
-                        ? (a.rezultat_text?.slice(0, 3)?.toUpperCase() || '?')
+                        ? (a.rezultat_text?.slice(0,3)?.toUpperCase() || '?')
                         : a.valoare
 
                       return (
-                        <td key={data} style={{padding:2}}>
+                        <td key={data} style={{padding:'2px'}}>
                           <div
                             onClick={() => setSelected(selected?.id === a.id ? null : a)}
-                            style={{height:ROW_HEIGHT, background:culoare, borderRadius:4, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', opacity: selected?.id === a.id ? 0.7 : 1}}
+                            style={{height:ROW_HEIGHT, background:culoare, borderRadius:'4px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', opacity: selected?.id === a.id ? 0.75 : 1}}
                             title={`${nume}: ${a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare + ' ' + (a.unitate || '')} (${data})`}>
-                            <span style={{fontSize:12, color:'white', fontWeight:'bold'}}>{afisaj}</span>
+                            <span style={{fontSize:'11px', color:'white', fontWeight:500}}>{afisaj}</span>
                           </div>
                         </td>
                       )
                     })}
                   </tr>
                 )
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {selected && (
-        <div style={{position:'fixed', bottom:20, right:20, background:'white', border:'1px solid #ddd', borderRadius:12, padding:'1rem', minWidth:220, boxShadow:'0 4px 20px rgba(0,0,0,0.1)', zIndex:100}}>
-          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
-            <strong style={{fontSize:13}}>{selected.nume_analiza}</strong>
-            <button onClick={() => setSelected(null)} style={{border:'none', background:'none', cursor:'pointer', fontSize:16}}>×</button>
-          </div>
-          <div style={{fontSize:12, color:'#555'}}>
-            {selected.tip_rezultat === 'calitativ' ? (
-              <div>Rezultat: <strong>{selected.rezultat_text}</strong></div>
-            ) : (
-              <>
-                <div>Valoare: <strong>{selected.valoare} {selected.unitate}</strong></div>
-                {selected.referinta_min && selected.referinta_max && (
-                  <div style={{color:'#888'}}>Ref: {selected.referinta_min} — {selected.referinta_max} {selected.unitate}</div>
-                )}
-              </>
-            )}
-            <div>Data: {selected.data_analiza}</div>
-            <div style={{marginTop:6, fontWeight:500, color:
-              ['normal','negativ'].includes(getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text)) ? '#1D9E75' : '#E24B4A'}}>
-              {getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'normal' ? '✓ Normal' :
-               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'negativ' ? '✓ Negativ' :
-               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'pozitiv' ? '⚠ Pozitiv' :
-               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'peste' ? '↑ Peste limită' :
-               getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) === 'sub' ? '↓ Sub limită' : '— Necunoscut'}
-            </div>
-          </div>
+              })}
+            </tbody>
+          </table>
         </div>
-      )}
-    </main>
+
+        {/* Panel detalii */}
+        {selected && (
+          <div style={{width:'260px', background:'white', borderLeft:'0.5px solid #e5e7eb', padding:'1.25rem', flexShrink:0, overflowY:'auto'}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'1rem'}}>
+              <h3 style={{fontSize:'13px', fontWeight:500, color:'#111', lineHeight:1.4}}>{selected.nume_analiza}</h3>
+              <button onClick={() => setSelected(null)} style={{border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#888', flexShrink:0}}>×</button>
+            </div>
+
+            {/* Status badge */}
+            <div style={{marginBottom:'1rem'}}>
+              <span style={{
+                display:'inline-flex', padding:'3px 10px', borderRadius:'12px', fontSize:'11px', fontWeight:500,
+                background: selectedStatus === 'normal' || selectedStatus === 'negativ' ? '#E1F5EE' : selectedStatus === 'peste' || selectedStatus === 'pozitiv' ? '#FCEBEB' : '#FAEEDA',
+                color: selectedStatus === 'normal' || selectedStatus === 'negativ' ? '#0F6E56' : selectedStatus === 'peste' || selectedStatus === 'pozitiv' ? '#A32D2D' : '#854F0B'
+              }}>
+                {selectedStatus === 'normal' ? '✓ Normal' : selectedStatus === 'negativ' ? '✓ Negativ' : selectedStatus === 'pozitiv' ? '⚠ Pozitiv' : selectedStatus === 'peste' ? '↑ Peste limită' : '↓ Sub limită'}
+              </span>
+            </div>
+
+            {/* Valoare */}
+            <div style={{marginBottom:'12px'}}>
+              <div style={{fontSize:'11px', color:'#888', marginBottom:'3px'}}>Valoare</div>
+              <div style={{fontSize:'18px', fontWeight:500, color:'#111'}}>
+                {selected.tip_rezultat === 'calitativ' ? selected.rezultat_text : `${selected.valoare} ${selected.unitate || ''}`}
+              </div>
+            </div>
+
+            {/* Interval referinta */}
+            {selected.referinta_min && selected.referinta_max && (
+              <div style={{marginBottom:'12px'}}>
+                <div style={{fontSize:'11px', color:'#888', marginBottom:'3px'}}>Interval normal</div>
+                <div style={{fontSize:'13px', color:'#333'}}>{selected.referinta_min} — {selected.referinta_max} {selected.unitate || ''}</div>
+                {selectedLab !== 'necunoscut' && (
+                  <div style={{fontSize:'11px', color:'#EF9F27', marginTop:'4px'}}>
+                    ⚠ Interval specific {selectedLab}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Data si laborator */}
+            <div style={{marginBottom:'12px'}}>
+              <div style={{fontSize:'11px', color:'#888', marginBottom:'3px'}}>Data · Laborator</div>
+              <div style={{fontSize:'12px', color:'#333'}}>{selected.data_analiza}</div>
+              <div style={{fontSize:'12px', color:'#555'}}>{selectedLab}</div>
+            </div>
+
+            {/* Grafic evolutie */}
+            {evolutieSelectata.length > 1 && (
+              <div style={{marginBottom:'12px'}}>
+                <div style={{fontSize:'11px', color:'#888', marginBottom:'6px'}}>Evoluție ({evolutieSelectata.length} valori)</div>
+                <div style={{display:'flex', alignItems:'flex-end', gap:'3px', height:'48px'}}>
+                  {evolutieSelectata.map((a: any, i: number) => {
+                    const val = parseFloat(a.valoare) || 0
+                    const h = maxVal > 0 ? Math.max(4, (val / maxVal) * 48) : 4
+                    const s = getStatus(a.observatii, a.tip_rezultat, a.rezultat_text)
+                    const c = s === 'normal' ? '#1D9E75' : s === 'peste' ? '#E24B4A' : '#EF9F27'
+                    return <div key={i} style={{flex:1, height:`${h}px`, background:c, borderRadius:'2px 2px 0 0'}} title={`${a.valoare} · ${a.data_analiza}`}></div>
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Link PDF */}
+            {selected.pdf_url && (
+              <button
+                onClick={() => deschidePDF(selected.pdf_url)}
+                style={{width:'100%', padding:'8px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#555', cursor:'pointer', textAlign:'center'}}>
+                📄 Vezi buletinul original
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }

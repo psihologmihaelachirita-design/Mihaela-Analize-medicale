@@ -73,6 +73,23 @@ export default function Upload() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) { router.push('/login'); return }
 
+      // Salvam PDF-ul in Storage
+      let pdfUrl = null
+      let pdfNume = null
+      if (fisier) {
+        const timestamp = Date.now()
+        const cale = `${session.user.id}/${timestamp}_${fisier.name}`
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('documente')
+          .upload(cale, fisier, { contentType: 'application/pdf' })
+
+        if (!uploadError && uploadData) {
+          pdfUrl = cale
+          pdfNume = fisier.name
+        }
+      }
+
+      // Salvam analizele cu referinta la PDF
       const inserts = rezultat.map(a => ({
         user_id: session.user.id,
         nume_analiza: a.nume,
@@ -83,7 +100,9 @@ export default function Upload() {
         referinta_min: a.referinta_min ? parseFloat(a.referinta_min) : null,
         referinta_max: a.referinta_max ? parseFloat(a.referinta_max) : null,
         tip_rezultat: a.tip_rezultat || 'numeric',
-        rezultat_text: a.rezultat_text || null
+        rezultat_text: a.rezultat_text || null,
+        pdf_url: pdfUrl,
+        pdf_nume: pdfNume
       }))
 
       const { error } = await supabase.from('analize').insert(inserts)
@@ -100,82 +119,92 @@ export default function Upload() {
   }
 
   return (
-    <main style={{fontFamily:'Arial', maxWidth:'700px', margin:'0 auto', padding:'2rem 1rem'}}>
-      <div style={{marginBottom:'2rem'}}>
-        <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'14px'}}>← Înapoi la dosar</Link>
-      </div>
+    <main style={{fontFamily:'system-ui, -apple-system, sans-serif', background:'#f8f9fa', minHeight:'100vh'}}>
+      <div style={{maxWidth:'680px', margin:'0 auto', padding:'2rem 1.5rem'}}>
+        <div style={{marginBottom:'1.5rem'}}>
+          <Link href="/dashboard" style={{color:'#1D9E75', textDecoration:'none', fontSize:'13px'}}>← Înapoi la dosar</Link>
+        </div>
 
-      <h1 style={{fontSize:'1.8rem', marginBottom:'0.5rem'}}>Adaugă analize</h1>
-      <p style={{color:'#666', marginBottom:'2rem', fontSize:'14px'}}>
-        Uploadează buletinul de analize în format PDF — platforma va extrage automat toate valorile
-      </p>
+        <h1 style={{fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'6px'}}>Adaugă analize</h1>
+        <p style={{color:'#888', marginBottom:'2rem', fontSize:'13px'}}>
+          Uploadează buletinul de analize în format PDF — platforma va extrage automat toate valorile
+        </p>
 
-      <div style={{border:'2px dashed #ddd', borderRadius:'12px', padding:'3rem', textAlign:'center', marginBottom:'1.5rem', background: fisier ? '#f0fff4' : '#fafafa'}}>
-        {fisier ? (
-          <div>
-            <div style={{fontSize:'2rem', marginBottom:'0.5rem'}}>✅</div>
-            <p style={{fontWeight:'500'}}>{fisier.name}</p>
-            <p style={{color:'#666', fontSize:'13px'}}>{(fisier.size / 1024).toFixed(0)} KB</p>
-            <button onClick={() => { setFisier(null); setRezultat([]) }} style={{marginTop:'1rem', padding:'6px 14px', border:'1px solid #ddd', borderRadius:'6px', background:'white', cursor:'pointer', fontSize:'13px'}}>
-              Schimbă fișierul
-            </button>
+        {/* Drop zone */}
+        <div style={{border: fisier ? '1.5px solid #1D9E75' : '1.5px dashed #e5e7eb', borderRadius:'12px', padding:'2.5rem', textAlign:'center', marginBottom:'1.5rem', background: fisier ? '#f0fdf8' : 'white', transition:'all 0.2s'}}>
+          {fisier ? (
+            <div>
+              <div style={{fontSize:'32px', marginBottom:'8px'}}>✅</div>
+              <p style={{fontWeight:500, fontSize:'14px', color:'#111'}}>{fisier.name}</p>
+              <p style={{color:'#888', fontSize:'12px', marginTop:'4px'}}>{(fisier.size / 1024).toFixed(0)} KB</p>
+              <button onClick={() => { setFisier(null); setRezultat([]) }} style={{marginTop:'12px', padding:'5px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', background:'white', cursor:'pointer', fontSize:'12px', color:'#555'}}>
+                Schimbă fișierul
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div style={{fontSize:'32px', marginBottom:'12px'}}>📄</div>
+              <p style={{marginBottom:'16px', color:'#555', fontSize:'14px'}}>Selectează buletinul de analize PDF</p>
+              <label style={{padding:'9px 20px', background:'#1D9E75', color:'white', borderRadius:'8px', cursor:'pointer', fontSize:'13px', fontWeight:500}}>
+                Alege fișier PDF
+                <input type="file" accept=".pdf" onChange={handleFisier} style={{display:'none'}} />
+              </label>
+            </div>
+          )}
+        </div>
+
+        {eroare && <p style={{color:'#E24B4A', marginBottom:'1rem', fontSize:'13px'}}>{eroare}</p>}
+        {mesaj && <p style={{color:'#1D9E75', marginBottom:'1rem', fontSize:'13px', fontWeight:500}}>{mesaj}</p>}
+
+        {fisier && !loading && rezultat.length === 0 && (
+          <button onClick={handleUpload} style={{width:'100%', padding:'12px', background:'#1D9E75', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', cursor:'pointer', fontWeight:500, marginBottom:'1rem'}}>
+            Extrage analizele din PDF
+          </button>
+        )}
+
+        {loading && (
+          <div style={{textAlign:'center', padding:'2rem', background:'white', borderRadius:'12px', border:'0.5px solid #e5e7eb'}}>
+            <p style={{color:'#1D9E75', fontSize:'14px', fontWeight:500}}>⏳ Se procesează PDF-ul...</p>
+            <p style={{color:'#888', fontSize:'12px', marginTop:'6px'}}>Extragerea poate dura 10-30 secunde</p>
           </div>
-        ) : (
+        )}
+
+        {rezultat.length > 0 && (
           <div>
-            <div style={{fontSize:'3rem', marginBottom:'1rem'}}>📄</div>
-            <p style={{marginBottom:'1rem', color:'#444'}}>Selectează buletinul de analize PDF</p>
-            <label style={{padding:'10px 20px', background:'#0070f3', color:'white', borderRadius:'6px', cursor:'pointer', fontSize:'14px'}}>
-              Alege fișier PDF
-              <input type="file" accept=".pdf" onChange={handleFisier} style={{display:'none'}} />
-            </label>
+            <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'1rem'}}>
+              <div style={{padding:'12px 16px', borderBottom:'0.5px solid #e5e7eb', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <span style={{fontSize:'13px', fontWeight:500, color:'#111'}}>Analize extrase — {rezultat.length} valori</span>
+                {laborator && <span style={{fontSize:'12px', color:'#888'}}>{laborator} · {dataBuletin}</span>}
+              </div>
+              <div style={{display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', padding:'8px 16px', background:'#f8f9fa', borderBottom:'0.5px solid #e5e7eb'}}>
+                {['Analiză', 'Valoare', 'Unitate', 'Status'].map(h => (
+                  <span key={h} style={{fontSize:'11px', color:'#888', fontWeight:500, textTransform:'uppercase', letterSpacing:'0.5px'}}>{h}</span>
+                ))}
+              </div>
+              {rezultat.map((a, i) => (
+                <div key={i} style={{display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', padding:'9px 16px', fontSize:'13px', borderBottom: i < rezultat.length - 1 ? '0.5px solid #f0f0f0' : 'none', alignItems:'center'}}>
+                  <span style={{color:'#111'}}>{a.nume}</span>
+                  <span style={{fontWeight:500, color:'#111'}}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}</span>
+                  <span style={{color:'#888'}}>{a.unitate || '—'}</span>
+                  <span style={{
+                    display:'inline-flex', padding:'2px 8px', borderRadius:'12px', fontSize:'11px', fontWeight:500, width:'fit-content',
+                    background: a.status === 'normal' || a.status === 'negativ' ? '#E1F5EE' : a.status === 'peste' || a.status === 'pozitiv' ? '#FCEBEB' : '#FAEEDA',
+                    color: a.status === 'normal' || a.status === 'negativ' ? '#0F6E56' : a.status === 'peste' || a.status === 'pozitiv' ? '#A32D2D' : '#854F0B'
+                  }}>
+                    {a.status === 'normal' ? '✓ Normal' : a.status === 'negativ' ? '✓ Negativ' : a.status === 'peste' ? '↑ Peste' : a.status === 'pozitiv' ? '⚠ Pozitiv' : '↓ Sub'}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={handleSalvare}
+              disabled={salvare}
+              style={{width:'100%', padding:'12px', background:'#1D9E75', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', cursor:'pointer', fontWeight:500}}>
+              {salvare ? 'Se salvează...' : 'Salvează în dosar →'}
+            </button>
           </div>
         )}
       </div>
-
-      {eroare && <p style={{color:'red', marginBottom:'1rem', fontSize:'14px'}}>{eroare}</p>}
-      {mesaj && <p style={{color:'green', marginBottom:'1rem', fontSize:'14px', fontWeight:'500'}}>{mesaj}</p>}
-
-      {fisier && !loading && rezultat.length === 0 && (
-        <button onClick={handleUpload} style={{width:'100%', padding:'14px', background:'#0070f3', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', cursor:'pointer', marginBottom:'1.5rem'}}>
-          Extrage analizele din PDF
-        </button>
-      )}
-
-      {loading && (
-        <div style={{textAlign:'center', padding:'2rem'}}>
-          <p style={{color:'#0070f3', fontSize:'16px'}}>⏳ Se procesează PDF-ul...</p>
-          <p style={{color:'#666', fontSize:'13px', marginTop:'0.5rem'}}>Extragerea poate dura 10-30 secunde</p>
-        </div>
-      )}
-
-      {rezultat.length > 0 && (
-        <div>
-          <h2 style={{fontSize:'1.2rem', marginBottom:'1rem'}}>Analize extrase — {rezultat.length} valori găsite</h2>
-          {laborator && <p style={{color:'#666', fontSize:'13px', marginBottom:'1rem'}}>Laborator: {laborator} {dataBuletin && `· Data: ${dataBuletin}`}</p>}
-          <div style={{border:'1px solid #eee', borderRadius:'8px', overflow:'hidden', marginBottom:'1.5rem'}}>
-            <div style={{display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', background:'#f5f5f5', padding:'10px 16px', fontSize:'13px', fontWeight:'500', color:'#555'}}>
-              <span>Analiză</span><span>Valoare</span><span>Unitate</span><span>Status</span>
-            </div>
-            {rezultat.map((a, i) => (
-              <div key={i} style={{display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', padding:'10px 16px', fontSize:'14px', borderTop:'1px solid #eee', background: i % 2 === 0 ? 'white' : '#fafafa'}}>
-                <span>{a.nume}</span>
-                <span style={{fontWeight:'500'}}>{a.valoare}</span>
-                <span style={{color:'#666'}}>{a.unitate}</span>
-                <span style={{color: a.status === 'normal' ? '#00a854' : a.status === 'peste' ? '#f5222d' : '#fa8c16', fontWeight:'500'}}>
-                  {a.status === 'normal' ? '✓ Normal' : a.status === 'peste' ? '↑ Peste' : a.status === 'sub' ? '↓ Sub' : '—'}
-                </span>
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={handleSalvare}
-            disabled={salvare}
-            style={{width:'100%', padding:'14px', background:'#00a854', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', cursor:'pointer'}}
-          >
-            {salvare ? 'Se salvează...' : 'Salvează în dosar →'}
-          </button>
-        </div>
-      )}
     </main>
   )
 }
