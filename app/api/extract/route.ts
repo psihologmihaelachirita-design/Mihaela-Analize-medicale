@@ -66,7 +66,6 @@ const NOMENCLATOR: Record<string, string> = {
   'neutrofil %': 'Neutrofile %',
   'neutrofil (%)': 'Neutrofile %',
   'neutrofile(%)': 'Neutrofile %',
-  'neutrofile %': 'Neutrofile %',
   'gran %': 'Neutrofile %',
   'granulocite %': 'Neutrofile %',
   'neut %': 'Neutrofile %',
