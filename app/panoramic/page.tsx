@@ -154,8 +154,7 @@ export default function Panoramic() {
         {/* Filtre hover */}
         <div ref={dropdownRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{position:'relative'}}>
           <div style={{padding:'7px 14px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', background:'white', cursor:'pointer', display:'flex', alignItems:'center', gap:'8px', color:'#111'}}>
-            <span style={{fontSize:'15px'}}>⊞</span>
-            {categoriiActive.length === 0 ? 'Toate categoriile' : `${categoriiActive.length} selectate`}
+            {categoriiActive.length === 0 ? 'Filtre' : `${categoriiActive.length} selectate`}
             <span style={{fontSize:'10px', color:'#888'}}>▼</span>
           </div>
 
