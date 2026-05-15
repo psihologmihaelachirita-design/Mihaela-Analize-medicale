@@ -136,7 +136,7 @@ export default function Panoramic() {
           <span style={{color:'#e5e7eb'}}>|</span>
           <span style={{fontSize:'15px', fontWeight:500, color:'#111'}}>Vizualizare panoramică</span>
         </div>
-        <span style={{fontSize:'14px', color:'#0F6E56', fontWeight:500}}>{numeAfisate.length} analize</span>
+        <span style={{fontSize:'14px', color:'#111', fontWeight:500}}>{numeAfisate.length} analize</span>
       </div>
 
       {/* Toolbar */}
@@ -182,7 +182,7 @@ export default function Panoramic() {
         </div>
 
         {/* Legenda */}
-        <div style={{marginLeft:'auto', display:'flex', gap:'16px', fontSize:'13px', color:'#0F6E56', fontWeight:500}}>
+        <div style={{marginLeft:'auto', display:'flex', gap:'16px', fontSize:'13px', color:'#111', fontWeight:500}}>
           <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#1D9E75', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Normal/Negativ</span>
           <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#E24B4A', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Peste/Pozitiv</span>
           <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#EF9F27', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Sub</span>
