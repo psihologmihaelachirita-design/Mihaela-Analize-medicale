@@ -20,11 +20,7 @@ export default function Export() {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
       setUser(session.user)
-      const { data } = await supabase
-        .from('analize')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('data_analiza', { ascending: false })
+      const { data } = await supabase.from('analize').select('*').eq('user_id', session.user.id).order('data_analiza', { ascending: false })
       setAnalize(data || [])
       setLoading(false)
     })
@@ -34,9 +30,7 @@ export default function Export() {
     setGenerating(true)
     const { jsPDF } = await import('jspdf')
     const autoTable = (await import('jspdf-autotable')).default
-
     const doc = new jsPDF()
-
     doc.setFontSize(18)
     doc.text('Dosar Medical Personal', 14, 20)
     doc.setFontSize(11)
@@ -44,74 +38,59 @@ export default function Export() {
     doc.text(`Email: ${user?.email}`, 14, 30)
     doc.text(`Generat: ${new Date().toLocaleDateString('ro-RO')}`, 14, 37)
     doc.text(`Total analize: ${analize.length}`, 14, 44)
-
-    const normale = analize.filter(a => a.observatii?.includes('normal')).length
-    const peste = analize.filter(a => a.observatii?.includes('peste')).length
-    const sub = analize.filter(a => a.observatii?.includes('sub')).length
-
-    doc.text(`In limite normale: ${normale} | Peste limita: ${peste} | Sub limita: ${sub}`, 14, 51)
-
-    doc.setDrawColor(200)
-    doc.line(14, 55, 196, 55)
-
     autoTable(doc, {
-      startY: 60,
+      startY: 55,
       head: [['Analiza', 'Valoare', 'Unitate', 'Data', 'Status']],
       body: analize.map(a => {
-        const status = a.observatii?.includes('peste') ? 'Peste limita' : 
-                      a.observatii?.includes('sub') ? 'Sub limita' : 'Normal'
-        return [a.nume_analiza, a.valoare?.toString(), a.unitate || '-', a.data_analiza, status]
+        const status = a.observatii?.includes('peste') ? 'Peste limita' : a.observatii?.includes('sub') ? 'Sub limita' : 'Normal'
+        return [a.nume_analiza, a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare?.toString(), a.unitate || '-', a.data_analiza, status]
       }),
       styles: { fontSize: 9 },
-      headStyles: { fillColor: [0, 112, 243] },
+      headStyles: { fillColor: [29, 158, 117] },
       alternateRowStyles: { fillColor: [245, 247, 250] },
-      columnStyles: {
-        4: { 
-          fontStyle: 'bold',
-        }
-      },
-      didParseCell: (data: any) => {
-        if (data.column.index === 4 && data.section === 'body') {
-          if (data.cell.text[0] === 'Peste limita') data.cell.styles.textColor = [242, 82, 45]
-          else if (data.cell.text[0] === 'Sub limita') data.cell.styles.textColor = [250, 140, 22]
-          else data.cell.styles.textColor = [0, 168, 84]
-        }
-      }
     })
-
     doc.save('dosar-medical.pdf')
     setGenerating(false)
   }
 
-  if (loading) return <p style={{fontFamily:'Arial', padding:'2rem'}}>Se încarcă...</p>
+  if (loading) return (
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',fontFamily:'system-ui'}}>
+      <p style={{color:'#888',fontSize:'14px'}}>Se încarcă...</p>
+    </div>
+  )
+
+  const normale = analize.filter(a => a.observatii?.includes('normal')).length
+  const peste = analize.filter(a => a.observatii?.includes('peste')).length
+  const sub = analize.filter(a => a.observatii?.includes('sub')).length
 
   return (
-    <main style={{fontFamily:'Arial', maxWidth:'600px', margin:'0 auto', padding:'2rem 1rem'}}>
-      <div style={{marginBottom:'2rem'}}>
-        <Link href="/dashboard" style={{color:'#0070f3', textDecoration:'none', fontSize:'14px'}}>← Înapoi la dosar</Link>
-      </div>
-
-      <h1 style={{fontSize:'1.8rem', marginBottom:'0.5rem'}}>Export dosar medical</h1>
-      <p style={{color:'#666', marginBottom:'2rem', fontSize:'14px'}}>
-        Descarcă toate analizele tale într-un document PDF structurat
-      </p>
-
-      <div style={{background:'#f0f7ff', borderRadius:'12px', padding:'1.5rem', marginBottom:'2rem'}}>
-        <div style={{fontSize:'14px', color:'#333', marginBottom:'8px'}}>📋 Dosarul tău conține:</div>
-        <div style={{fontSize:'24px', fontWeight:'bold', color:'#0070f3'}}>{analize.length} analize</div>
-        <div style={{fontSize:'13px', color:'#666', marginTop:'4px'}}>
-          ✓ Normal: {analize.filter(a => a.observatii?.includes('normal')).length} · 
-          ↑ Peste: {analize.filter(a => a.observatii?.includes('peste')).length} · 
-          ↓ Sub: {analize.filter(a => a.observatii?.includes('sub')).length}
+    <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh'}}>
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', gap:'16px'}}>
+        <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+          <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
+          <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
         </div>
+        <span style={{color:'#e5e7eb'}}>|</span>
+        <Link href="/dashboard" style={{color:'#0F6E56', textDecoration:'none', fontSize:'14px', fontWeight:500}}>← Dosar</Link>
       </div>
 
-      <button
-        onClick={handleExport}
-        disabled={generating || analize.length === 0}
-        style={{width:'100%', padding:'14px', background:'#0070f3', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', cursor:'pointer'}}>
-        {generating ? '⏳ Se generează PDF-ul...' : '📄 Descarcă PDF dosar complet'}
-      </button>
-    </main>
+      <div style={{maxWidth:'600px', margin:'0 auto', padding:'2rem 1.5rem'}}>
+        <h1 style={{fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'6px'}}>Export dosar medical</h1>
+        <p style={{color:'#888', marginBottom:'2rem', fontSize:'13px'}}>Descarcă toate analizele într-un document PDF structurat</p>
+
+        <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'1.5rem', marginBottom:'1.5rem'}}>
+          <div style={{fontSize:'13px', color:'#888', marginBottom:'8px'}}>Dosarul tău conține</div>
+          <div style={{fontSize:'28px', fontWeight:500, color:'#1D9E75', marginBottom:'8px'}}>{analize.length} analize</div>
+          <div style={{fontSize:'13px', color:'#555'}}>
+            ✓ Normale: {normale} · ↑ Peste: {peste} · ↓ Sub: {sub}
+          </div>
+        </div>
+
+        <button onClick={handleExport} disabled={generating || analize.length === 0}
+          style={{width:'100%', padding:'12px', background:'#1D9E75', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer'}}>
+          {generating ? '⏳ Se generează PDF-ul...' : '#E1F5EE'}
+        </button>
+      </div>
+    </div>
   )
 }
