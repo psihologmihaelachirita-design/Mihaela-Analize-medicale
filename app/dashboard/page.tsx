@@ -88,9 +88,9 @@ export default function Dashboard() {
         {/* Actiuni */}
         <div style={{display:'flex',gap:'10px',marginBottom:'20px'}}>
           <Link href="/panoramic" style={{display:'flex',alignItems:'center',gap:'8px',padding:'11px 22px',background:'#1D9E75',color:'white',borderRadius:'8px',fontSize:'15px',fontWeight:500,textDecoration:'none'}}>
-            📊 Vizualizare panoramică
+            ◉ Vizualizare panoramică
           </Link>
-          <Link href="/upload" style={{display:'flex',alignItems:'center',gap:'8px',padding:'11px 22px',background:'white',border:'0.5px solid #e5e7eb',borderRadius:'8px',fontSize:'15px',color:'#111',textDecoration:'none',fontWeight:500}}>
+          <Link href="/upload" style={{display:'flex',alignItems:'center',gap:'8px',padding:'11px 22px',background:'white',border:'0.5px solid #e5e7eb',borderRadius:'8px',fontSize:'15px',color:'#0F6E56',textDecoration:'none',fontWeight:500}}>
             ↑ Adaugă analize
           </Link>
           <Link href="/export" style={{display:'flex',alignItems:'center',gap:'8px',padding:'11px 22px',background:'white',border:'0.5px solid #e5e7eb',borderRadius:'8px',fontSize:'15px',color:'#0F6E56',textDecoration:'none',fontWeight:500}}>

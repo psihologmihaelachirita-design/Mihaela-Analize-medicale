@@ -135,7 +135,7 @@ export default function Panoramic() {
 
       {/* Topbar */}
       <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 1.5rem', height:'52px', display:'flex', alignItems:'center', gap:'12px', flexShrink:0}}>
-        <Link href="/dashboard" style={{color:'#1D9E75', textDecoration:'none', fontSize:'13px'}}>← Dosar</Link>
+        <Link href="/dashboard" style={{fontSize:'13px', color:'#0F6E56', flexWrap:'wrap'}}></Link>
         <span style={{fontSize:'14px', fontWeight:500, color:'#111'}}>Vizualizare panoramică</span>
         <div style={{marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px'}}>
           <span style={{fontSize:'12px', color:'#888'}}>{numeAfisate.length} analize</span>
