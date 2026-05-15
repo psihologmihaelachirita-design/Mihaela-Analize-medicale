@@ -65,7 +65,9 @@ export default function Export() {
 
   return (
     <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh'}}>
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', gap:'16px'}}>
+
+      {/* Topbar identic cu celelalte pagini */}
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', gap:'16px', position:'sticky', top:0, zIndex:10}}>
         <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
           <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
           <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
@@ -86,9 +88,11 @@ export default function Export() {
           </div>
         </div>
 
-        <button onClick={handleExport} disabled={generating || analize.length === 0}
+        <button
+          onClick={handleExport}
+          disabled={generating || analize.length === 0}
           style={{width:'100%', padding:'12px', background:'#1D9E75', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer'}}>
-          {generating ? '⏳ Se generează PDF-ul...' : '#E1F5EE'}
+          {generating ? '⏳ Se generează PDF-ul...' : '↓ Descarcă PDF dosar complet'}
         </button>
       </div>
     </div>
