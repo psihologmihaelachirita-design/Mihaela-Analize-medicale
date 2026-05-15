@@ -117,59 +117,51 @@ export default function Panoramic() {
   const ROW_HEIGHT = 23
   const LABEL_WIDTH = 140
 
-  const labelFiltru = categoriiActive.length === 0 ? 'Toate categoriile' :
-    categoriiActive.length === 1 ? categoriiActive[0] : `${categoriiActive.length} categorii`
-
   const selectedStatus = selected ? getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) : ''
   const selectedLab = selected ? getLaborator(selected.observatii) : ''
-
-  // Grafic mini evolutie pentru analiza selectata
   const evolutieSelectata = selected ? (grupate[selected.nume_analiza] || [])
-    .filter(a => a.tip_rezultat !== 'calitativ' && a.valoare)
+    .filter((a: any) => a.tip_rezultat !== 'calitativ' && a.valoare)
     .sort((a: any, b: any) => a.data_analiza.localeCompare(b.data_analiza)) : []
-
   const maxVal = Math.max(...evolutieSelectata.map((a: any) => parseFloat(a.valoare) || 0))
 
   return (
-    <div style={{fontFamily:'system-ui, -apple-system, sans-serif', background:'#f8f9fa', height:'100vh', display:'flex', flexDirection:'column'}}>
+    <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', height:'100vh', display:'flex', flexDirection:'column'}}>
 
       {/* Topbar */}
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 1.5rem', height:'52px', display:'flex', alignItems:'center', gap:'12px', flexShrink:0}}>
-        <Link href="/dashboard" style={{fontSize:'13px', color:'#0F6E56', flexWrap:'wrap'}}></Link>
-        <span style={{fontSize:'14px', fontWeight:500, color:'#111'}}>Vizualizare panoramică</span>
-        <div style={{marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px'}}>
-          <span style={{fontSize:'12px', color:'#888'}}>{numeAfisate.length} analize</span>
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0}}>
+        <div style={{display:'flex', alignItems:'center', gap:'16px'}}>
+          <Link href="/dashboard" style={{color:'#0F6E56', textDecoration:'none', fontSize:'14px', fontWeight:500, display:'flex', alignItems:'center', gap:'4px'}}>
+            ← Dosar
+          </Link>
+          <span style={{color:'#e5e7eb'}}>|</span>
+          <span style={{fontSize:'15px', fontWeight:500, color:'#111'}}>Vizualizare panoramică</span>
         </div>
+        <span style={{fontSize:'14px', color:'#0F6E56', fontWeight:500}}>{numeAfisate.length} analize</span>
       </div>
 
       {/* Toolbar */}
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'8px 1.5rem', display:'flex', alignItems:'center', gap:'8px', flexShrink:0}}>
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'8px 24px', display:'flex', alignItems:'center', gap:'10px', flexShrink:0}}>
+
+        {/* Search */}
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Caută analiză..."
-          style={{flex:1, maxWidth:'280px', padding:'6px 12px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', outline:'none', background:'#f8f9fa'}}
+          style={{flex:1, maxWidth:'260px', padding:'7px 12px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', outline:'none', background:'#f8f9fa'}}
         />
 
+        {/* Filtre hover */}
         <div ref={dropdownRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{position:'relative'}}>
-          <div style={{padding:'6px 12px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', background:'white', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', whiteSpace:'nowrap'}}>
-            {categoriiActive.length === 0 ? (
-              <span style={{color:'#555'}}>Filtre ▼</span>
-            ) : (
-              <>
-                {categoriiActive.slice(0, 2).map(cat => (
-                  <span key={cat} style={{background:'#E1F5EE', color:'#0F6E56', padding:'2px 8px', borderRadius:'12px', fontSize:'11px', fontWeight:500}}>{cat}</span>
-                ))}
-                {categoriiActive.length > 2 && <span style={{background:'#f0f0f0', color:'#555', padding:'2px 8px', borderRadius:'12px', fontSize:'11px'}}>+{categoriiActive.length - 2}</span>}
-                <span style={{color:'#555'}}>▼</span>
-              </>
-            )}
+          <div style={{padding:'7px 14px', borderRadius:'8px', border:'0.5px solid #e5e7eb', fontSize:'13px', background:'white', cursor:'pointer', display:'flex', alignItems:'center', gap:'8px', color:'#111'}}>
+            <span style={{fontSize:'15px'}}>⊞</span>
+            {categoriiActive.length === 0 ? 'Toate categoriile' : `${categoriiActive.length} selectate`}
+            <span style={{fontSize:'10px', color:'#888'}}>▼</span>
           </div>
 
           {dropdownOpen && (
             <div style={{position:'absolute', top:'100%', left:0, background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:20, padding:'10px', marginTop:'4px', minWidth:'420px'}}>
-              <div onClick={() => setCategoriiActive([])} style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'8px', fontWeight:500, fontSize:'12px', color:'#111'}}>
+              <div onClick={() => setCategoriiActive([])} style={{padding:'5px 8px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'8px', fontWeight:500, fontSize:'13px', color:'#111'}}>
                 <span style={{width:'14px', height:'14px', border:'0.5px solid #e5e7eb', borderRadius:'3px', display:'inline-flex', alignItems:'center', justifyContent:'center', background: categoriiActive.length === 0 ? '#1D9E75' : 'white', color:'white', fontSize:'10px', flexShrink:0}}>
                   {categoriiActive.length === 0 ? '✓' : ''}
                 </span>
@@ -190,15 +182,15 @@ export default function Panoramic() {
         </div>
 
         {/* Legenda */}
-        <div style={{marginLeft:'auto', display:'flex', gap:'12px', fontSize:'11px', color:'#888'}}>
-          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#1D9E75', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Normal/Negativ</span>
-          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#E24B4A', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Peste/Pozitiv</span>
-          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#EF9F27', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Sub</span>
-          <span><span style={{display:'inline-block', width:'10px', height:'10px', background:'#f0f0f0', border:'0.5px dashed #ccc', borderRadius:'2px', marginRight:'4px', verticalAlign:'middle'}}></span>Lipsă</span>
+        <div style={{marginLeft:'auto', display:'flex', gap:'16px', fontSize:'13px', color:'#0F6E56', fontWeight:500}}>
+          <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#1D9E75', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Normal/Negativ</span>
+          <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#E24B4A', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Peste/Pozitiv</span>
+          <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#EF9F27', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Sub</span>
+          <span><span style={{display:'inline-block', width:'11px', height:'11px', background:'#f0f0f0', border:'0.5px dashed #ccc', borderRadius:'2px', marginRight:'5px', verticalAlign:'middle'}}></span>Lipsă</span>
         </div>
       </div>
 
-      {/* Continut principal */}
+      {/* Continut */}
       <div style={{flex:1, display:'flex', overflow:'hidden'}}>
 
         {/* Tabel */}
@@ -212,7 +204,7 @@ export default function Panoramic() {
               <tr>
                 <th style={{width:LABEL_WIDTH, position:'sticky', top:0, left:0, zIndex:3, background:'white', borderBottom:'0.5px solid #e5e7eb', borderRight:'0.5px solid #e5e7eb'}}></th>
                 {toateDatele.map(d => (
-                  <th key={d} style={{width:COL_WIDTH, fontSize:'11px', color:'#888', textAlign:'center', fontWeight:500, padding:'8px 4px', position:'sticky', top:0, zIndex:2, background:'white', borderBottom:'0.5px solid #e5e7eb', whiteSpace:'nowrap'}}>
+                  <th key={d} style={{width:COL_WIDTH, fontSize:'11px', color:'#222', textAlign:'center', fontWeight:500, padding:'8px 4px', position:'sticky', top:0, zIndex:2, background:'white', borderBottom:'0.5px solid #e5e7eb', whiteSpace:'nowrap'}}>
                     {d ? `${d.slice(8)}/${d.slice(5,7)}/${d.slice(2,4)}` : ''}
                   </th>
                 ))}
@@ -227,7 +219,7 @@ export default function Panoramic() {
 
                 return (
                   <tr key={nume} style={{borderBottom:'0.5px solid #f0f0f0'}}>
-                    <td style={{width:LABEL_WIDTH, fontSize:'11px', color:'#333', textAlign:'right', paddingRight:'10px', whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.3, verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'0.5px solid #e5e7eb'}} title={nume}>
+                    <td style={{width:LABEL_WIDTH, fontSize:'11px', color:'#222', textAlign:'right', paddingRight:'10px', whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.3, verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'0.5px solid #e5e7eb'}} title={nume}>
                       {nume}
                     </td>
                     {toateDatele.map(data => {
@@ -271,18 +263,16 @@ export default function Panoramic() {
               <button onClick={() => setSelected(null)} style={{border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#888', flexShrink:0}}>×</button>
             </div>
 
-            {/* Status badge */}
             <div style={{marginBottom:'1rem'}}>
               <span style={{
-                display:'inline-flex', padding:'3px 10px', borderRadius:'12px', fontSize:'11px', fontWeight:500,
+                display:'inline-flex', padding:'3px 10px', borderRadius:'12px', fontSize:'12px', fontWeight:500,
                 background: selectedStatus === 'normal' || selectedStatus === 'negativ' ? '#E1F5EE' : selectedStatus === 'peste' || selectedStatus === 'pozitiv' ? '#FCEBEB' : '#FAEEDA',
-                color: selectedStatus === 'normal' || selectedStatus === 'negativ' ? '#0F6E56' : selectedStatus === 'peste' || selectedStatus === 'pozitiv' ? '#A32D2D' : '#854F0B'
+                color: selectedStatus === 'normal' || selectedStatus === 'negativ' ? '#085041' : selectedStatus === 'peste' || selectedStatus === 'pozitiv' ? '#A32D2D' : '#854F0B'
               }}>
                 {selectedStatus === 'normal' ? '✓ Normal' : selectedStatus === 'negativ' ? '✓ Negativ' : selectedStatus === 'pozitiv' ? '⚠ Pozitiv' : selectedStatus === 'peste' ? '↑ Peste limită' : '↓ Sub limită'}
               </span>
             </div>
 
-            {/* Valoare */}
             <div style={{marginBottom:'12px'}}>
               <div style={{fontSize:'11px', color:'#888', marginBottom:'3px'}}>Valoare</div>
               <div style={{fontSize:'18px', fontWeight:500, color:'#111'}}>
@@ -290,27 +280,22 @@ export default function Panoramic() {
               </div>
             </div>
 
-            {/* Interval referinta */}
             {selected.referinta_min && selected.referinta_max && (
               <div style={{marginBottom:'12px'}}>
                 <div style={{fontSize:'11px', color:'#888', marginBottom:'3px'}}>Interval normal</div>
                 <div style={{fontSize:'13px', color:'#333'}}>{selected.referinta_min} — {selected.referinta_max} {selected.unitate || ''}</div>
                 {selectedLab !== 'necunoscut' && (
-                  <div style={{fontSize:'11px', color:'#EF9F27', marginTop:'4px'}}>
-                    ⚠ Interval specific {selectedLab}
-                  </div>
+                  <div style={{fontSize:'11px', color:'#EF9F27', marginTop:'4px'}}>⚠ Interval specific {selectedLab}</div>
                 )}
               </div>
             )}
 
-            {/* Data si laborator */}
             <div style={{marginBottom:'12px'}}>
               <div style={{fontSize:'11px', color:'#888', marginBottom:'3px'}}>Data · Laborator</div>
               <div style={{fontSize:'12px', color:'#333'}}>{selected.data_analiza}</div>
               <div style={{fontSize:'12px', color:'#555'}}>{selectedLab}</div>
             </div>
 
-            {/* Grafic evolutie */}
             {evolutieSelectata.length > 1 && (
               <div style={{marginBottom:'12px'}}>
                 <div style={{fontSize:'11px', color:'#888', marginBottom:'6px'}}>Evoluție ({evolutieSelectata.length} valori)</div>
@@ -326,11 +311,8 @@ export default function Panoramic() {
               </div>
             )}
 
-            {/* Link PDF */}
             {selected.pdf_url && (
-              <button
-                onClick={() => deschidePDF(selected.pdf_url)}
-                style={{width:'100%', padding:'8px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#555', cursor:'pointer', textAlign:'center'}}>
+              <button onClick={() => deschidePDF(selected.pdf_url)} style={{width:'100%', padding:'8px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#0F6E56', cursor:'pointer', textAlign:'center', fontWeight:500}}>
                 📄 Vezi buletinul original
               </button>
             )}
