@@ -126,10 +126,10 @@ export default function Profil() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
   const navItems = [
-    { key:'baza', icon:'👤', label:'Date de bază' },
-    { key:'medicale', icon:'🩺', label:'Date medicale' },
-    { key:'vaccinuri', icon:'💉', label:'Vaccinuri' },
-    { key:'contacte', icon:'📞', label:'Contacte urgență' },
+    { key:'baza', icon:'○', label:'Date de bază' },
+    { key:'medicale', icon:'◇', label:'Date medicale' },
+    { key:'vaccinuri', icon:'◈', label:'Vaccinuri' },
+    { key:'contacte', icon:'◻', label:'Contacte urgență' },
   ]
 
   function Banner({ icon, title, sub, badge, skey }: { icon:string, title:string, sub:string, badge?:boolean, skey:keyof typeof sectiuni }) {
