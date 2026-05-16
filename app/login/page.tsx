@@ -38,46 +38,79 @@ export default function Login() {
   }
 
   return (
-    <div style={{fontFamily:'system-ui,-apple-system,sans-serif', minHeight:'100vh', background:'#f8f9fa', display:'flex', flexDirection:'column'}}>
+    <div style={{fontFamily:'system-ui,-apple-system,sans-serif', minHeight:'100vh', display:'flex'}}>
 
-      {/* Topbar */}
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center'}}>
-        <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
-          <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
-          <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
+      {/* Stanga - brand */}
+      <div style={{width:'45%', background:'#16705a', display:'flex', flexDirection:'column', justifyContent:'center', padding:'3rem', position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:'-80px', right:'-80px', width:'300px', height:'300px', borderRadius:'50%', background:'rgba(255,255,255,0.04)'}}></div>
+        <div style={{position:'absolute', bottom:'-60px', left:'-60px', width:'200px', height:'200px', borderRadius:'50%', background:'rgba(255,255,255,0.04)'}}></div>
+
+        <div style={{position:'relative', zIndex:1}}>
+          <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'3rem'}}>
+            <div style={{width:'36px', height:'36px', background:'rgba(255,255,255,0.15)', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'18px', fontWeight:500}}>✚</div>
+            <span style={{fontSize:'22px', fontWeight:500, color:'white'}}>MedFile</span>
+          </div>
+
+          <h2 style={{fontSize:'28px', fontWeight:500, color:'white', lineHeight:1.3, marginBottom:'1rem'}}>
+            Dosarul tău medical,<br/>mereu la îndemână
+          </h2>
+          <p style={{fontSize:'15px', color:'rgba(255,255,255,0.75)', lineHeight:1.7, marginBottom:'2.5rem'}}>
+            Toate analizele tale din orice laborator, vizualizate panoramic cu evoluție în timp.
+          </p>
+
+          <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
+            {[
+              'Extragere automată din PDF',
+              'Vizualizare panoramică unică',
+              'Date securizate în Europa',
+            ].map((f, i) => (
+              <div key={i} style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                <div style={{width:'20px', height:'20px', borderRadius:'50%', background:'rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', color:'white', flexShrink:0}}>✓</div>
+                <span style={{fontSize:'14px', color:'rgba(255,255,255,0.85)'}}>{f}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Form */}
-      <div style={{flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem'}}>
-        <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'2rem', width:'100%', maxWidth:'400px'}}>
-          <h1 style={{fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'6px'}}>Intră în cont</h1>
-          <p style={{fontSize:'13px', color:'#888', marginBottom:'1.5rem'}}>Accesează dosarul tău medical</p>
+      {/* Dreapta - form */}
+      <div style={{flex:1, background:'#f8f9fa', display:'flex', alignItems:'center', justifyContent:'center', padding:'3rem'}}>
+        <div style={{width:'100%', maxWidth:'380px'}}>
+          <h1 style={{fontSize:'22px', fontWeight:500, color:'#111', marginBottom:'6px'}}>Bine ai revenit</h1>
+          <p style={{fontSize:'14px', color:'#888', marginBottom:'2rem'}}>Intră în contul tău MedFile</p>
 
-          <div style={{marginBottom:'1rem'}}>
-            <label style={{display:'block', marginBottom:'4px', fontSize:'13px', color:'#555', fontWeight:500}}>Email</label>
+          <div style={{marginBottom:'16px'}}>
+            <label style={{display:'block', marginBottom:'6px', fontSize:'13px', color:'#333', fontWeight:500}}>Adresă email</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
               placeholder="email@exemplu.com"
-              style={{width:'100%', padding:'10px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', outline:'none', background:'#f8f9fa'}}
+              style={{width:'100%', padding:'11px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', outline:'none', background:'white', color:'#111'}}
             />
           </div>
 
-          <div style={{marginBottom:'1.5rem'}}>
-            <label style={{display:'block', marginBottom:'4px', fontSize:'13px', color:'#555', fontWeight:500}}>Parolă</label>
+          <div style={{marginBottom:'8px'}}>
+            <label style={{display:'block', marginBottom:'6px', fontSize:'13px', color:'#333', fontWeight:500}}>Parolă</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="parola ta"
-              style={{width:'100%', padding:'10px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', outline:'none', background:'#f8f9fa'}}
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
+              placeholder="••••••••"
+              style={{width:'100%', padding:'11px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', outline:'none', background:'white', color:'#111'}}
             />
           </div>
 
+          <div style={{textAlign:'right', marginBottom:'20px'}}>
+            <button onClick={handleForgotPassword} style={{background:'none', border:'none', color:'#16705a', cursor:'pointer', fontSize:'13px', fontWeight:500}}>
+              Am uitat parola
+            </button>
+          </div>
+
           {eroare && (
-            <p style={{fontSize:'13px', marginBottom:'1rem', color: eroare.includes('trimis') ? '#1D9E75' : '#E24B4A'}}>
+            <p style={{fontSize:'13px', marginBottom:'16px', padding:'10px 14px', borderRadius:'8px', background: eroare.includes('trimis') ? '#E1F5EE' : '#FCEBEB', color: eroare.includes('trimis') ? '#0F6E56' : '#A32D2D'}}>
               {eroare}
             </p>
           )}
@@ -85,19 +118,13 @@ export default function Login() {
           <button
             onClick={handleLogin}
             disabled={loading}
-            style={{width:'100%', padding:'11px', background:'#1D9E75', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer', marginBottom:'12px'}}>
+            style={{width:'100%', padding:'12px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer', marginBottom:'16px'}}>
             {loading ? 'Se verifică...' : 'Intră în cont'}
           </button>
 
-          <div style={{textAlign:'center', marginBottom:'8px'}}>
-            <button onClick={handleForgotPassword} style={{background:'none', border:'none', color:'#0F6E56', cursor:'pointer', fontSize:'13px', fontWeight:500}}>
-              Am uitat parola
-            </button>
-          </div>
-
           <p style={{textAlign:'center', fontSize:'13px', color:'#888'}}>
             Nu ai cont?{' '}
-            <Link href="/register" style={{color:'#0F6E56', fontWeight:500}}>Creează cont nou</Link>
+            <Link href="/register" style={{color:'#16705a', fontWeight:500}}>Creează cont nou</Link>
           </p>
         </div>
       </div>
