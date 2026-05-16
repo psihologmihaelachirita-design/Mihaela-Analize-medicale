@@ -23,6 +23,13 @@ export default function Profil() {
   const [mesaj, setMesaj] = useState('')
   const router = useRouter()
 
+  const [sectiuni, setSectiuni] = useState({
+    baza: true,
+    medicale: true,
+    vaccinuri: true,
+    contacte: true,
+  })
+
   const [nume, setNume] = useState('')
   const [varsta, setVarsta] = useState('')
   const [sex, setSex] = useState('')
@@ -40,6 +47,10 @@ export default function Profil() {
   const [medicFamilieNume, setMedicFamilieNume] = useState('')
   const [medicFamilieTelefon, setMedicFamilieTelefon] = useState('')
   const [vaccinuri, setVaccinuri] = useState<Vaccin[]>([])
+
+  function toggleSectiune(key: keyof typeof sectiuni) {
+    setSectiuni(prev => ({ ...prev, [key]: !prev[key] }))
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -108,7 +119,7 @@ export default function Profil() {
       grup_sanguin: grupSanguin || null,
       greutate: parseFloat(greutate) || null,
       inaltime: parseFloat(inaltime) || null,
-      fumator: fumator,
+      fumator,
       boli_cronice: boliCronice || null,
       alergii_medicamente: alergiiMedicamente || null,
       alergii_alimentare: alergiiAlimentare || null,
@@ -120,7 +131,6 @@ export default function Profil() {
       medic_familie_telefon: medicFamilieTelefon || null,
     })
 
-    // Salveaza vaccinuri
     await supabase.from('vaccinuri').delete().eq('user_id', session.user.id)
     const vaccinuriValide = vaccinuri.filter(v => v.denumire.trim())
     if (vaccinuriValide.length > 0) {
@@ -142,181 +152,221 @@ export default function Profil() {
 
   if (loading) return <p style={{fontFamily:'system-ui', padding:'2rem', color:'#888'}}>Se încarcă...</p>
 
-  const inputStyle = {
-    width:'100%', padding:'9px 12px', border:'0.5px solid #e5e7eb',
-    borderRadius:'8px', fontSize:'13px', outline:'none',
-    background:'#f8f9fa', color:'#111', fontFamily:'system-ui'
-  }
-  const labelStyle = { display:'block' as const, fontSize:'12px', color:'#555', fontWeight:500 as const, marginBottom:'5px' }
-  const textareaStyle = { ...inputStyle, resize:'none' as const, height:'72px' }
+  const completatBaza = !!(nume && varsta && sex)
+  const progres = [completatBaza, !!boliCronice, vaccinuri.length > 0, !!contactNume].filter(Boolean).length * 25
+
+  const inp: React.CSSProperties = {width:'100%', padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', outline:'none', background:'white', color:'#111', fontFamily:'system-ui'}
+  const inpMuted: React.CSSProperties = {...inp, background:'#f8f9fa', color:'#aaa'}
+  const ta: React.CSSProperties = {...inp, resize:'none', height:'76px', background:'#f8f9fa', color:'#aaa'}
+  const lbl: React.CSSProperties = {display:'block', fontSize:'12px', fontWeight:500, color:'#555', marginBottom:'5px'}
+  const g3: React.CSSProperties = {display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'14px', marginBottom:'14px'}
+  const g2: React.CSSProperties = {display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px'}
+
+  const Banner = ({icon, title, sub, badge, done, skey}: {icon:string, title:string, sub:string, badge?:boolean, done?:boolean, skey:keyof typeof sectiuni}) => (
+    <div onClick={() => toggleSectiune(skey)} style={{background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer'}}>
+      <div style={{display:'flex', alignItems:'center', gap:'12px'}}>
+        <div style={{width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'16px'}}>{icon}</div>
+        <div>
+          <div style={{fontSize:'14px', fontWeight:500, color:'white', display:'flex', alignItems:'center', gap:'8px'}}>
+            {title}
+            {badge && <span style={{padding:'2px 8px', background:'rgba(255,255,255,0.15)', borderRadius:'12px', fontSize:'11px', color:'rgba(255,255,255,0.9)'}}>opțional</span>}
+          </div>
+          <div style={{fontSize:'11px', color:'rgba(255,255,255,0.72)', marginTop:'2px'}}>{sub}</div>
+        </div>
+      </div>
+      <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+        {done && <span style={{display:'flex', alignItems:'center', gap:'5px', fontSize:'12px', color:'white', background:'rgba(255,255,255,0.15)', padding:'4px 10px', borderRadius:'10px'}}>✓ Completat</span>}
+        <span style={{color:'rgba(255,255,255,0.8)', fontSize:'14px'}}>{sectiuni[skey] ? '▲' : '▼'}</span>
+      </div>
+    </div>
+  )
 
   return (
-    <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh'}}>
+    <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column'}}>
 
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', gap:'16px'}}>
-        <Link href="/dashboard" style={{color:'#16705a', textDecoration:'none', fontSize:'14px', fontWeight:500}}>← Dosar</Link>
-        <span style={{color:'#e5e7eb'}}>|</span>
+      {/* Topbar */}
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 32px', height:'56px', display:'flex', alignItems:'center', gap:'20px', flexShrink:0}}>
+        <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#16705a', fontWeight:500, textDecoration:'none'}}>
+          ← Dosar
+        </Link>
+        <div style={{width:'0.5px', height:'20px', background:'#e5e7eb'}}></div>
         <span style={{fontSize:'15px', fontWeight:500, color:'#111'}}>Profilul meu</span>
       </div>
 
-      <div style={{maxWidth:'640px', margin:'0 auto', padding:'24px'}}>
+      <div style={{display:'grid', gridTemplateColumns:'230px 1fr', flex:1}}>
 
-        {/* Sectiunea 1 */}
-        <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'20px', marginBottom:'16px'}}>
-          <div style={{fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Date de bază</div>
-          <div style={{fontSize:'12px', color:'#888', marginBottom:'16px'}}>Completează în 2 minute — folosite pentru intervale de referință corecte</div>
+        {/* Sidebar */}
+        <div style={{background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column'}}>
 
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px'}}>
-            <div>
-              <label style={labelStyle}>Nume complet</label>
-              <input value={nume} onChange={e => setNume(e.target.value)} placeholder="Numele tău" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Vârstă</label>
-              <input type="number" value={varsta} onChange={e => setVarsta(e.target.value)} placeholder="ex: 35" style={inputStyle} />
+          <div style={{padding:'0 20px 28px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'24px'}}>
+            <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+              <div style={{width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#16705a', fontSize:'20px', fontWeight:500}}>✚</div>
+              <span style={{fontSize:'16px', fontWeight:500, color:'#111'}}>MedFile</span>
             </div>
           </div>
 
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px'}}>
-            <div>
-              <label style={labelStyle}>Sex</label>
-              <div style={{display:'flex', gap:'16px', marginTop:'8px'}}>
-                {['F', 'M'].map(s => (
-                  <label key={s} style={{display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', cursor:'pointer', color:'#111'}}>
-                    <div onClick={() => setSex(s)} style={{width:'16px', height:'16px', borderRadius:'50%', border:'0.5px solid #e5e7eb', background: sex === s ? '#16705a' : 'white', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0}}>
-                      {sex === s && <div style={{width:'6px', height:'6px', borderRadius:'50%', background:'white'}}></div>}
-                    </div>
-                    {s === 'F' ? 'Feminin' : 'Masculin'}
-                  </label>
-                ))}
+          <div style={{padding:'0 16px', marginBottom:'20px', flex:1}}>
+            <div style={{fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px'}}>Secțiuni profil</div>
+            {[
+              {key:'baza', icon:'👤', label:'Date de bază', done: completatBaza},
+              {key:'medicale', icon:'🩺', label:'Date medicale', done: !!boliCronice},
+              {key:'vaccinuri', icon:'💉', label:'Vaccinuri', done: vaccinuri.length > 0},
+              {key:'contacte', icon:'📞', label:'Contacte urgență', done: !!contactNume},
+            ].map(item => (
+              <div key={item.key} onClick={() => toggleSectiune(item.key as keyof typeof sectiuni)}
+                style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key as keyof typeof sectiuni] ? '#085041' : '#666', background: sectiuni[item.key as keyof typeof sectiuni] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key as keyof typeof sectiuni] ? 500 : 400}}>
+                <span style={{display:'flex', alignItems:'center', gap:'8px'}}>{item.icon} {item.label}</span>
+                {item.done && <span style={{color:'#16705a', fontSize:'12px'}}>✓</span>}
               </div>
-            </div>
-            <div>
-              <label style={labelStyle}>Grup sanguin și Rh</label>
-              <select value={grupSanguin} onChange={e => setGrupSanguin(e.target.value)} style={{...inputStyle, cursor:'pointer'}}>
-                <option value="">Selectează</option>
-                {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(g => <option key={g} value={g}>{g}</option>)}
-              </select>
-              {grupSanguin && <div style={{fontSize:'11px', color:'#888', marginTop:'4px'}}>Introdus pe răspunderea utilizatorului</div>}
-            </div>
+            ))}
           </div>
 
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px'}}>
-            <div>
-              <label style={labelStyle}>Greutate (kg)</label>
-              <input type="number" value={greutate} onChange={e => setGreutate(e.target.value)} placeholder="ex: 65" style={inputStyle} />
+          <div style={{padding:'14px', margin:'0 16px 16px', background:'#f8f9fa', borderRadius:'10px', border:'0.5px solid #e5e7eb'}}>
+            <div style={{fontSize:'12px', color:'#555', marginBottom:'8px', display:'flex', justifyContent:'space-between'}}>
+              <span>Progres completare</span>
+              <span style={{color:'#16705a', fontWeight:500}}>{progres}%</span>
             </div>
-            <div>
-              <label style={labelStyle}>Înălțime (cm)</label>
-              <input type="number" value={inaltime} onChange={e => setInaltime(e.target.value)} placeholder="ex: 168" style={inputStyle} />
+            <div style={{height:'4px', background:'#e5e7eb', borderRadius:'2px', overflow:'hidden'}}>
+              <div style={{height:'100%', width:`${progres}%`, background:'#16705a', borderRadius:'2px'}}></div>
             </div>
+            <div style={{fontSize:'11px', color:'#aaa', marginTop:'8px'}}>Completează pentru QR cod de urgență</div>
           </div>
 
-          <div>
-            <label style={labelStyle}>Fumător</label>
-            <div style={{display:'flex', gap:'16px', marginTop:'8px'}}>
-              {[{val: true, label:'Da'}, {val: false, label:'Nu'}].map(opt => (
-                <label key={opt.label} style={{display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', cursor:'pointer', color:'#111'}}>
-                  <div onClick={() => setFumator(opt.val)} style={{width:'16px', height:'16px', borderRadius:'50%', border:'0.5px solid #e5e7eb', background: fumator === opt.val ? '#16705a' : 'white', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0}}>
-                    {fumator === opt.val && <div style={{width:'6px', height:'6px', borderRadius:'50%', background:'white'}}></div>}
-                  </div>
-                  {opt.label}
-                </label>
-              ))}
+          <div style={{padding:'14px', margin:'0 16px', background:'#FAEEDA', borderRadius:'10px', border:'0.5px solid #EF9F27'}}>
+            <div style={{fontSize:'13px', color:'#854F0B', lineHeight:1.6, fontWeight:400}}>
+              ⚠ Toate datele introduse — inclusiv vârstă, sex, grup sanguin și orice alte informații — sunt în răspunderea exclusivă a utilizatorului.
             </div>
           </div>
         </div>
 
-        {/* Sectiunea 2 */}
-        <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'20px', marginBottom:'16px'}}>
-          <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'4px'}}>
-            <div style={{fontSize:'14px', fontWeight:500, color:'#111'}}>Date medicale</div>
-            <span style={{padding:'2px 8px', background:'#f8f9fa', borderRadius:'12px', fontSize:'11px', color:'#888'}}>opțional</span>
-          </div>
-          <div style={{fontSize:'12px', color:'#888', marginBottom:'16px'}}>Completează treptat — folosite pentru QR code de urgență și raportul pentru medic</div>
+        {/* Main */}
+        <div style={{padding:'28px', overflowY:'auto'}}>
 
-          <div style={{marginBottom:'12px'}}>
-            <label style={labelStyle}>Boli cronice diagnosticate</label>
-            <textarea value={boliCronice} onChange={e => setBoliCronice(e.target.value)} placeholder="ex: Hipotiroidism, Diabet tip 2..." style={textareaStyle} />
+          {/* Date de baza */}
+          <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden'}}>
+            <Banner icon="👤" title="Date de bază" sub="Folosite pentru intervale de referință corecte pe vârstă și sex" done={completatBaza} skey="baza" />
+            {sectiuni.baza && (
+              <div style={{padding:'20px 22px'}}>
+                <div style={g3}>
+                  <div><label style={lbl}>Nume complet</label><input value={nume} onChange={e => setNume(e.target.value)} placeholder="Numele tău" style={inp} /></div>
+                  <div><label style={lbl}>Vârstă</label><input type="number" value={varsta} onChange={e => setVarsta(e.target.value)} placeholder="ex: 35" style={inp} /></div>
+                  <div>
+                    <label style={lbl}>Grup sanguin și Rh</label>
+                    <select value={grupSanguin} onChange={e => setGrupSanguin(e.target.value)} style={{...inp, cursor:'pointer'}}>
+                      <option value="">Selectează</option>
+                      {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                    <div style={{fontSize:'11px', color:'#aaa', marginTop:'4px'}}>În răspunderea utilizatorului</div>
+                  </div>
+                </div>
+                <div style={g3}>
+                  <div>
+                    <label style={lbl}>Sex</label>
+                    <div style={{display:'flex', gap:'16px', marginTop:'6px'}}>
+                      {['F','M'].map(s => (
+                        <label key={s} style={{display:'flex', alignItems:'center', gap:'7px', fontSize:'13px', cursor:'pointer', color:'#111'}}>
+                          <div onClick={() => setSex(s)} style={{width:'16px', height:'16px', borderRadius:'50%', border:'0.5px solid #e5e7eb', background: sex===s?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0}}>
+                            {sex===s && <div style={{width:'6px', height:'6px', borderRadius:'50%', background:'white'}}></div>}
+                          </div>
+                          {s==='F'?'Feminin':'Masculin'}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div><label style={lbl}>Greutate (kg)</label><input type="number" value={greutate} onChange={e => setGreutate(e.target.value)} placeholder="ex: 65" style={inp} /></div>
+                  <div><label style={lbl}>Înălțime (cm)</label><input type="number" value={inaltime} onChange={e => setInaltime(e.target.value)} placeholder="ex: 168" style={inp} /></div>
+                </div>
+                <div>
+                  <label style={lbl}>Fumător</label>
+                  <div style={{display:'flex', gap:'16px', marginTop:'6px'}}>
+                    {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
+                      <label key={opt.label} style={{display:'flex', alignItems:'center', gap:'7px', fontSize:'13px', cursor:'pointer', color:'#111'}}>
+                        <div onClick={() => setFumator(opt.val)} style={{width:'16px', height:'16px', borderRadius:'50%', border:'0.5px solid #e5e7eb', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0}}>
+                          {fumator===opt.val && <div style={{width:'6px', height:'6px', borderRadius:'50%', background:'white'}}></div>}
+                        </div>
+                        {opt.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px'}}>
-            <div>
-              <label style={labelStyle}>Alergii medicamentoase</label>
-              <textarea value={alergiiMedicamente} onChange={e => setAlergiiMedicamente(e.target.value)} placeholder="ex: Penicilina, Aspirina..." style={textareaStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Alergii alimentare</label>
-              <textarea value={alergiiAlimentare} onChange={e => setAlergiiAlimentare(e.target.value)} placeholder="ex: Nuci, Gluten..." style={textareaStyle} />
-            </div>
+          {/* Date medicale */}
+          <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden'}}>
+            <Banner icon="🩺" title="Date medicale" sub="Completează treptat — pentru QR cod urgență și raportul pentru medic" badge done={!!boliCronice} skey="medicale" />
+            {sectiuni.medicale && (
+              <div style={{padding:'20px 22px'}}>
+                <div style={{marginBottom:'14px'}}><label style={lbl}>Boli cronice diagnosticate</label><textarea value={boliCronice} onChange={e => setBoliCronice(e.target.value)} placeholder="ex: Hipotiroidism Hashimoto, Diabet tip 2..." style={ta} /></div>
+                <div style={g2}>
+                  <div><label style={lbl}>Alergii medicamentoase</label><textarea value={alergiiMedicamente} onChange={e => setAlergiiMedicamente(e.target.value)} placeholder="ex: Penicilina, Aspirina..." style={ta} /></div>
+                  <div><label style={lbl}>Alergii alimentare</label><textarea value={alergiiAlimentare} onChange={e => setAlergiiAlimentare(e.target.value)} placeholder="ex: Nuci, Gluten..." style={ta} /></div>
+                </div>
+                <div style={g2}>
+                  <div><label style={lbl}>Tratamente cronice curente</label><textarea value={tratamenteCronice} onChange={e => setTratamenteCronice(e.target.value)} placeholder="ex: Euthyrox 50mcg/zi..." style={ta} /></div>
+                  <div><label style={lbl}>Implante și dispozitive medicale</label><textarea value={implante} onChange={e => setImplante(e.target.value)} placeholder="ex: Stent cardiac 2019..." style={ta} /></div>
+                </div>
+              </div>
+            )}
           </div>
-
-          <div style={{marginBottom:'12px'}}>
-            <label style={labelStyle}>Tratamente cronice curente</label>
-            <textarea value={tratamenteCronice} onChange={e => setTratamenteCronice(e.target.value)} placeholder="ex: Euthyrox 50mcg/zi, Metformin 500mg..." style={textareaStyle} />
-          </div>
-
-          <div style={{marginBottom:'16px'}}>
-            <label style={labelStyle}>Implante și dispozitive medicale</label>
-            <input value={implante} onChange={e => setImplante(e.target.value)} placeholder="ex: Stent cardiac 2019, Proteză șold stâng..." style={inputStyle} />
-          </div>
-
-          <div style={{height:'0.5px', background:'#e5e7eb', marginBottom:'16px'}}></div>
 
           {/* Vaccinuri */}
-          <div style={{fontSize:'13px', fontWeight:500, color:'#111', marginBottom:'10px'}}>Vaccinuri <span style={{fontSize:'11px', color:'#888', fontWeight:400}}>opțional</span></div>
-
-          {vaccinuri.map((v, i) => (
-            <div key={i} style={{display:'grid', gridTemplateColumns:'2fr 1fr auto', gap:'8px', marginBottom:'8px', alignItems:'center'}}>
-              <input value={v.denumire} onChange={e => updateVaccin(i, 'denumire', e.target.value)} placeholder="ex: HPV, Tetanos, COVID..." style={inputStyle} />
-              <input type="date" value={v.data_administrare} onChange={e => updateVaccin(i, 'data_administrare', e.target.value)} style={inputStyle} />
-              <button onClick={() => stergeVaccin(i)} style={{border:'none', background:'none', cursor:'pointer', fontSize:'18px', color:'#888', padding:'0 4px'}}>×</button>
-            </div>
-          ))}
-
-          <button onClick={adaugaVaccin} style={{display:'flex', alignItems:'center', gap:'6px', padding:'7px 14px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#555', cursor:'pointer', marginBottom:'16px'}}>
-            + Adaugă vaccin
-          </button>
-
-          <div style={{height:'0.5px', background:'#e5e7eb', marginBottom:'16px'}}></div>
-
-          {/* Contact urgenta */}
-          <div style={{fontSize:'13px', fontWeight:500, color:'#111', marginBottom:'10px'}}>Contact de urgență <span style={{fontSize:'11px', color:'#888', fontWeight:400}}>opțional</span></div>
-
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px'}}>
-            <div>
-              <label style={labelStyle}>Nume</label>
-              <input value={contactNume} onChange={e => setContactNume(e.target.value)} placeholder="ex: Ion Popescu" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Telefon</label>
-              <input value={contactTelefon} onChange={e => setContactTelefon(e.target.value)} placeholder="ex: 0721 000 000" style={inputStyle} />
-            </div>
+          <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden'}}>
+            <Banner icon="💉" title="Vaccinuri" sub="Istoricul vaccinărilor tale" badge done={vaccinuri.length>0} skey="vaccinuri" />
+            {sectiuni.vaccinuri && (
+              <div style={{padding:'20px 22px'}}>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 150px 28px', gap:'8px', paddingBottom:'8px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'4px'}}>
+                  {['Vaccin','Data administrării',''].map((h,i) => <div key={i} style={{fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.5px'}}>{h}</div>)}
+                </div>
+                {vaccinuri.map((v, i) => (
+                  <div key={i} style={{display:'grid', gridTemplateColumns:'1fr 150px 28px', gap:'8px', alignItems:'center', padding:'8px 0', borderBottom:'0.5px solid #f0f0f0'}}>
+                    <input value={v.denumire} onChange={e => updateVaccin(i,'denumire',e.target.value)} placeholder="ex: HPV, Tetanos..." style={inp} />
+                    <input type="date" value={v.data_administrare} onChange={e => updateVaccin(i,'data_administrare',e.target.value)} style={{...inp, fontSize:'12px'}} />
+                    <button onClick={() => stergeVaccin(i)} style={{border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa', padding:0}}>×</button>
+                  </div>
+                ))}
+                <div onClick={adaugaVaccin} style={{display:'flex', alignItems:'center', gap:'8px', padding:'10px 0 0', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer'}}>
+                  + Adaugă vaccin
+                </div>
+              </div>
+            )}
           </div>
 
-          <div style={{fontSize:'13px', fontWeight:500, color:'#111', marginBottom:'10px'}}>Medic de familie <span style={{fontSize:'11px', color:'#888', fontWeight:400}}>opțional</span></div>
+          {/* Contacte urgenta */}
+          <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden'}}>
+            <Banner icon="📞" title="Contacte de urgență" sub="Afișate pe QR codul de urgență" badge done={!!contactNume} skey="contacte" />
+            {sectiuni.contacte && (
+              <div style={{padding:'20px 22px'}}>
+                <div style={g2}>
+                  <div><label style={lbl}>Persoană de contact — Nume</label><input value={contactNume} onChange={e => setContactNume(e.target.value)} placeholder="ex: Ion Popescu" style={inp} /></div>
+                  <div><label style={lbl}>Persoană de contact — Telefon</label><input value={contactTelefon} onChange={e => setContactTelefon(e.target.value)} placeholder="ex: 0721 000 000" style={inp} /></div>
+                </div>
+                <div style={{height:'0.5px', background:'#e5e7eb', margin:'16px 0'}}></div>
+                <div style={{fontSize:'13px', fontWeight:500, color:'#111', marginBottom:'12px', display:'flex', alignItems:'center', gap:'8px'}}>
+                  Medic de familie <span style={{padding:'2px 8px', background:'#f8f9fa', borderRadius:'12px', fontSize:'11px', color:'#aaa'}}>opțional</span>
+                </div>
+                <div style={g2}>
+                  <div><label style={lbl}>Nume medic</label><input value={medicFamilieNume} onChange={e => setMedicFamilieNume(e.target.value)} placeholder="ex: Dr. Maria Ionescu" style={inp} /></div>
+                  <div><label style={lbl}>Telefon cabinet</label><input value={medicFamilieTelefon} onChange={e => setMedicFamilieTelefon(e.target.value)} placeholder="ex: 021 000 0000" style={inp} /></div>
+                </div>
+              </div>
+            )}
+          </div>
 
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px'}}>
-            <div>
-              <label style={labelStyle}>Nume medic</label>
-              <input value={medicFamilieNume} onChange={e => setMedicFamilieNume(e.target.value)} placeholder="ex: Dr. Maria Ionescu" style={inputStyle} />
+          {mesaj && (
+            <div style={{padding:'12px 16px', borderRadius:'8px', marginBottom:'16px', background: mesaj.includes('Eroare')?'#FCEBEB':'#E1F5EE', color: mesaj.includes('Eroare')?'#A32D2D':'#0F6E56', fontSize:'13px'}}>
+              {mesaj}
             </div>
-            <div>
-              <label style={labelStyle}>Telefon cabinet</label>
-              <input value={medicFamilieTelefon} onChange={e => setMedicFamilieTelefon(e.target.value)} placeholder="ex: 021 000 0000" style={inputStyle} />
-            </div>
+          )}
+
+          <div style={{display:'flex', justifyContent:'flex-end', gap:'10px', paddingTop:'4px'}}>
+            <Link href="/dashboard" style={{padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#555', textDecoration:'none'}}>Anulează</Link>
+            <button onClick={handleSalvare} disabled={salvare} style={{padding:'10px 26px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer'}}>
+              {salvare ? 'Se salvează...' : 'Salvează profilul'}
+            </button>
           </div>
         </div>
-
-        {mesaj && (
-          <div style={{padding:'12px 16px', borderRadius:'8px', marginBottom:'16px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'13px'}}>
-            {mesaj}
-          </div>
-        )}
-
-        <button onClick={handleSalvare} disabled={salvare} style={{width:'100%', padding:'13px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer'}}>
-          {salvare ? 'Se salvează...' : 'Salvează profilul'}
-        </button>
       </div>
     </div>
   )
