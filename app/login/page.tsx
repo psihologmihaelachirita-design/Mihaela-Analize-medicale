@@ -41,11 +41,7 @@ export default function Login() {
     <div style={{fontFamily:'system-ui,-apple-system,sans-serif', minHeight:'100vh', background:'#f8f9fa', display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem'}}>
       <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'2.5rem', width:'100%', maxWidth:'420px'}}>
 
-        {/* Logo */}
-        <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'2rem'}}>
-          <div style={{width:'28px', height:'28px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#16705a', fontSize:'15px', fontWeight:500}}>✚</div>
-          <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
-        </div>
+        <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'2.5rem', width:'100%', maxWidth:'420px'}}>
 
         {/* Titlu */}
         <h1 style={{fontSize:'26px', fontWeight:500, color:'#111', marginBottom:'2rem'}}>Login</h1>
