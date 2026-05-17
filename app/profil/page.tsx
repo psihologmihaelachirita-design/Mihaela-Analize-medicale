@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { IconUser, IconStethoscope, IconVaccine, IconPhone } from '@tabler/icons-react',
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -126,10 +127,10 @@ export default function Profil() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
   const navItems = [
-    { key:'baza', icon:<IconUser size={18} />, label:'Date de bază' },
-    { key:'medicale', icon:<IconStethoscope size={18} />, label:'Date medicale' },
-    { key:'vaccinuri', icon:<IconVaccine size={18} />, label:'Vaccinuri' },
-    { key:'contacte', icon:<IconPhone size={18} />, label:'Contacte urgență' },
+    { key:'baza', icon:'user', label:'Date de bază' },
+    { key:'medicale', icon:'stethoscope', label:'Date medicale' },
+    { key:'vaccinuri', icon:'vaccine', label:'Vaccinuri' },
+    { key:'contacte', icon:'phone', label:'Contacte urgență' },
   ]
 
   function Banner({ icon, title, sub, badge, skey }: { icon:string, title:string, sub:string, badge?:boolean, skey:keyof typeof sectiuni }) {
