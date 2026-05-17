@@ -127,10 +127,10 @@ export default function Profil() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
   const navItems = [
-    { key:'baza', icon:'user', label:'Date de bază' },
-    { key:'medicale', icon:'stethoscope', label:'Date medicale' },
-    { key:'vaccinuri', icon:'vaccine', label:'Vaccinuri' },
-    { key:'contacte', icon:'phone', label:'Contacte urgență' },
+    { key:'baza', Icon: IconUser, label:'Date de bază' },
+    { key:'medicale', Icon: IconStethoscope, label:'Date medicale' },
+    { key:'vaccinuri', Icon: IconVaccine, label:'Vaccinuri' },
+    { key:'contacte', Icon: IconPhone, label:'Contacte urgență' },
   ]
 
   function Banner({ icon, title, sub, badge, skey }: { icon:string, title:string, sub:string, badge?:boolean, skey:keyof typeof sectiuni }) {
@@ -180,7 +180,7 @@ export default function Profil() {
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key as keyof typeof sectiuni)}
                 style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key as keyof typeof sectiuni] ? '#085041' : '#555', background: sectiuni[item.key as keyof typeof sectiuni] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key as keyof typeof sectiuni] ? 500 : 400 }}>
-                <span style={{ fontSize:'16px' }}>{item.icon}</span>
+                <span style={{ display:'flex', alignItems:'center', color:'#555' }}><item.Icon size={16} stroke={1.5} /></span>
                 {item.label}
               </div>
             ))}
