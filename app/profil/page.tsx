@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { IconUser, IconStethoscope, IconVaccine, IconPhone } from '@tabler/icons-react',
+import { IconUser, IconStethoscope, IconVaccine, IconPhone } from '@tabler/icons-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
