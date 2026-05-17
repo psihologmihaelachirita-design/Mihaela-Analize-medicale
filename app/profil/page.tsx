@@ -137,7 +137,7 @@ export default function Profil() {
     return (
       <div onClick={() => toggleSectiune(skey)} style={{ background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px' }}>{icon}</div>
+          <div style={{ width:'32px', height:'32px' }}></div>
           <div>
             <div style={{ fontSize:'14px', fontWeight:500, color:'white', display:'flex', alignItems:'center', gap:'8px' }}>
               {title}
