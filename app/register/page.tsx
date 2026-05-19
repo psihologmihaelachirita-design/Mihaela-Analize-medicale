@@ -58,7 +58,7 @@ export default function Register() {
           <h1 style={{fontSize:'28px', fontWeight:500, color:'#111', marginBottom:'2rem', textAlign:'center'}}>Creează cont</h1>
 
           <div style={{marginBottom:'16px'}}>
-            <label style={{display:'block', marginBottom:'6px', fontSize:'15px', color:'#333', fontWeight:500}}>Nume complet</label>
+            <label style={{display:'block', marginBottom:'6px', fontSize:'15px', color:'#333', fontWeight:500}}>Nume</label>
             <input
               type="text"
               value={nume}
