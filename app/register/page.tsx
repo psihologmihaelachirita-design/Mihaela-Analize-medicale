@@ -12,6 +12,7 @@ const supabase = createClient(
 export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [nume, setNume] = useState('')
   const [loading, setLoading] = useState(false)
   const [eroare, setEroare] = useState('')
   const [mesaj, setMesaj] = useState('')
