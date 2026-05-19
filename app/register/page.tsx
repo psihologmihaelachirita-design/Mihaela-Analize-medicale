@@ -58,6 +58,17 @@ export default function Register() {
           <h1 style={{fontSize:'28px', fontWeight:500, color:'#111', marginBottom:'2rem', textAlign:'center'}}>Creează cont</h1>
 
           <div style={{marginBottom:'16px'}}>
+            <label style={{display:'block', marginBottom:'6px', fontSize:'15px', color:'#333', fontWeight:500}}>Nume complet</label>
+            <input
+              type="text"
+              value={nume}
+              onChange={e => setNume(e.target.value)}
+              placeholder="Numele tău"
+              style={{width:'100%', padding:'12px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', outline:'none', background:'#f8f9fa', color:'#111'}}
+            />
+          </div>
+
+          <div style={{marginBottom:'16px'}}>
             <label style={{display:'block', marginBottom:'6px', fontSize:'15px', color:'#333', fontWeight:500}}>Adresă email</label>
             <input
               type="email"
