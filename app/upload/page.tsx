@@ -61,8 +61,8 @@ export default function Upload() {
 
       const inserts = rezultat.map(a => ({
         user_id: session.user.id,
-        oras_laborator: parsed?.oras_laborator || null,
-        tara_laborator: parsed?.tara_laborator || null,
+        oras_laborator: orasLaborator || null,
+        tara_laborator: taraLaborator || null,
         nume_analiza: a.nume,
         valoare: a.tip_rezultat === 'calitativ' ? null : (parseFloat(a.valoare) || 0),
         unitate: a.unitate || '',
