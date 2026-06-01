@@ -17,6 +17,8 @@ export default function Upload() {
   const [eroare, setEroare] = useState('')
   const [mesaj, setMesaj] = useState('')
   const [laborator, setLaborator] = useState('')
+  const [orasLaborator, setOrasLaborator] = useState('')
+  const [taraLaborator, setTaraLaborator] = useState('')
   const [dataBuletin, setDataBuletin] = useState('')
   const router = useRouter()
 
@@ -38,7 +40,7 @@ export default function Upload() {
       const res = await fetch('/api/extract', { method: 'POST', body: formData })
       const data = await res.json()
       if (data.error) setEroare(data.error)
-      else { setRezultat(data.analize || []); setLaborator(data.laborator || ''); setDataBuletin(data.data_buletin || ''); setMesaj(`S-au extras ${data.analize?.length || 0} analize din PDF!`) }
+      else { setRezultat(data.analize || []); setLaborator(data.laborator || ''); setDataBuletin(data.data_buletin || ''); setOrasLaborator(data.oras_laborator || ''); setTaraLaborator(data.tara_laborator || ''); setMesaj(`S-au extras ${data.analize?.length || 0} analize din PDF!`) }
     } catch { setEroare('A apărut o eroare. Încearcă din nou.') }
     setLoading(false)
   }
