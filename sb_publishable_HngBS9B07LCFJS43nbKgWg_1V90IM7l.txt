@@ -1,0 +1,3 @@
+sb_publishable_HngBS9B07LCFJS43nbKgWg_1V90IM7l
+sb_secret_UDYR8yzpUrhX-mChifj-8A_KX63kX9f
+https://mjlaajwedhkucfuxyzoj.supabase.co/rest/v1/
