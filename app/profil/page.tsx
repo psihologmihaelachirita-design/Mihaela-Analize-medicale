@@ -127,17 +127,17 @@ export default function Profil() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
   const navItems = [
-    { key:'baza', Icon: IconUser, label:'Date de bază' },
-    { key:'medicale', Icon: IconStethoscope, label:'Date medicale' },
-    { key:'vaccinuri', Icon: IconVaccine, label:'Vaccinuri' },
-    { key:'contacte', Icon: IconPhone, label:'Contacte urgență' },
+    { key:'baza', icon:'user', label:'Date de bază' },
+    { key:'medicale', icon:'stethoscope', label:'Date medicale' },
+    { key:'vaccinuri', icon:'vaccine', label:'Vaccinuri' },
+    { key:'contacte', icon:'phone', label:'Contacte urgență' },
   ]
 
   function Banner({ icon, title, sub, badge, skey }: { icon:string, title:string, sub:string, badge?:boolean, skey:keyof typeof sectiuni }) {
     return (
       <div onClick={() => toggleSectiune(skey)} style={{ background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'32px', height:'32px' }}></div>
+          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px' }}>{icon}</div>
           <div>
             <div style={{ fontSize:'14px', fontWeight:500, color:'white', display:'flex', alignItems:'center', gap:'8px' }}>
               {title}
@@ -160,10 +160,6 @@ export default function Profil() {
         <div style={{ width:'0.5px', height:'20px', background:'#e5e7eb' }}></div>
         <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Profilul meu</span>
       </div>
-      <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
-        <span style={{fontSize:'14px', color:'#111', fontWeight:500}}>{user?.email?.split('@')[0]}</span>
-        <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/' }} style={{padding:'6px 14px', background:'transparent', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500}}>Ieșire</button>
-      </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
@@ -184,7 +180,7 @@ export default function Profil() {
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key as keyof typeof sectiuni)}
                 style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key as keyof typeof sectiuni] ? '#085041' : '#555', background: sectiuni[item.key as keyof typeof sectiuni] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key as keyof typeof sectiuni] ? 500 : 400 }}>
-                <span style={{ display:'flex', alignItems:'center', color:'#555' }}><item.Icon size={16} stroke={1.5} /></span>
+                <span style={{ fontSize:'16px' }}>{item.icon}</span>
                 {item.label}
               </div>
             ))}
