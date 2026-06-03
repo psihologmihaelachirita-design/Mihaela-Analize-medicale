@@ -127,10 +127,10 @@ export default function Profil() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
   const navItems = [
-    { key:'baza', icon:'user', label:'Date de bază' },
-    { key:'medicale', icon:'stethoscope', label:'Date medicale' },
-    { key:'vaccinuri', icon:'vaccine', label:'Vaccinuri' },
-    { key:'contacte', icon:'phone', label:'Contacte urgență' },
+    { key:'baza', Icon: IconUser, label:'Date de bază' },
+    { key:'medicale', Icon: IconStethoscope, label:'Date medicale' },
+    { key:'vaccinuri', Icon: IconVaccine, label:'Vaccinuri' },
+    { key:'contacte', Icon: IconPhone, label:'Contacte urgență' },
   ]
 
   function Banner({ icon, title, sub, badge, skey }: { icon:string, title:string, sub:string, badge?:boolean, skey:keyof typeof sectiuni }) {
@@ -155,18 +155,22 @@ export default function Profil() {
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
 
       {/* Topbar */}
-      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 32px', height:'56px', display:'flex', alignItems:'center', gap:'20px', flexShrink:0 }}>
-        <Link href="/dashboard" style={{ fontSize:'13px', color:'#16705a', fontWeight:500, textDecoration:'none' }}>← Dosar</Link>
-        <div style={{ width:'0.5px', height:'20px', background:'#e5e7eb' }}></div>
-        <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Profilul meu</span>
+      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 32px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
+          <Link href="/dashboard" style={{ fontSize:'13px', color:'#16705a', fontWeight:500, textDecoration:'none' }}>← Dosar</Link>
+          <div style={{ width:'0.5px', height:'20px', background:'#e5e7eb' }}></div>
+          <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Profilul meu</span>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+          <span style={{ fontSize:'14px', color:'#111', fontWeight:500 }}>{user?.email?.split('@')[0]}</span>
+          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/' }} style={{ padding:'6px 14px', background:'transparent', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Ieșire</button>
+        </div>
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
         {/* Sidebar */}
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
-
-          {/* Logo */}
           <div style={{ padding:'0 20px 28px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'24px' }}>
             <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
               <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#16705a', fontSize:'20px', fontWeight:500 }}>✚</div>
@@ -174,19 +178,17 @@ export default function Profil() {
             </div>
           </div>
 
-          {/* Nav items */}
           <div style={{ padding:'0 16px', flex:1 }}>
             <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key as keyof typeof sectiuni)}
                 style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key as keyof typeof sectiuni] ? '#085041' : '#555', background: sectiuni[item.key as keyof typeof sectiuni] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key as keyof typeof sectiuni] ? 500 : 400 }}>
-                <span style={{ fontSize:'16px' }}>{item.icon}</span>
+                <span style={{ display:'flex', alignItems:'center', color:'#555' }}><item.Icon size={16} stroke={1.5} /></span>
                 {item.label}
               </div>
             ))}
           </div>
 
-          {/* Progres */}
           <div style={{ padding:'14px', margin:'16px 16px 12px', background:'#f8f9fa', borderRadius:'10px', border:'0.5px solid #e5e7eb' }}>
             <div style={{ fontSize:'12px', color:'#555', marginBottom:'8px', display:'flex', justifyContent:'space-between' }}>
               <span>Progres completare</span>
@@ -198,7 +200,6 @@ export default function Profil() {
             <div style={{ fontSize:'11px', color:'#aaa', marginTop:'8px' }}>Completează pentru QR cod de urgență</div>
           </div>
 
-          {/* Disclaimer */}
           <div style={{ padding:'14px', margin:'0 16px', background:'#FAEEDA', borderRadius:'10px', border:'0.5px solid #EF9F27' }}>
             <div style={{ fontSize:'13px', color:'#854F0B', lineHeight:1.6 }}>
               ⚠ Toate datele introduse sunt în răspunderea exclusivă a utilizatorului.
@@ -209,7 +210,6 @@ export default function Profil() {
         {/* Main */}
         <div style={{ padding:'28px', overflowY:'auto' }}>
 
-          {/* Date de baza */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon="👤" title="Date de bază" sub="Folosite pentru intervale de referință corecte pe vârstă și sex" skey="baza" />
             {sectiuni.baza && (
@@ -260,7 +260,6 @@ export default function Profil() {
             )}
           </div>
 
-          {/* Date medicale */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon="🩺" title="Date medicale" sub="Completează treptat — pentru QR cod urgență și raportul pentru medic" badge skey="medicale" />
             {sectiuni.medicale && (
@@ -278,7 +277,6 @@ export default function Profil() {
             )}
           </div>
 
-          {/* Vaccinuri */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon="💉" title="Vaccinuri" sub="Istoricul vaccinărilor tale" badge skey="vaccinuri" />
             {sectiuni.vaccinuri && (
@@ -300,7 +298,6 @@ export default function Profil() {
             )}
           </div>
 
-          {/* Contacte urgenta */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon="📞" title="Contacte de urgență" sub="Afișate pe QR codul de urgență" badge skey="contacte" />
             {sectiuni.contacte && (
