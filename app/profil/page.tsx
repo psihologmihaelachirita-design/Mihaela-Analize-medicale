@@ -160,6 +160,10 @@ export default function Profil() {
         <div style={{ width:'0.5px', height:'20px', background:'#e5e7eb' }}></div>
         <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Profilul meu</span>
       </div>
+      <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+        <span style={{fontSize:'14px', color:'#111', fontWeight:500}}>{user?.email?.split('@')[0]}</span>
+        <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/' }} style={{padding:'6px 14px', background:'transparent', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500}}>Ieșire</button>
+      </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
