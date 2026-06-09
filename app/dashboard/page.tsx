@@ -113,7 +113,7 @@ export default function Dashboard() {
               <IconChartBar size={26} color="#0F6E56" stroke={1.5} />
             </div>
             <div>
-              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Panoramic</div>
+              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Vizualizare panoramică</div>
               <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Toate analizele cross-laborator vizualizate în timp</div>
             </div>
           </Link>
@@ -122,7 +122,7 @@ export default function Dashboard() {
               <IconHeartRateMonitor size={26} color="#0F6E56" stroke={1.5} />
             </div>
             <div>
-              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Urgență</div>
+              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Profil de urgență</div>
               <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Datele tale critice disponibile instant oricui te tratează</div>
             </div>
           </Link>
