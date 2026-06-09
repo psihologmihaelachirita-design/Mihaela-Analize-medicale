@@ -108,22 +108,22 @@ export default function Dashboard() {
 
         {/* 2 butoane mari */}
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'20px'}}>
-          <Link href="/panoramic" style={{textDecoration:'none', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'20px', display:'flex', alignItems:'center', gap:'14px'}}>
-            <div style={{width:'44px', height:'44px', borderRadius:'10px', background:'#E1F5EE', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
-              <IconChartBar size={22} color="#0F6E56" stroke={1.5} />
+          <Link href="/panoramic" style={{textDecoration:'none', background:'#E1F5EE', border:'none', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
+            <div style={{width:'52px', height:'52px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+              <IconChartBar size={26} color="#0F6E56" stroke={1.5} />
             </div>
             <div>
-              <div style={{fontSize:'15px', fontWeight:500, color:'#111', marginBottom:'3px'}}>Panoramic</div>
-              <div style={{fontSize:'12px', color:'#888', lineHeight:1.4}}>Toate analizele cross-laborator vizualizate în timp</div>
+              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Panoramic</div>
+              <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Toate analizele cross-laborator vizualizate în timp</div>
             </div>
           </Link>
-          <Link href="/urgenta" style={{textDecoration:'none', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'20px', display:'flex', alignItems:'center', gap:'14px'}}>
-            <div style={{width:'44px', height:'44px', borderRadius:'10px', background:'#E1F5EE', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
-              <IconHeartRateMonitor size={22} color="#0F6E56" stroke={1.5} />
+          <Link href="/urgenta" style={{textDecoration:'none', background:'#E1F5EE', border:'none', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
+            <div style={{width:'52px', height:'52px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+              <IconHeartRateMonitor size={26} color="#0F6E56" stroke={1.5} />
             </div>
             <div>
-              <div style={{fontSize:'15px', fontWeight:500, color:'#111', marginBottom:'3px'}}>Urgență</div>
-              <div style={{fontSize:'12px', color:'#888', lineHeight:1.4}}>Datele tale critice disponibile instant oricui te tratează</div>
+              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Urgență</div>
+              <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Datele tale critice disponibile instant oricui te tratează</div>
             </div>
           </Link>
         </div>
