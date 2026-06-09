@@ -35,7 +35,7 @@ export default function Dashboard() {
 
   if (loading) return (
     <div style={{display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', fontFamily:'system-ui'}}>
-      <p style={{color:'#888', fontSize:'14px'}}>Se încarcă...</p>
+      <p style={{color:'#111', fontSize:'14px'}}>Se încarcă...</p>
     </div>
   )
 
@@ -108,7 +108,7 @@ export default function Dashboard() {
 
         {/* 2 butoane mari */}
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'20px'}}>
-          <Link href="/panoramic" style={{textDecoration:'none', background:'#E1F5EE', border:'none', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
+          <Link href="/panoramic" style={{textDecoration:'none', background:'#8FC7B4', border:'0.5px solid #111', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
             <div style={{width:'52px', height:'52px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
               <IconChartBar size={26} color="#0F6E56" stroke={1.5} />
             </div>
@@ -117,7 +117,7 @@ export default function Dashboard() {
               <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Toate analizele cross-laborator vizualizate în timp</div>
             </div>
           </Link>
-          <Link href="/urgenta" style={{textDecoration:'none', background:'#E1F5EE', border:'none', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
+          <Link href="/urgenta" style={{textDecoration:'none', background:'#8FC7B4', border:'0.5px solid #111', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
             <div style={{width:'52px', height:'52px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
               <IconHeartRateMonitor size={26} color="#0F6E56" stroke={1.5} />
             </div>
@@ -129,7 +129,7 @@ export default function Dashboard() {
         </div>
 
         {/* Analize anormale */}
-        <div style={{fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px'}}>Analize în afara limitelor normale</div>
+        <div style={{fontSize:'11px', fontWeight:500, color:'#111', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px'}}>Analize în afara limitelor normale</div>
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'16px'}}>
 
           <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden'}}>
@@ -139,19 +139,19 @@ export default function Dashboard() {
             </div>
             <div style={{display:'flex', borderBottom:'0.5px solid #e5e7eb'}}>
               {(['3luni', '1an'] as const).map(t => (
-                <div key={t} onClick={() => setTabPeste(t)} style={{flex:1, padding:'7px', fontSize:'11px', textAlign:'center', cursor:'pointer', color: tabPeste===t ? '#16705a' : '#aaa', fontWeight: tabPeste===t ? 500 : 400, borderBottom: tabPeste===t ? '2px solid #16705a' : '2px solid transparent'}}>
+                <div key={t} onClick={() => setTabPeste(t)} style={{flex:1, padding:'7px', fontSize:'11px', textAlign:'center', cursor:'pointer', color: tabPeste===t ? '#16705a' : '#111', fontWeight: tabPeste===t ? 500 : 400, borderBottom: tabPeste===t ? '2px solid #16705a' : '2px solid transparent'}}>
                   {t === '3luni' ? 'Ultimele 3 luni' : 'Ultimul an'}
                 </div>
               ))}
             </div>
             <div style={{maxHeight:'200px', overflowY:'auto'}}>
               {pesteLista.length === 0 ? (
-                <div style={{padding:'16px', textAlign:'center', fontSize:'12px', color:'#aaa'}}>Nicio analiză în această perioadă</div>
+                <div style={{padding:'16px', textAlign:'center', fontSize:'12px', color:'#111'}}>Nicio analiză în această perioadă</div>
               ) : pesteLista.map((a, i) => (
                 <div key={i} style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 16px', borderBottom:'0.5px solid #f5f5f5'}}>
                   <div>
                     <div style={{fontSize:'12px', color:'#111'}}>{a.nume_analiza}</div>
-                    <div style={{fontSize:'11px', color:'#aaa'}}>{a.data_analiza}{getLaborator(a.observatii) ? ` · ${getLaborator(a.observatii)}` : ''}</div>
+                    <div style={{fontSize:'11px', color:'#111'}}>{a.data_analiza}{getLaborator(a.observatii) ? ` · ${getLaborator(a.observatii)}` : ''}</div>
                   </div>
                   <div style={{fontSize:'12px', fontWeight:500, color:'#E24B4A'}}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : `${a.valoare} ${a.unitate || ''}`}</div>
                 </div>
@@ -166,19 +166,19 @@ export default function Dashboard() {
             </div>
             <div style={{display:'flex', borderBottom:'0.5px solid #e5e7eb'}}>
               {(['3luni', '1an'] as const).map(t => (
-                <div key={t} onClick={() => setTabSub(t)} style={{flex:1, padding:'7px', fontSize:'11px', textAlign:'center', cursor:'pointer', color: tabSub===t ? '#16705a' : '#aaa', fontWeight: tabSub===t ? 500 : 400, borderBottom: tabSub===t ? '2px solid #16705a' : '2px solid transparent'}}>
+                <div key={t} onClick={() => setTabSub(t)} style={{flex:1, padding:'7px', fontSize:'11px', textAlign:'center', cursor:'pointer', color: tabSub===t ? '#16705a' : '#111', fontWeight: tabSub===t ? 500 : 400, borderBottom: tabSub===t ? '2px solid #16705a' : '2px solid transparent'}}>
                   {t === '3luni' ? 'Ultimele 3 luni' : 'Ultimul an'}
                 </div>
               ))}
             </div>
             <div style={{maxHeight:'200px', overflowY:'auto'}}>
               {subLista.length === 0 ? (
-                <div style={{padding:'16px', textAlign:'center', fontSize:'12px', color:'#aaa'}}>Nicio analiză în această perioadă</div>
+                <div style={{padding:'16px', textAlign:'center', fontSize:'12px', color:'#111'}}>Nicio analiză în această perioadă</div>
               ) : subLista.map((a, i) => (
                 <div key={i} style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 16px', borderBottom:'0.5px solid #f5f5f5'}}>
                   <div>
                     <div style={{fontSize:'12px', color:'#111'}}>{a.nume_analiza}</div>
-                    <div style={{fontSize:'11px', color:'#aaa'}}>{a.data_analiza}{getLaborator(a.observatii) ? ` · ${getLaborator(a.observatii)}` : ''}</div>
+                    <div style={{fontSize:'11px', color:'#111'}}>{a.data_analiza}{getLaborator(a.observatii) ? ` · ${getLaborator(a.observatii)}` : ''}</div>
                   </div>
                   <div style={{fontSize:'12px', fontWeight:500, color:'#B45309'}}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : `${a.valoare} ${a.unitate || ''}`}</div>
                 </div>
@@ -190,28 +190,28 @@ export default function Dashboard() {
         {/* Bottom 3 carduri */}
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px'}}>
           <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'14px'}}>
-            <div style={{fontSize:'11px', color:'#aaa', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'6px'}}>Ultimul buletin</div>
+            <div style={{fontSize:'11px', color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'6px'}}>Ultimul buletin</div>
             {ultimulBuletin ? (
               <>
                 <div style={{fontSize:'14px', fontWeight:500, color:'#111'}}>{getLaborator(ultimulBuletin.observatii) || 'Necunoscut'}</div>
-                <div style={{fontSize:'12px', color:'#888', marginTop:'3px'}}>{ultimulBuletin.data_analiza}</div>
+                <div style={{fontSize:'12px', color:'#111', marginTop:'3px'}}>{ultimulBuletin.data_analiza}</div>
               </>
             ) : (
-              <div style={{fontSize:'13px', color:'#aaa'}}>Niciun buletin încă</div>
+              <div style={{fontSize:'13px', color:'#111'}}>Niciun buletin încă</div>
             )}
           </div>
 
           <Link href="/dosar" style={{textDecoration:'none', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'14px', display:'block'}}>
-            <div style={{fontSize:'11px', color:'#aaa', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'6px'}}>Dosar urgență</div>
+            <div style={{fontSize:'11px', color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'6px'}}>Dosar urgență</div>
             <div style={{fontSize:'14px', fontWeight:500, color:'#111'}}>{progres}% complet</div>
-            <div style={{fontSize:'12px', color:'#888', marginTop:'3px'}}>{progres < 100 ? 'Apasă pentru a completa' : 'Complet ✓'}</div>
+            <div style={{fontSize:'12px', color:'#111', marginTop:'3px'}}>{progres < 100 ? 'Apasă pentru a completa' : 'Complet ✓'}</div>
             <div style={{height:'4px', background:'#e5e7eb', borderRadius:'2px', overflow:'hidden', marginTop:'8px'}}>
               <div style={{height:'100%', width:`${progres}%`, background:'#16705a', borderRadius:'2px'}}></div>
             </div>
           </Link>
 
           <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'14px'}}>
-            <div style={{fontSize:'11px', color:'#aaa', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'10px'}}>Acțiuni rapide</div>
+            <div style={{fontSize:'11px', color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'10px'}}>Acțiuni rapide</div>
             <div style={{display:'flex', gap:'8px'}}>
               <Link href="/export" style={{flex:1, padding:'8px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111', textDecoration:'none', textAlign:'center', fontWeight:500}}>↓ Export</Link>
               <Link href="/upload" style={{flex:1, padding:'8px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111', textDecoration:'none', textAlign:'center', fontWeight:500}}>↑ Adaugă</Link>
