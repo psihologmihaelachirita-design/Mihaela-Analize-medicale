@@ -108,22 +108,22 @@ export default function Dashboard() {
 
         {/* 2 butoane mari */}
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'20px'}}>
-          <Link href="/panoramic" style={{textDecoration:'none', background:'#8FC7B4', border:'0.5px solid #111', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
+          <Link href="/panoramic" style={{textDecoration:'none', background:'#16705a', border:'0.5px solid #111', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
             <div style={{width:'52px', height:'52px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
               <IconChartBar size={26} color="#0F6E56" stroke={1.5} />
             </div>
             <div>
-              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Vizualizare panoramică</div>
-              <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Toate analizele cross-laborator vizualizate în timp</div>
+              <div style={{fontSize:'17px', fontWeight:500, color:'white', marginBottom:'4px'}}>Vizualizare panoramică</div>
+              <div style={{fontSize:'13px', color:'white', lineHeight:1.4}}>Toate analizele cross-laborator vizualizate în timp</div>
             </div>
           </Link>
-          <Link href="/urgenta" style={{textDecoration:'none', background:'#8FC7B4', border:'0.5px solid #111', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
+          <Link href="/urgenta" style={{textDecoration:'none', background:'#16705a', border:'0.5px solid #111', borderRadius:'12px', padding:'24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', textAlign:'center'}}>
             <div style={{width:'52px', height:'52px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
               <IconHeartRateMonitor size={26} color="#0F6E56" stroke={1.5} />
             </div>
             <div>
-              <div style={{fontSize:'17px', fontWeight:500, color:'#111', marginBottom:'4px'}}>Profil de urgență</div>
-              <div style={{fontSize:'13px', color:'#111', lineHeight:1.4}}>Datele tale critice disponibile instant oricui te tratează</div>
+              <div style={{fontSize:'17px', fontWeight:500, color:'white', marginBottom:'4px'}}>Profil de urgență</div>
+              <div style={{fontSize:'13px', color:'white', lineHeight:1.4}}>Datele tale critice disponibile instant oricui te tratează</div>
             </div>
           </Link>
         </div>
