@@ -117,13 +117,13 @@ export default function Dashboard() {
   function ListaAnalize({ lista }: { lista: any[] }) {
     return (
       <div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'8px 16px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
           {['Analiză','Valoare','Unitate','Status'].map(h => (
             <div key={h} style={{ fontSize:'11px', fontWeight:500, color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', textAlign: h !== 'Analiză' ? 'right' : 'left' }}>{h}</div>
           ))}
         </div>
         {lista.map((a, i) => (
-          <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'10px 16px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
+          <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
             <div style={{ fontSize:'13px', color:'#111', fontWeight:500 }}>{a.nume_analiza}</div>
             <div style={{ fontSize:'13px', fontWeight:500, color: getStatus(a) === 'peste' ? '#E24B4A' : getStatus(a) === 'sub' ? '#B45309' : '#1D9E75', textAlign:'right' }}>
               {a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}
@@ -394,13 +394,13 @@ export default function Dashboard() {
                 <div style={{ padding:'2rem', textAlign:'center', fontSize:'13px', color:'#111' }}>Nicio analiză în această perioadă</div>
               ) : (
                 <>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'8px 16px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
                     {['Analiză','Valoare','Unitate','Status'].map(h => (
                       <div key={h} style={{ fontSize:'11px', fontWeight:500, color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', textAlign: h !== 'Analiză' ? 'right' : 'left' }}>{h}</div>
                     ))}
                   </div>
-                  {modalPesteLista.filter(a => filtreazaData(a, modalTabPeste)).map((a, i) => (
-                    <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'10px 16px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
+                  {pesteTot.filter(a => filtreazaData(a, modalTabPeste)).map((a, i) => (
+                    <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
                       <div style={{ fontSize:'13px', color:'#111', fontWeight:500 }}>{a.nume_analiza}</div>
                       <div style={{ fontSize:'13px', fontWeight:500, color:'#E24B4A', textAlign:'right' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}</div>
                       <div style={{ fontSize:'12px', color:'#111', textAlign:'right' }}>{a.unitate || '—'}</div>
@@ -437,13 +437,13 @@ export default function Dashboard() {
                 <div style={{ padding:'2rem', textAlign:'center', fontSize:'13px', color:'#111' }}>Nicio analiză în această perioadă</div>
               ) : (
                 <>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'8px 16px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
                     {['Analiză','Valoare','Unitate','Status'].map(h => (
                       <div key={h} style={{ fontSize:'11px', fontWeight:500, color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', textAlign: h !== 'Analiză' ? 'right' : 'left' }}>{h}</div>
                     ))}
                   </div>
-                  {modalSubLista.filter(a => filtreazaData(a, modalTabSub)).map((a, i) => (
-                    <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'10px 16px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
+                  {subTot.filter(a => filtreazaData(a, modalTabSub)).map((a, i) => (
+                    <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
                       <div style={{ fontSize:'13px', color:'#111', fontWeight:500 }}>{a.nume_analiza}</div>
                       <div style={{ fontSize:'13px', fontWeight:500, color:'#B45309', textAlign:'right' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}</div>
                       <div style={{ fontSize:'12px', color:'#111', textAlign:'right' }}>{a.unitate || '—'}</div>
@@ -469,7 +469,7 @@ export default function Dashboard() {
               <button onClick={() => setModalBuletin(false)} style={{ border:'none', background:'none', fontSize:'18px', cursor:'pointer', color:'#111' }}>✕</button>
             </div>
             <div style={{ overflowY:'auto' }}>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'8px 16px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa' }}>
                 {['Analiză','Valoare','Unitate','Status'].map(h => (
                   <div key={h} style={{ fontSize:'11px', fontWeight:500, color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', textAlign: h !== 'Analiză' ? 'right' : 'left' }}>{h}</div>
                 ))}
@@ -481,7 +481,7 @@ export default function Dashboard() {
                 const badgeColor = s === 'peste' ? '#A32D2D' : s === 'sub' ? '#B45309' : '#085041'
                 const badgeLabel = s === 'peste' ? '↑ Peste' : s === 'sub' ? '↓ Sub' : '✓ Normal'
                 return (
-                  <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 70px 70px 90px', gap:'4px', padding:'10px 16px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
+                  <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
                     <div style={{ fontSize:'13px', color:'#111', fontWeight:500 }}>{a.nume_analiza}</div>
                     <div style={{ fontSize:'13px', fontWeight:500, color: valColor, textAlign:'right' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}</div>
                     <div style={{ fontSize:'12px', color:'#111', textAlign:'right' }}>{a.unitate || '—'}</div>
