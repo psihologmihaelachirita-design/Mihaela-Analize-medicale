@@ -353,9 +353,9 @@ export default function Dashboard() {
               <div style={{ height:'0.5px', background:'#e5e7eb', marginBottom:'12px' }}></div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'8px', marginBottom:'12px' }}>
                 {[
-                  { val: buletinNormale, label: 'Normale', color: '#1D9E75', bg: '#E1F5EE', filtru: 'normal' as const },
-                  { val: buletinPeste, label: 'Peste limită', color: '#A32D2D', bg: '#FCEBEB', filtru: 'peste' as const },
-                  { val: buletinSub, label: 'Sub limită', color: '#B45309', bg: '#FEF3C7', filtru: 'sub' as const },
+                  { val: buletinNormale, label: 'Normale', color: '#0F6E56', bg: '#E1F5EE', filtru: 'normal' as const },
+                  { val: buletinPeste, label: 'Peste limită', color: '#ed1f37', bg: '#FFF0F0', filtru: 'peste' as const },
+                  { val: buletinSub, label: 'Sub limită', color: '#92400E', bg: '#FFF8E7', filtru: 'sub' as const },
                 ].map((s, i) => (
                   <div key={i} onClick={e => { e.stopPropagation(); const f = s.filtru as 'toate' | 'normal' | 'peste' | 'sub'; setTimeout(() => { setModalBuletinFiltru(f); setModalBuletin(true) }, 0) }} style={{ background: s.bg, borderRadius:'8px', padding:'10px', textAlign:'center', cursor:'pointer' }}>
                     <div style={{ fontSize:'20px', fontWeight:600, color: s.color }}>{s.val}</div>
