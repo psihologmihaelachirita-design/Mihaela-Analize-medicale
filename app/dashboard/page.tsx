@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [modalPeste, setModalPeste] = useState(false)
   const [modalSub, setModalSub] = useState(false)
   const [modalBuletin, setModalBuletin] = useState(false)
+  const [modalBuletinFiltru, setModalBuletinFiltru] = useState<'toate' | 'normal' | 'peste' | 'sub'>('toate')
   const [modalTabPeste, setModalTabPeste] = useState<'3luni' | '1an'>('3luni')
   const [modalTabSub, setModalTabSub] = useState<'3luni' | '1an'>('3luni')
   const [dropdown, setDropdown] = useState(false)
@@ -342,7 +343,7 @@ export default function Dashboard() {
         </div>
 
         {/* Ultimul buletin */}
-        <div onClick={() => setModalBuletin(true)} style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'16px', cursor:'pointer' }}>
+        <div onClick={() => { setModalBuletinFiltru('toate'); setModalBuletin(true) }} style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'16px', cursor:'pointer' }}>
           <div style={{ fontSize:'11px', color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', fontWeight:500, marginBottom:'8px' }}>Ultimul buletin uploadat</div>
           {ultimulBuletin ? (
             <>
@@ -352,11 +353,11 @@ export default function Dashboard() {
               <div style={{ height:'0.5px', background:'#e5e7eb', marginBottom:'12px' }}></div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'8px', marginBottom:'12px' }}>
                 {[
-                  { val: buletinNormale, label: 'Normale', color: '#1D9E75', bg: '#E1F5EE' },
-                  { val: buletinPeste, label: 'Peste limită', color: '#A32D2D', bg: '#FCEBEB' },
-                  { val: buletinSub, label: 'Sub limită', color: '#B45309', bg: '#FEF3C7' },
+                  { val: buletinNormale, label: 'Normale', color: '#1D9E75', bg: '#E1F5EE', filtru: 'normal' as const },
+                  { val: buletinPeste, label: 'Peste limită', color: '#A32D2D', bg: '#FCEBEB', filtru: 'peste' as const },
+                  { val: buletinSub, label: 'Sub limită', color: '#B45309', bg: '#FEF3C7', filtru: 'sub' as const },
                 ].map((s, i) => (
-                  <div key={i} style={{ background: s.bg, borderRadius:'8px', padding:'10px', textAlign:'center' }}>
+                  <div key={i} onClick={e => { e.stopPropagation(); setModalBuletinFiltru(s.filtru); setModalBuletin(true) }} style={{ background: s.bg, borderRadius:'8px', padding:'10px', textAlign:'center', cursor:'pointer' }}>
                     <div style={{ fontSize:'20px', fontWeight:600, color: s.color }}>{s.val}</div>
                     <div style={{ fontSize:'11px', color: s.color, marginTop:'2px' }}>{s.label}</div>
                   </div>
