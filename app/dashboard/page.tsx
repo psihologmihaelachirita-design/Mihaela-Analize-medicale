@@ -126,7 +126,7 @@ export default function Dashboard() {
         {lista.map((a, i) => (
           <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
             <div style={{ fontSize:'13px', color:'#111', fontWeight:500 }}>{a.nume_analiza}</div>
-            <div style={{ fontSize:'13px', fontWeight:500, color: getStatus(a) === 'peste' ? '#E24B4A' : getStatus(a) === 'sub' ? '#B45309' : '#1D9E75', textAlign:'right' }}>
+            <div style={{ fontSize:'13px', fontWeight:500, color: getStatus(a) === 'peste' ? 'ed1f37' : getStatus(a) === 'sub' ? '#B45309' : '#1D9E75', textAlign:'right' }}>
               {a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}
             </div>
             <div style={{ fontSize:'12px', color:'#111', textAlign:'right' }}>{a.unitate || '—'}</div>
@@ -194,7 +194,7 @@ export default function Dashboard() {
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
                 <Link href="/cont" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Cont</Link>
-                <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
+                <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'ed1f37', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
               </div>
             )}
           </div>
@@ -216,7 +216,7 @@ export default function Dashboard() {
           <Link href="/dosar" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Dosar</Link>
           <Link href="/upload" style={{ padding:'10px 12px', fontSize:'14px', color:'white', textDecoration:'none', fontWeight:500, borderRadius:'8px', background:'#16705a', textAlign:'center', marginTop:'4px' }}>+ Adaugă</Link>
           <Link href="/cont" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Cont</Link>
-          <div onClick={handleLogout} style={{ padding:'10px 12px', fontSize:'14px', color:'#E24B4A', cursor:'pointer', fontWeight:500, borderRadius:'8px' }}>Ieșire</div>
+          <div onClick={handleLogout} style={{ padding:'10px 12px', fontSize:'14px', color:'ed1f37', cursor:'pointer', fontWeight:500, borderRadius:'8px' }}>Ieșire</div>
         </div>
       )}
 
@@ -277,9 +277,9 @@ export default function Dashboard() {
 
           {/* Peste */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden' }}>
-            <div style={{ padding:'12px 16px', borderBottom:'0.5px solid #e5e7eb', borderLeft:'3px solid #E24B4A', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <span style={{ fontSize:'13px', fontWeight:500, color:'#E24B4A' }}>↑ Peste limită</span>
-              <span style={{ fontSize:'20px', fontWeight:500, color:'#E24B4A' }}>{pesteTot.length}</span>
+            <div style={{ padding:'12px 16px', borderBottom:'0.5px solid #e5e7eb', borderLeft:'3px solid ed1f37', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <span style={{ fontSize:'13px', fontWeight:500, color:'ed1f37' }}>↑ Peste limită</span>
+              <span style={{ fontSize:'20px', fontWeight:500, color:'ed1f37' }}>{pesteTot.length}</span>
             </div>
             <div style={{ display:'flex', borderBottom:'0.5px solid #e5e7eb' }}>
               {(['3luni', '1an'] as const).map(t => (
@@ -297,7 +297,7 @@ export default function Dashboard() {
                     <div style={{ fontSize:'12px', color:'#111' }}>{a.nume_analiza}</div>
                     <div style={{ fontSize:'11px', color:'#111' }}>{a.data_analiza}{getLaborator(a.observatii) ? ` · ${getLaborator(a.observatii)}` : ''}</div>
                   </div>
-                  <div style={{ fontSize:'12px', fontWeight:500, color:'#E24B4A' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : `${a.valoare} ${a.unitate || ''}`}</div>
+                  <div style={{ fontSize:'12px', fontWeight:500, color:'ed1f37' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : `${a.valoare} ${a.unitate || ''}`}</div>
                 </div>
               ))}
               {pesteLista.length > 4 && (
@@ -403,7 +403,7 @@ export default function Dashboard() {
                   {pesteTot.filter(a => filtreazaData(a, modalTabPeste)).map((a, i) => (
                     <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:'4px', padding:'8px 12px', borderBottom:'0.5px solid #f5f5f5', alignItems:'center' }}>
                       <div style={{ fontSize:'13px', color:'#111', fontWeight:500 }}>{a.nume_analiza}</div>
-                      <div style={{ fontSize:'13px', fontWeight:500, color:'#E24B4A', textAlign:'right' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}</div>
+                      <div style={{ fontSize:'13px', fontWeight:500, color:'ed1f37', textAlign:'right' }}>{a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare}</div>
                       <div style={{ fontSize:'12px', color:'#111', textAlign:'right' }}>{a.unitate || '—'}</div>
                       <div style={{ textAlign:'right' }}><span style={{ display:'inline-flex', padding:'3px 10px', background:'#FCEBEB', color:'#A32D2D', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>↑ Peste</span></div>
                     </div>
@@ -477,7 +477,7 @@ export default function Dashboard() {
               </div>
               {buletinAnalize.filter(a => modalBuletinFiltru === 'toate' || getStatus(a) === modalBuletinFiltru).map((a, i) => {
                 const s = getStatus(a)
-                const valColor = s === 'peste' ? '#E24B4A' : s === 'sub' ? '#B45309' : '#1D9E75'
+                const valColor = s === 'peste' ? 'ed1f37' : s === 'sub' ? '#B45309' : '#1D9E75'
                 const badgeBg = s === 'peste' ? '#FCEBEB' : s === 'sub' ? '#FEF3C7' : '#E1F5EE'
                 const badgeColor = s === 'peste' ? '#A32D2D' : s === 'sub' ? '#B45309' : '#085041'
                 const badgeLabel = s === 'peste' ? '↑ Peste' : s === 'sub' ? '↓ Sub' : '✓ Normal'
