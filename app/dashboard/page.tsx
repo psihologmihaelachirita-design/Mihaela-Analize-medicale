@@ -357,7 +357,7 @@ export default function Dashboard() {
                   { val: buletinPeste, label: 'Peste limită', color: '#A32D2D', bg: '#FCEBEB', filtru: 'peste' as const },
                   { val: buletinSub, label: 'Sub limită', color: '#B45309', bg: '#FEF3C7', filtru: 'sub' as const },
                 ].map((s, i) => (
-                  <div key={i} onClick={e => { e.stopPropagation(); setModalBuletinFiltru(s.filtru); setModalBuletin(true) }} style={{ background: s.bg, borderRadius:'8px', padding:'10px', textAlign:'center', cursor:'pointer' }}>
+                  <div key={i} onClick={e => { e.stopPropagation(); const f = s.filtru as 'toate' | 'normal' | 'peste' | 'sub'; setTimeout(() => { setModalBuletinFiltru(f); setModalBuletin(true) }, 0) }} style={{ background: s.bg, borderRadius:'8px', padding:'10px', textAlign:'center', cursor:'pointer' }}>
                     <div style={{ fontSize:'20px', fontWeight:600, color: s.color }}>{s.val}</div>
                     <div style={{ fontSize:'11px', color: s.color, marginTop:'2px' }}>{s.label}</div>
                   </div>
@@ -475,7 +475,7 @@ export default function Dashboard() {
                   <div key={h} style={{ fontSize:'11px', fontWeight:500, color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', textAlign: h !== 'Analiză' ? 'right' : 'left' }}>{h}</div>
                 ))}
               </div>
-              {buletinAnalize.map((a, i) => {
+              {buletinAnalize.filter(a => modalBuletinFiltru === 'toate' || getStatus(a) === modalBuletinFiltru).map((a, i) => {
                 const s = getStatus(a)
                 const valColor = s === 'peste' ? '#E24B4A' : s === 'sub' ? '#B45309' : '#1D9E75'
                 const badgeBg = s === 'peste' ? '#FCEBEB' : s === 'sub' ? '#FEF3C7' : '#E1F5EE'
