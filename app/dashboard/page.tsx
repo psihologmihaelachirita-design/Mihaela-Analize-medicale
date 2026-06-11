@@ -243,8 +243,8 @@ export default function Dashboard() {
               <div style={{ fontSize:'12px', color:'white', lineHeight:1.4 }}>Toate analizele cross-laborator vizualizate în timp</div>
             </Link>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px' }}>
-              <Link href="/upload" style={{ padding:'12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', textDecoration:'none', textAlign:'center', fontWeight:500 }}>↑  Adaugă analize</Link>
-              <Link href="/export" style={{ padding:'12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', textDecoration:'none', textAlign:'center', fontWeight:500 }}>↓  Export PDF</Link>
+              <Link href="/upload" style={{ padding:'12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', textDecoration:'none', textAlign:'center', fontWeight:500 }}>↑&nbsp;&nbsp; Adaugă analize</Link>
+              <Link href="/export" style={{ padding:'12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', textDecoration:'none', textAlign:'center', fontWeight:500 }}>↓&nbsp;&nbsp; Export PDF</Link>
             </div>
           </div>
 
