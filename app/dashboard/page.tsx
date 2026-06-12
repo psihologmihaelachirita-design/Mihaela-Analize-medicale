@@ -344,7 +344,7 @@ export default function Dashboard() {
 
         {/* Ultimul buletin */}
         <div onClick={() => { setModalBuletinFiltru('toate'); setModalBuletin(true) }} style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', padding:'16px', cursor:'pointer' }}>
-          <div style={{ fontSize:'11px', color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', fontWeight:500, marginBottom:'8px' }}>Ultimul buletin uploadat</div>
+          <div style={{ fontSize:'11px', color:'#111', textTransform:'uppercase', letterSpacing:'0.5px', fontWeight:500, marginBottom:'8px' }}>Ultimul buletin adăugat</div>
           {ultimulBuletin ? (
             <>
               <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'4px' }}>{getLaborator(ultimulBuletin.observatii) || 'Necunoscut'}</div>
