@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { IconId, IconStethoscope, IconDeviceHeartMonitor, IconScalpel, IconPhone, IconQrcode } from '@tabler/icons-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -62,7 +63,6 @@ export default function Urgenta() {
   const [profil, setProfil] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [dropdown, setDropdown] = useState(false)
-  const [mobileMenu, setMobileMenu] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -105,10 +105,10 @@ export default function Urgenta() {
     return <span style={{ display:'inline-flex', padding:'4px 10px', background:cfg.bg, color:cfg.color, borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>{cfg.label}</span>
   }
 
-  function Banner({ icon, title, sub, onAdd }: { icon: string, title: string, sub: string, onAdd?: () => void }) {
+  function Banner({ icon, title, sub, onAdd }: { icon: React.ReactNode, title: string, sub: string, onAdd?: () => void }) {
     return (
       <div style={{ background:'#16705a', padding:'14px 20px', display:'flex', alignItems:'center', gap:'10px' }}>
-        <div style={{ width:'28px', height:'28px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'14px', flexShrink:0 }}>{icon}</div>
+        <div style={{ width:'28px', height:'28px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{icon}</div>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
           <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.75)', marginTop:'1px' }}>{sub}</div>
@@ -122,11 +122,25 @@ export default function Urgenta() {
     )
   }
 
+  function Field({ label, value }: { label: string, value: string }) {
+    return (
+      <div>
+        <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>{label}</div>
+        <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{value || '—'}</div>
+      </div>
+    )
+  }
+
   const diagnostice = profil?.boli_cronice ? profil.boli_cronice.split(',').map((d: string) => d.trim()).filter(Boolean) : []
   const implante = profil?.implante ? profil.implante.split(',').map((d: string) => d.trim()).filter(Boolean) : []
 
+  const grid4: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }
+  const grid2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px' }
+  const card: React.CSSProperties = { background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }
+  const body: React.CSSProperties = { padding:'18px 20px' }
+
   return (
-    <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }} onClick={() => { setDropdown(false); setMobileMenu(false) }}>
+    <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }} onClick={() => setDropdown(false)}>
 
       {/* Topbar */}
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
@@ -153,8 +167,6 @@ export default function Urgenta() {
         </div>
       </div>
 
-      <style>{`@media (max-width: 768px) { .desktop-nav { display: none !important; } }`}</style>
-
       <div style={{ maxWidth:'720px', margin:'0 auto', padding:'28px 24px' }}>
 
         {/* Header */}
@@ -174,44 +186,23 @@ export default function Urgenta() {
         </div>
 
         {/* DATE DE URGENTA */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
-          <Banner icon="🪪" title="Date de urgență" sub="Identitate și parametri fizici" />
-          <div style={{ padding:'18px 20px' }}>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Nume</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ')[0] || '—'}</div>
-              </div>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Prenume</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ').slice(1).join(' ') || '—'}</div>
-              </div>
+        <div style={card}>
+          <Banner icon={<IconId size={14} color="white" stroke={1.5} />} title="Date de urgență" sub="Identitate și parametri fizici" />
+          <div style={body}>
+            <div style={grid4}>
+              <Field label="Nume" value={profil?.nume?.split(' ')[0] || ''} />
+              <Field label="Prenume" value={profil?.nume?.split(' ').slice(1).join(' ') || ''} />
               <div>
                 <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>CNP</div>
                 <div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div>
               </div>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Data nașterii</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{dataNasterii || '—'}</div>
-              </div>
+              <Field label="Data nașterii" value={dataNasterii} />
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Vârstă</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{varsta ? `${varsta} ani` : '—'}</div>
-              </div>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Sex</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{sex || '—'}</div>
-              </div>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Înălțime</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.inaltime ? `${profil.inaltime} cm` : '—'}</div>
-              </div>
-              <div>
-                <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'4px' }}>Greutate</div>
-                <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.greutate ? `${profil.greutate} kg` : '—'}</div>
-              </div>
+            <div style={grid4}>
+              <Field label="Vârstă" value={varsta ? `${varsta} ani` : ''} />
+              <Field label="Sex" value={sex || ''} />
+              <Field label="Înălțime" value={profil?.inaltime ? `${profil.inaltime} cm` : ''} />
+              <Field label="Greutate" value={profil?.greutate ? `${profil.greutate} kg` : ''} />
             </div>
             {imc && (
               <>
@@ -230,8 +221,8 @@ export default function Urgenta() {
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
           {[
             { label:'Grup sanguin și Rh', val: profil?.grup_sanguin, big: true },
-            { label:'Alergii medicamentoase', val: profil?.alergii_medicamente },
-            { label:'Alte alergii cunoscute', val: profil?.alergii_alimentare },
+            { label:'Alergii medicamentoase', val: profil?.alergii_medicamente, big: false },
+            { label:'Alte alergii cunoscute', val: profil?.alergii_alimentare, big: false },
           ].map((item, i) => (
             <div key={i} style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
               <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px' }}>{item.label}</div>
@@ -244,9 +235,9 @@ export default function Urgenta() {
         </div>
 
         {/* DIAGNOSTICE CRONICE */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
-          <Banner icon="🩺" title="Diagnostice cronice" sub="Extrase din documente medicale atașate sau declarate de titular" />
-          <div style={{ padding:'18px 20px' }}>
+        <div style={card}>
+          <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub="Extrase din documente sau declarate de titular" />
+          <div style={body}>
             {diagnostice.length === 0 ? (
               <div style={{ fontSize:'13px', color:'#111' }}>Niciun diagnostic adăugat</div>
             ) : (
@@ -263,10 +254,10 @@ export default function Urgenta() {
         </div>
 
         {/* IMPLANTE */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
-          <Banner icon="🔧" title="Implante și dispozitive medicale" sub={implante.length > 0 ? 'Extrase din documente atașate sau declarate' : 'Nicio intrare adăugată'} onAdd={implante.length === 0 ? () => router.push('/profil') : undefined} />
+        <div style={card}>
+          <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="Implante și dispozitive medicale" sub={implante.length > 0 ? 'Extrase din documente sau declarate de titular' : 'Nicio intrare adăugată'} onAdd={implante.length === 0 ? () => router.push('/profil') : undefined} />
           {implante.length > 0 && (
-            <div style={{ padding:'18px 20px' }}>
+            <div style={body}>
               <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                 {implante.map((imp: string, i: number) => (
                   <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
@@ -279,16 +270,16 @@ export default function Urgenta() {
           )}
         </div>
 
-        {/* INTERVENTII - colapsate implicit */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
-          <Banner icon="⚕" title="Intervenții chirurgicale majore" sub="Nicio intrare adăugată" onAdd={() => router.push('/profil')} />
+        {/* INTERVENTII */}
+        <div style={card}>
+          <Banner icon={<IconScalpel size={14} color="white" stroke={1.5} />} title="Intervenții chirurgicale majore" sub="Nicio intrare adăugată" onAdd={() => router.push('/profil')} />
         </div>
 
         {/* DATE CONTACT */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
-          <Banner icon="📞" title="Date de contact" sub="Introduse de titular" />
-          <div style={{ padding:'18px 20px' }}>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }}>
+        <div style={card}>
+          <Banner icon={<IconPhone size={14} color="white" stroke={1.5} />} title="Date de contact" sub="Introduse de titular" />
+          <div style={body}>
+            <div style={{ ...grid2, marginBottom:'14px' }}>
               <div>
                 <div style={{ fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'6px' }}>Persoană de contact urgență</div>
                 <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.contact_urgenta_nume || '—'}</div>
@@ -311,11 +302,13 @@ export default function Urgenta() {
         </div>
 
         {/* QR COD */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
-          <Banner icon="⊞" title="QR Cod de urgență" sub="Date embedded offline — funcționează fără internet" />
-          <div style={{ padding:'18px 20px' }}>
+        <div style={card}>
+          <Banner icon={<IconQrcode size={14} color="white" stroke={1.5} />} title="QR Cod de urgență" sub="Date embedded offline — funcționează fără internet" />
+          <div style={body}>
             <div style={{ display:'flex', gap:'20px', alignItems:'center' }}>
-              <div style={{ width:'100px', height:'100px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:'48px' }}>▦</div>
+              <div style={{ width:'100px', height:'100px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                <IconQrcode size={56} color="#e5e7eb" stroke={1} />
+              </div>
               <div>
                 <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Scanează pentru acces instant</div>
                 <div style={{ fontSize:'12px', color:'#111', lineHeight:1.6, marginBottom:'12px' }}>Toate datele critice sunt encodate direct în QR cod. Funcționează fără internet — util în orice situație de urgență.</div>
@@ -329,7 +322,7 @@ export default function Urgenta() {
         </div>
 
         {/* DISCLAIMER */}
-        <div style={{ background:'white', borderLeft:'4px solid #E24B4A', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'20px 24px', marginTop:'4px' }}>
+        <div style={{ background:'white', borderLeft:'4px solid #E24B4A', borderTop:'0.5px solid #e5e7eb', borderRight:'0.5px solid #e5e7eb', borderBottom:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'20px 24px', marginTop:'4px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px' }}>
             <span style={{ color:'#E24B4A', fontSize:'20px' }}>⚠</span>
             <div style={{ fontSize:'14px', fontWeight:600, color:'#111' }}>Responsabilitatea datelor</div>
