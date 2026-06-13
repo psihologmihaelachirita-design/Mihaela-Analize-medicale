@@ -276,14 +276,21 @@ export default function Urgenta() {
         {/* GRUP SANGUIN + ALERGII */}
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
           {[
-            { label:'Grup sanguin și Rh', val: grupSanguin, set: setGrupSanguin, big: true, placeholder:'ex: A+' },
+            { label:'Grup sanguin și Rh', val: grupSanguin, set: setGrupSanguin, big: true, placeholder:'ex: A+', dropdown: true },
             { label:'Alergii medicamentoase', val: alergiiMed, set: setAlergiiMed, big: false, placeholder:'ex: Penicilină' },
             { label:'Alte alergii cunoscute', val: alergiiAl, set: setAlergiiAl, big: false, placeholder:'ex: Nuci' },
           ].map((item, i) => (
             <div key={i} style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
               <div style={lbl}>{item.label}</div>
               {editMode ? (
-                <input value={item.val} onChange={e => item.set(e.target.value)} placeholder={item.placeholder} style={inp} />
+                item.dropdown ? (
+                  <select value={item.val} onChange={e => item.set(e.target.value)} style={inp}>
+                    <option value="">Selectează</option>
+                    {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(g => <option key={g} value={g}>{g}</option>)}
+                  </select>
+                ) : (
+                  <input value={item.val} onChange={e => item.set(e.target.value)} placeholder={item.placeholder} style={inp} />
+                )
               ) : (
                 <div style={{ fontSize: item.big ? '24px' : '13px', fontWeight:500, color: item.big ? '#E24B4A' : '#111' }}>{item.val || '—'}</div>
               )}
