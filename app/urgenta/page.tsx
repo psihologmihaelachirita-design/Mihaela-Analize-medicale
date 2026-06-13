@@ -304,7 +304,7 @@ export default function Urgenta() {
                 {['A+','A-','B+','B-','AB+','AB-','O+','O-','Necunoscut'].map(g => <option key={g} value={g}>{g}</option>)}
               </select>
             ) : (
-              <div style={{ fontSize:'24px', fontWeight:700, color:'#E24B4A' }}>{grupSanguin || '—'}</div>
+              <div style={{ fontSize:'24px', fontWeight:700, color: grupSanguin ? '#E24B4A' : '#111' }}>{grupSanguin || '—'}</div>
             )}
             {grupSanguin && <BadgeDoc atestat={false} />}
           </div>
