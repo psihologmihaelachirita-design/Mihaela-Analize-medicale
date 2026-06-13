@@ -311,7 +311,7 @@ export default function Urgenta() {
               </div>
               <div>
                 <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Scanează pentru acces instant</div>
-                <div style={{ fontSize:'12px', color:'#111', lineHeight:1.6, marginBottom:'12px' }}>Toate datele critice sunt encodate direct în QR cod. Funcționează fără internet — util în orice situație de urgență.</div>
+                <div style={{ fontSize:'12px', color:'#111', lineHeight:1.6, marginBottom:'12px' }}>QR codul va conține datele tale critice de urgență. Funcționalitatea completă va fi disponibilă în curând.</div>
                 <div style={{ display:'flex', gap:'8px' }}>
                   <button style={{ padding:'7px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'12px', fontWeight:500, cursor:'pointer' }}>⬇ Descarcă QR</button>
                   <button style={{ padding:'7px 14px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111', cursor:'pointer', fontWeight:500 }}>⎙ Printează card</button>
