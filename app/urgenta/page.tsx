@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { IconId, IconStethoscope, IconDeviceHeartMonitor, IconScalpel, IconPhone, IconQrcode } from '@tabler/icons-react'
+import { IconId, IconStethoscope, IconDeviceHeartMonitor, IconScissors, IconPhone, IconQrcode } from '@tabler/icons-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -272,7 +272,7 @@ export default function Urgenta() {
 
         {/* INTERVENTII */}
         <div style={card}>
-          <Banner icon={<IconScalpel size={14} color="white" stroke={1.5} />} title="Intervenții chirurgicale majore" sub="Nicio intrare adăugată" onAdd={() => router.push('/profil')} />
+          <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Intervenții chirurgicale majore" sub="Nicio intrare adăugată" onAdd={() => router.push('/profil')} />
         </div>
 
         {/* DATE CONTACT */}
