@@ -205,7 +205,7 @@ export default function Urgenta() {
     return (
       <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
         {list.map((a, i) => (
-          <input key={i} value={a} onChange={e => setList(list.map((x, j) => j === i ? cap(e.target.value) : x))} placeholder={placeholder} style={inp} />
+          <input key={i} value={a} onChange={e => setList(list.map((x, j) => j === i ? e.target.value : x))} placeholder={placeholder} style={inp} />
         ))}
         {list.length < 5 && list[list.length - 1] !== '' && (
           <button onClick={() => setList([...list, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button>
@@ -356,16 +356,16 @@ export default function Urgenta() {
                         <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Diagnostic</span>
                         <button onClick={() => setDiagnostice(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: cap(e.target.value)} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
                       <div style={{ marginBottom:'8px' }}>
                         <label style={lbl}>Luna și anul de start <span style={{ color:'#E24B4A' }}>*</span></label>
                         <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: 03/2018" style={inp} />
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
-                        <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: cap(e.target.value)} : x))} placeholder="ex: Dr. Ana Gheorghe" style={inp} /></div>
-                        <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: cap(e.target.value)} : x))} placeholder="ex: Medicover" style={inp} /></div>
+                        <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="ex: Dr. Ana Gheorghe" style={inp} /></div>
+                        <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: e.target.value} : x))} placeholder="ex: Medicover" style={inp} /></div>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: cap(e.target.value)} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: e.target.value} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
                       <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
                     </div>
                   ))}
@@ -403,12 +403,12 @@ export default function Urgenta() {
                         <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Implant / Dispozitiv</span>
                         <button onClick={() => setImplanteList(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume implant</label><input value={d.nume} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, nume: cap(e.target.value)} : x))} placeholder="ex: Stent coronarian" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume implant</label><input value={d.nume} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Stent coronarian" style={inp} /></div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Data implantării</label><input value={d.dataImplant} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, dataImplant: e.target.value} : x))} placeholder="ex: 03/2019" style={inp} /></div>
-                        <div><label style={lbl}>Spital</label><input value={d.spital} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, spital: cap(e.target.value)} : x))} placeholder="ex: Spitalul Fundeni" style={inp} /></div>
+                        <div><label style={lbl}>Spital</label><input value={d.spital} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, spital: e.target.value} : x))} placeholder="ex: Spitalul Fundeni" style={inp} /></div>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Observații critice</label><input value={d.observatii} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, observatii: cap(e.target.value)} : x))} placeholder="ex: Atenție RMN" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Observații critice</label><input value={d.observatii} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, observatii: e.target.value} : x))} placeholder="ex: Atenție RMN" style={inp} /></div>
                       <Checkbox checked={d.atestat} onChange={() => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest implant" />
                     </div>
                   ))}
@@ -445,12 +445,12 @@ export default function Urgenta() {
                         <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Intervenție chirurgicală</span>
                         <button onClick={() => setInterventii(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Tip intervenție</label><input value={d.nume} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, nume: cap(e.target.value)} : x))} placeholder="ex: Apendicectomie" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Tip intervenție</label><input value={d.nume} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Apendicectomie" style={inp} /></div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Data intervenției</label><input value={d.dataInterventie} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, dataInterventie: e.target.value} : x))} placeholder="ex: 03/2005" style={inp} /></div>
-                        <div><label style={lbl}>Spital</label><input value={d.spital} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, spital: cap(e.target.value)} : x))} placeholder="ex: Spitalul Colentina" style={inp} /></div>
+                        <div><label style={lbl}>Spital</label><input value={d.spital} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, spital: e.target.value} : x))} placeholder="ex: Spitalul Colentina" style={inp} /></div>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Chirurg</label><input value={d.chirurg} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, chirurg: cap(e.target.value)} : x))} placeholder="ex: Dr. Ionescu Mihai" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Chirurg</label><input value={d.chirurg} onChange={e => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, chirurg: e.target.value} : x))} placeholder="ex: Dr. Ionescu Mihai" style={inp} /></div>
                       <Checkbox checked={d.atestat} onChange={() => setInterventii(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă această intervenție" />
                     </div>
                   ))}
@@ -481,12 +481,12 @@ export default function Urgenta() {
             {editMode ? (
               <>
                 <div style={{ ...g2, marginBottom:'14px' }}>
-                  <div><label style={lbl}>Persoană de contact — Nume</label><input value={contactNume} onChange={e => setContactNume(cap(e.target.value))} placeholder="ex: Ion Popescu" style={inp} /></div>
+                  <div><label style={lbl}>Persoană de contact — Nume</label><input value={contactNume} onChange={e => setContactNume(e.target.value)} placeholder="ex: Ion Popescu" style={inp} /></div>
                   <div><label style={lbl}>Persoană de contact — Telefon</label><input value={contactTel} onChange={e => setContactTel(e.target.value)} placeholder="ex: 0721 000 000" style={inp} /></div>
                 </div>
                 <div style={divider}></div>
                 <div style={{ ...g2, marginBottom:'14px' }}>
-                  <div><label style={lbl}>Medic de familie — Nume</label><input value={medicNume} onChange={e => setMedicNume(cap(e.target.value))} placeholder="ex: Dr. Maria Ionescu" style={inp} /></div>
+                  <div><label style={lbl}>Medic de familie — Nume</label><input value={medicNume} onChange={e => setMedicNume(e.target.value)} placeholder="ex: Dr. Maria Ionescu" style={inp} /></div>
                   <div><label style={lbl}>Medic de familie — Telefon</label><input value={medicTel} onChange={e => setMedicTel(e.target.value)} placeholder="ex: 021 000 0000" style={inp} /></div>
                 </div>
                 <div style={divider}></div>
