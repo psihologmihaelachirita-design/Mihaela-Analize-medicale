@@ -61,8 +61,8 @@ export default function Urgenta() {
 
   const [cnp, setCnp] = useState('')
   const [grupSanguin, setGrupSanguin] = useState('')
-  const [alergiiMed, setAlergiiMed] = useState('')
-  const [alergiiAl, setAlergiiAl] = useState('')
+  const [alergiiMed, setAlergiiMed] = useState<string[]>([''])
+  const [alergiiAl, setAlergiiAl] = useState<string[]>([''])
   const [contactNume, setContactNume] = useState('')
   const [contactTel, setContactTel] = useState('')
   const [medicNume, setMedicNume] = useState('')
@@ -108,8 +108,8 @@ export default function Urgenta() {
       id: session.user.id,
       cnp: cnp || null,
       grup_sanguin: grupSanguin || null,
-      alergii_medicamente: alergiiMed || null,
-      alergii_alimentare: alergiiAl || null,
+      alergii_medicamente: alergiiMed.filter(Boolean).join(',') || null,
+      alergii_alimentare: alergiiAl.filter(Boolean).join(',') || null,
       contact_urgenta_nume: contactNume || null,
       contact_urgenta_telefon: contactTel || null,
       medic_familie_nume: medicNume || null,
@@ -311,7 +311,14 @@ export default function Urgenta() {
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
             <div style={lbl}>Alergii medicamentoase</div>
             {editMode ? (
-              <input value={alergiiMed} onChange={e => setAlergiiMed(e.target.value)} placeholder="ex: Penicilină..." style={inp} />
+              <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
+  {alergiiMed.map((a, i) => (
+    <input key={i} value={a} onChange={e => setAlergiiMed(prev => prev.map((x, j) => j === i ? e.target.value : x))} placeholder="ex: Penicilină..." style={inp} />
+  ))}
+  {alergiiMed.length < 5 && alergiiMed[alergiiMed.length-1] !== '' && (
+    <button onClick={() => setAlergiiMed(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă</button>
+  )}
+</div>
             ) : (
               <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>{alergiiMed || '—'}</div>
             )}
@@ -320,7 +327,14 @@ export default function Urgenta() {
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
             <div style={lbl}>Alte alergii cunoscute</div>
             {editMode ? (
-              <input value={alergiiAl} onChange={e => setAlergiiAl(e.target.value)} placeholder="ex: Nuci..." style={inp} />
+              <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
+  {alergiiAl.map((a, i) => (
+    <input key={i} value={a} onChange={e => setAlergiiAl(prev => prev.map((x, j) => j === i ? e.target.value : x))} placeholder="ex: Nuci..." style={inp} />
+  ))}
+  {alergiiAl.length < 5 && alergiiAl[alergiiAl.length-1] !== '' && (
+    <button onClick={() => setAlergiiAl(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă</button>
+  )}
+</div>
             ) : (
               <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>{alergiiAl || '—'}</div>
             )}
