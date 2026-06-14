@@ -85,8 +85,8 @@ export default function Urgenta() {
         setProfil(data)
         setCnp(data.cnp || '')
         setGrupSanguin(data.grup_sanguin || '')
-        setAlergiiMed(data.alergii_medicamente ? (Array.isArray(data.alergii_medicamente) ? data.alergii_medicamente : data.alergii_medicamente.split(',').map((s: string) => s.trim()).filter(Boolean)) : [''])
-        setAlergiiAl(data.alergii_alimentare ? (Array.isArray(data.alergii_alimentare) ? data.alergii_alimentare : data.alergii_alimentare.split(',').map((s: string) => s.trim()).filter(Boolean)) : [''])
+        try { const v = JSON.parse(data.alergii_medicamente); setAlergiiMed(Array.isArray(v) ? v : data.alergii_medicamente.split(',').map((s: string) => s.trim()).filter(Boolean)) } catch { setAlergiiMed(data.alergii_medicamente ? data.alergii_medicamente.split(',').map((s: string) => s.trim()).filter(Boolean) : ['']) }
+        try { const v2 = JSON.parse(data.alergii_alimentare); setAlergiiAl(Array.isArray(v2) ? v2 : data.alergii_alimentare.split(',').map((s: string) => s.trim()).filter(Boolean)) } catch { setAlergiiAl(data.alergii_alimentare ? data.alergii_alimentare.split(',').map((s: string) => s.trim()).filter(Boolean) : ['']) }
         setContactNume(data.contact_urgenta_nume || '')
         setContactTel(data.contact_urgenta_telefon || '')
         setMedicNume(data.medic_familie_nume || '')
