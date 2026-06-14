@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -45,11 +45,65 @@ function calculeazaIMC(greutate: number, inaltime: number) {
   return { valoare: val, label }
 }
 
-function cap(s: string) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s }
+function parseAlergii(val: string | null): string[] {
+  if (!val) return ['']
+  try {
+    const parsed = JSON.parse(val)
+    if (Array.isArray(parsed)) return parsed.length > 0 ? parsed : ['']
+  } catch {}
+  return val.split(',').map(s => s.trim()).filter(Boolean).length > 0
+    ? val.split(',').map(s => s.trim()).filter(Boolean)
+    : ['']
+}
 
 interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; undeUrmarit: string; medicatie: string; atestat: boolean }
 interface ImplantItem { id: string; nume: string; dataImplant: string; spital: string; observatii: string; atestat: boolean }
 interface InterventieItem { id: string; nume: string; dataInterventie: string; spital: string; chirurg: string; atestat: boolean }
+
+// DEFINITE IN AFARA COMPONENTEI — fix pentru typing
+function AlergiiView({ list }: { list: string[] }) {
+  const filtered = list.filter(Boolean)
+  if (filtered.length === 0) return <div style={{ fontSize:'13px', color:'#111' }}>—</div>
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+      {filtered.map((a, i) => <div key={i} style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>{a}</div>)}
+    </div>
+  )
+}
+
+function AlergiiInput({ value, onChange, placeholder, style }: { value: string, onChange: (v: string) => void, placeholder: string, style: React.CSSProperties }) {
+  return <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={style} />
+}
+
+function BadgeDoc({ atestat }: { atestat: boolean }) {
+  return atestat
+    ? <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#E1F5EE', color:'#085041', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>✓ Document care atestă</span>
+    : <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#f8f9fa', color:'#111', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>Fără document care atestă</span>
+}
+
+function Banner({ icon, title, sub, onAdd }: { icon: React.ReactNode, title: string, sub: string, onAdd?: () => void }) {
+  return (
+    <div style={{ background:'#16705a', padding:'14px 20px', display:'flex', alignItems:'center', gap:'10px' }}>
+      <div style={{ width:'28px', height:'28px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{icon}</div>
+      <div style={{ flex:1 }}>
+        <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
+        <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.75)', marginTop:'1px' }}>{sub}</div>
+      </div>
+      {onAdd && <div onClick={onAdd} style={{ fontSize:'13px', color:'rgba(255,255,255,0.9)', fontWeight:500, cursor:'pointer' }}>+ Adaugă</div>}
+    </div>
+  )
+}
+
+function Checkbox({ checked, onChange, label }: { checked: boolean, onChange: () => void, label: string }) {
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }} onClick={onChange}>
+      <div style={{ width:'16px', height:'16px', borderRadius:'4px', border:'0.5px solid #e5e7eb', background: checked ? '#16705a' : 'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+        {checked && <span style={{ color:'white', fontSize:'11px', fontWeight:700 }}>✓</span>}
+      </div>
+      <span style={{ fontSize:'13px', color:'#111' }}>{label}</span>
+    </div>
+  )
+}
 
 export default function Urgenta() {
   const [user, setUser] = useState<any>(null)
@@ -85,8 +139,8 @@ export default function Urgenta() {
         setProfil(data)
         setCnp(data.cnp || '')
         setGrupSanguin(data.grup_sanguin || '')
-        try { const v = JSON.parse(data.alergii_medicamente); setAlergiiMed(Array.isArray(v) ? v : data.alergii_medicamente.split(',').map((s: string) => s.trim()).filter(Boolean)) } catch { setAlergiiMed(data.alergii_medicamente ? data.alergii_medicamente.split(',').map((s: string) => s.trim()).filter(Boolean) : ['']) }
-        try { const v2 = JSON.parse(data.alergii_alimentare); setAlergiiAl(Array.isArray(v2) ? v2 : data.alergii_alimentare.split(',').map((s: string) => s.trim()).filter(Boolean)) } catch { setAlergiiAl(data.alergii_alimentare ? data.alergii_alimentare.split(',').map((s: string) => s.trim()).filter(Boolean) : ['']) }
+        setAlergiiMed(parseAlergii(data.alergii_medicamente))
+        setAlergiiAl(parseAlergii(data.alergii_alimentare))
         setContactNume(data.contact_urgenta_nume || '')
         setContactTel(data.contact_urgenta_telefon || '')
         setMedicNume(data.medic_familie_nume || '')
@@ -100,6 +154,14 @@ export default function Urgenta() {
       }
       setLoading(false)
     })
+  }, [])
+
+  const updateAlergiiMed = useCallback((i: number, val: string) => {
+    setAlergiiMed(prev => prev.map((x, j) => j === i ? val : x))
+  }, [])
+
+  const updateAlergiiAl = useCallback((i: number, val: string) => {
+    setAlergiiAl(prev => prev.map((x, j) => j === i ? val : x))
   }, [])
 
   async function handleSalvare() {
@@ -151,68 +213,6 @@ export default function Urgenta() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px' }
   const divider: React.CSSProperties = { height:'0.5px', background:'#e5e7eb', margin:'14px 0' }
   const itemCard: React.CSSProperties = { background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', marginBottom:'12px' }
-
-  function BadgeDoc({ atestat }: { atestat: boolean }) {
-    return atestat
-      ? <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#E1F5EE', color:'#085041', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>✓ Document care atestă</span>
-      : <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#f8f9fa', color:'#111', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>Fără document care atestă</span>
-  }
-
-  function Banner({ icon, title, sub, onAdd }: { icon: React.ReactNode, title: string, sub: string, onAdd?: () => void }) {
-    return (
-      <div style={{ background:'#16705a', padding:'14px 20px', display:'flex', alignItems:'center', gap:'10px' }}>
-        <div style={{ width:'28px', height:'28px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{icon}</div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
-          <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.75)', marginTop:'1px' }}>{sub}</div>
-        </div>
-        {onAdd && <div onClick={onAdd} style={{ fontSize:'13px', color:'rgba(255,255,255,0.9)', fontWeight:500, cursor:'pointer' }}>+ Adaugă</div>}
-      </div>
-    )
-  }
-
-  function Val({ label, value }: { label: string, value: string }) {
-    return (
-      <div>
-        <div style={lbl}>{label}</div>
-        <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{value || '—'}</div>
-      </div>
-    )
-  }
-
-  function Checkbox({ checked, onChange, label }: { checked: boolean, onChange: () => void, label: string }) {
-    return (
-      <div style={{ display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }} onClick={onChange}>
-        <div style={{ width:'16px', height:'16px', borderRadius:'4px', border:'0.5px solid #e5e7eb', background: checked ? '#16705a' : 'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-          {checked && <span style={{ color:'white', fontSize:'11px', fontWeight:700 }}>✓</span>}
-        </div>
-        <span style={{ fontSize:'13px', color:'#111' }}>{label}</span>
-      </div>
-    )
-  }
-
-  function AlergiiView({ list }: { list: string[] }) {
-    const filtered = list.filter(Boolean)
-    if (filtered.length === 0) return <div style={{ fontSize:'13px', color:'#111' }}>—</div>
-    return (
-      <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
-        {filtered.map((a, i) => <div key={i} style={{ fontSize:'13px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{a}</div>)}
-      </div>
-    )
-  }
-
-  function AlergiiEdit({ list, setList, placeholder }: { list: string[], setList: (v: string[]) => void, placeholder: string }) {
-    return (
-      <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
-        {list.map((a, i) => (
-          <input key={i} value={a} onChange={e => setList(list.map((x, j) => j === i ? e.target.value : x))} placeholder={placeholder} style={inp} />
-        ))}
-        {list.length < 5 && list[list.length - 1] !== '' && (
-          <button onClick={() => setList([...list, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button>
-        )}
-      </div>
-    )
-  }
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
@@ -288,19 +288,16 @@ export default function Urgenta() {
             ) : (
               <>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
-                  <Val label="Nume" value={profil?.nume?.split(' ')[0] || ''} />
-                  <Val label="Prenume" value={profil?.nume?.split(' ').slice(1).join(' ') || ''} />
-                  <div>
-                    <div style={lbl}>CNP</div>
-                    <div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div>
-                  </div>
-                  <Val label="Data nașterii" value={dataNasterii} />
+                  <div><div style={lbl}>Nume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ')[0] || '—'}</div></div>
+                  <div><div style={lbl}>Prenume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ').slice(1).join(' ') || '—'}</div></div>
+                  <div><div style={lbl}>CNP</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div></div>
+                  <div><div style={lbl}>Data nașterii</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{dataNasterii || '—'}</div></div>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px' }}>
-                  <Val label="Vârstă" value={varstaCalc ? `${varstaCalc} ani` : ''} />
-                  <Val label="Sex" value={sexCalc || ''} />
-                  <Val label="Înălțime" value={inaltime ? `${inaltime} cm` : ''} />
-                  <Val label="Greutate" value={greutate ? `${greutate} kg` : ''} />
+                  <div><div style={lbl}>Vârstă</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{varstaCalc ? `${varstaCalc} ani` : '—'}</div></div>
+                  <div><div style={lbl}>Sex</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{sexCalc || '—'}</div></div>
+                  <div><div style={lbl}>Înălțime</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{inaltime ? `${inaltime} cm` : '—'}</div></div>
+                  <div><div style={lbl}>Greutate</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{greutate ? `${greutate} kg` : '—'}</div></div>
                 </div>
                 {imc && (
                   <>
@@ -331,14 +328,38 @@ export default function Urgenta() {
             )}
             {grupSanguin && <BadgeDoc atestat={false} />}
           </div>
+
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
             <div style={lbl}>Alergii medicamentoase</div>
-            {editMode ? <AlergiiEdit list={alergiiMed} setList={setAlergiiMed} placeholder="ex: Penicilină..." /> : <AlergiiView list={alergiiMed} />}
+            {editMode ? (
+              <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
+                {alergiiMed.map((a, i) => (
+                  <AlergiiInput key={i} value={a} onChange={v => updateAlergiiMed(i, v)} placeholder="ex: Penicilină..." style={inp} />
+                ))}
+                {alergiiMed.length < 5 && alergiiMed[alergiiMed.length - 1] !== '' && (
+                  <button onClick={() => setAlergiiMed(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button>
+                )}
+              </div>
+            ) : (
+              <AlergiiView list={alergiiMed} />
+            )}
             {alergiiMed.filter(Boolean).length > 0 && <BadgeDoc atestat={false} />}
           </div>
+
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
             <div style={lbl}>Alte alergii cunoscute</div>
-            {editMode ? <AlergiiEdit list={alergiiAl} setList={setAlergiiAl} placeholder="ex: Nuci..." /> : <AlergiiView list={alergiiAl} />}
+            {editMode ? (
+              <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
+                {alergiiAl.map((a, i) => (
+                  <AlergiiInput key={i} value={a} onChange={v => updateAlergiiAl(i, v)} placeholder="ex: Nuci..." style={inp} />
+                ))}
+                {alergiiAl.length < 5 && alergiiAl[alergiiAl.length - 1] !== '' && (
+                  <button onClick={() => setAlergiiAl(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button>
+                )}
+              </div>
+            ) : (
+              <AlergiiView list={alergiiAl} />
+            )}
             {alergiiAl.filter(Boolean).length > 0 && <BadgeDoc atestat={false} />}
           </div>
         </div>
@@ -375,13 +396,13 @@ export default function Urgenta() {
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {diagnostice.map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
-                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
+                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataStart && <div><div style={lbl}>Luna / An start</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataStart}</div></div>}
-                      {d.specialist && <div><div style={lbl}>Specialist</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.specialist}</div></div>}
-                      {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.undeUrmarit}</div></div>}
-                      {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.medicatie}</div></div>}
+                      {d.specialist && <div><div style={lbl}>Specialist</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialist}</div></div>}
+                      {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111' }}>{d.undeUrmarit}</div></div>}
+                      {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', color:'#111' }}>{d.medicatie}</div></div>}
                     </div>
                   ))}
                 </div>
@@ -418,12 +439,12 @@ export default function Urgenta() {
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {implanteList.map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
-                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
+                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataImplant && <div><div style={lbl}>Data implantării</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataImplant}</div></div>}
-                      {d.spital && <div><div style={lbl}>Spital</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.spital}</div></div>}
-                      {d.observatii && <div><div style={lbl}>Observații</div><div style={{ fontSize:'13px', color:'#E24B4A', fontWeight:500, textTransform:'capitalize' }}>{d.observatii}</div></div>}
+                      {d.spital && <div><div style={lbl}>Spital</div><div style={{ fontSize:'13px', color:'#111' }}>{d.spital}</div></div>}
+                      {d.observatii && <div><div style={lbl}>Observații</div><div style={{ fontSize:'13px', color:'#E24B4A', fontWeight:500 }}>{d.observatii}</div></div>}
                     </div>
                   ))}
                 </div>
@@ -460,12 +481,12 @@ export default function Urgenta() {
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {interventii.map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
-                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
+                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataInterventie && <div><div style={lbl}>Data intervenției</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataInterventie}</div></div>}
-                      {d.spital && <div><div style={lbl}>Spital</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.spital}</div></div>}
-                      {d.chirurg && <div><div style={lbl}>Chirurg</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.chirurg}</div></div>}
+                      {d.spital && <div><div style={lbl}>Spital</div><div style={{ fontSize:'13px', color:'#111' }}>{d.spital}</div></div>}
+                      {d.chirurg && <div><div style={lbl}>Chirurg</div><div style={{ fontSize:'13px', color:'#111' }}>{d.chirurg}</div></div>}
                     </div>
                   ))}
                 </div>
@@ -497,12 +518,12 @@ export default function Urgenta() {
                 <div style={{ ...g2, marginBottom:'14px' }}>
                   <div>
                     <div style={lbl}>Persoană de contact urgență</div>
-                    <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{contactNume || '—'}</div>
+                    <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{contactNume || '—'}</div>
                     <div style={{ fontSize:'13px', color:'#111', marginTop:'2px' }}>{contactTel}</div>
                   </div>
                   <div>
                     <div style={lbl}>Medic de familie</div>
-                    <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{medicNume || '—'}</div>
+                    <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{medicNume || '—'}</div>
                     <div style={{ fontSize:'13px', color:'#111', marginTop:'2px' }}>{medicTel}</div>
                   </div>
                 </div>
