@@ -61,8 +61,8 @@ export default function Urgenta() {
 
   const [cnp, setCnp] = useState('')
   const [grupSanguin, setGrupSanguin] = useState('')
-  const [alergiiMed, setAlergiiMed] = useState('')
-  const [alergiiAl, setAlergiiAl] = useState('')
+  const [alergiiMed, setAlergiiMed] = useState<string[]>([''])
+  const [alergiiAl, setAlergiiAl] = useState<string[]>([''])
   const [contactNume, setContactNume] = useState('')
   const [contactTel, setContactTel] = useState('')
   const [medicNume, setMedicNume] = useState('')
@@ -311,7 +311,7 @@ export default function Urgenta() {
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
             <div style={lbl}>Alergii medicamentoase</div>
             {editMode ? (
-              <input value={alergiiMed} onChange={e => setAlergiiMed(e.target.value)} placeholder="ex: Penicilină..." style={inp} />
+              <input value={alergiiMed[0] || ''} onChange={e => setAlergiiMed([e.target.value])} placeholder="ex: Penicilină..." style={inp} />
             ) : (
               <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>{alergiiMed || '—'}</div>
             )}
@@ -320,7 +320,7 @@ export default function Urgenta() {
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
             <div style={lbl}>Alte alergii cunoscute</div>
             {editMode ? (
-              <input value={alergiiAl} onChange={e => setAlergiiAl(e.target.value)} placeholder="ex: Nuci..." style={inp} />
+              <input value={alergiiAl} onChange={e => setAlergiiAl([e.target.value])} placeholder="ex: Nuci..." style={inp} />
             ) : (
               <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>{alergiiAl || '—'}</div>
             )}
