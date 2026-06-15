@@ -394,7 +394,13 @@ export default function Urgenta() {
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
                       <div style={{ marginBottom:'8px' }}>
                         <label style={lbl}>Data de start</label>
-                        <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: Ian 2000" style={inp} />
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', marginTop:'4px' }}>
+                          <select value={d.dataStart ? d.dataStart.split(' ')[0] : ''} onChange={e => { const an = d.dataStart ? d.dataStart.split(' ')[1] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${e.target.value} ${an}`.trim()} : x)) }} style={inp}>
+                            <option value="">Lună</option>
+                            {['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'].map(l => <option key={l} value={l}>{l}</option>)}
+                          </select>
+                          <input type="number" min="1900" max="2030" value={d.dataStart ? d.dataStart.split(' ')[1] || '' : ''} onChange={e => { const luna = d.dataStart ? d.dataStart.split(' ')[0] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${luna} ${e.target.value}`.trim()} : x)) }} placeholder="An" style={inp} />
+                        </div>
                       </div>
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
