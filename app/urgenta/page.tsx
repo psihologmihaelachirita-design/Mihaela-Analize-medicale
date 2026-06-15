@@ -343,7 +343,7 @@ export default function Urgenta() {
             ) : (
               <AlergiiView list={alergiiMed} />
             )}
-            {alergiiMed.filter(Boolean).length > 0 && <BadgeDoc atestat={false} />}
+            {alergiiMed.filter(Boolean).length > 0 && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={false} /></div>}
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
@@ -360,7 +360,7 @@ export default function Urgenta() {
             ) : (
               <AlergiiView list={alergiiAl} />
             )}
-            {alergiiAl.filter(Boolean).length > 0 && <BadgeDoc atestat={false} />}
+            {alergiiAl.filter(Boolean).length > 0 && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={false} /></div>}
           </div>
         </div>
 
