@@ -390,7 +390,7 @@ export default function Urgenta() {
                         <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: 03/2018" style={inp} />
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
-                        <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="ex: Dr. Ana Gheorghe" style={inp} /></div>
+                        <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
                         <div><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
@@ -409,7 +409,7 @@ export default function Urgenta() {
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
-                      {d.dataStart && <div><div style={lbl}>Data de start</div><div style={{ fontSize:'13px', color:'#111' }}>{(() => { const luni = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec']; const parts = d.dataStart.split('/'); if (parts.length === 2) { const l = parseInt(parts[0]); return `${luni[l-1] || parts[0]} ${parts[1]}`; } return d.dataStart; })()}</div></div>}
+                      {d.dataStart && <div><div style={lbl}>Data de start</div><div style={{ fontSize:'13px', color:'#111' }}>{(() => { const luni = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec']; const parts = d.dataStart.split('/'); if (parts.length === 2) { const l = parseInt(parts[0]); return `${luni[l-1] || parts[0].trim()} ${parts[1].trim()}`; } return d.dataStart.trim(); })()}</div></div>}
                       {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.specialist}</div></div>}
                       {d.specialitate && <div><div style={lbl}>Specialitate</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.specialitate}</div></div>}
                       {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.undeUrmarit}</div></div>}
