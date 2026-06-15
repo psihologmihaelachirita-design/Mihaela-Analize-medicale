@@ -72,7 +72,7 @@ function AlergiiView({ list }: { list: string[] }) {
 }
 
 function AlergiiInput({ value, onChange, placeholder, style }: { value: string, onChange: (v: string) => void, placeholder: string, style: React.CSSProperties }) {
-  return <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={style} />
+  return <input value={value} onChange={e => { const v = e.target.value; onChange(v.charAt(0).toUpperCase() + v.slice(1)) }} placeholder={placeholder} style={style} />
 }
 
 function BadgeDoc({ atestat }: { atestat: boolean }) {
