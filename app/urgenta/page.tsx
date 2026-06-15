@@ -405,15 +405,15 @@ export default function Urgenta() {
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {diagnostice.filter(d => d.nume).map((d, i) => (
-                    <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
+                    <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataStart && <div><div style={lbl}>Data de start</div><div style={{ fontSize:'13px', color:'#111' }}>{(() => { const luni = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec']; const parts = d.dataStart.split('/'); if (parts.length === 2) { const l = parseInt(parts[0]); return `${luni[l-1] || parts[0]} ${parts[1]}`; } return d.dataStart; })()}</div></div>}
-                      {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialist}</div></div>}
-                      {d.specialitate && <div><div style={lbl}>Specialitate</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialitate}</div></div>}
-                      {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111' }}>{d.undeUrmarit}</div></div>}
-                      {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', color:'#111' }}>{d.medicatie}</div></div>}
+                      {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.specialist}</div></div>}
+                      {d.specialitate && <div><div style={lbl}>Specialitate</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.specialitate}</div></div>}
+                      {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.undeUrmarit}</div></div>}
+                      {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', color:'#111', textTransform:'capitalize' }}>{d.medicatie}</div></div>}
                     </div>
                   ))}
                   <div onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ background:'white', border:'0.5px dashed #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'8px', flexShrink:0, cursor:'pointer' }}>
@@ -460,7 +460,7 @@ export default function Urgenta() {
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {implanteList.map((d, i) => (
-                    <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
+                    <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
@@ -502,7 +502,7 @@ export default function Urgenta() {
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {interventii.map((d, i) => (
-                    <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
+                    <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
