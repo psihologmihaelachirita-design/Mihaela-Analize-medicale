@@ -399,7 +399,7 @@ export default function Urgenta() {
                             <option value="">Lună</option>
                             {['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'].map(l => <option key={l} value={l}>{l}</option>)}
                           </select>
-                          <input type="number" min="1900" max="2030" value={d.dataStart ? d.dataStart.split(' ')[1] || '' : ''} onChange={e => { const luna = d.dataStart ? d.dataStart.split(' ')[0] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${luna} ${e.target.value}`.trim()} : x)) }} placeholder="An" style={inp} />
+                          <input type="text" value={d.dataStart ? d.dataStart.split(' ')[1] || '' : ''} onChange={e => { const luna = d.dataStart ? d.dataStart.split(' ')[0] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${luna} ${e.target.value}`.trim()} : x)) }} placeholder="An" style={inp} />
                         </div>
                       </div>
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
