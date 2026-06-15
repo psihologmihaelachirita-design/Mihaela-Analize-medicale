@@ -394,13 +394,7 @@ export default function Urgenta() {
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
                       <div style={{ marginBottom:'8px' }}>
                         <label style={lbl}>Data de start</label>
-                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px' }}>
-                          <select value={d.dataStart.split(' ')[0] || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${e.target.value} ${d.dataStart.split(' ')[1] || ''}`} : x))} style={inp}>
-                            <option value="">Lună</option>
-                            {['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'].map(l => <option key={l} value={l}>{l}</option>)}
-                          </select>
-                          <input type="number" value={d.dataStart.split(' ')[1] || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${d.dataStart.split(' ')[0] || ''} ${e.target.value}`} : x))} placeholder="An" style={inp} />
-                        </div>
+                        <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: Ian 2000" style={inp} />
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
