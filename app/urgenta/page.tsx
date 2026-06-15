@@ -369,7 +369,7 @@ export default function Urgenta() {
           <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub={diagnostice.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', undeUrmarit:'', medicatie:'', atestat:false }]) : undefined} />
           {diagnostice.length === 0 && !editMode && (
             <div style={{ padding:'18px 20px' }}>
-              <button onClick={() => setEditMode(true)} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
+              <button onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
             </div>
           )}
           {(diagnostice.length > 0 || editMode) && (
