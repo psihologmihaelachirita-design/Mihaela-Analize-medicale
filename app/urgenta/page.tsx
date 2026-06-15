@@ -78,7 +78,7 @@ function AlergiiInput({ value, onChange, placeholder, style }: { value: string, 
 function BadgeDoc({ atestat }: { atestat: boolean }) {
   return atestat
     ? <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#E1F5EE', color:'#085041', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>✓ Document care atestă</span>
-    : <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#f8f9fa', color:'#111', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>Fără document care atestă</span>
+    : <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#FEF3C7', color:'#B45309', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>Fără document care atestă</span>
 }
 
 function Banner({ icon, title, sub, onAdd }: { icon: React.ReactNode, title: string, sub: string, onAdd?: () => void }) {
@@ -117,6 +117,7 @@ export default function Urgenta() {
 
   const [cnp, setCnp] = useState('')
   const [grupSanguin, setGrupSanguin] = useState('')
+  const [grupSanguinAtestat, setGrupSanguinAtestat] = useState(false)
   const [alergiiMed, setAlergiiMed] = useState<string[]>([''])
   const [alergiiAl, setAlergiiAl] = useState<string[]>([''])
   const [contactNume, setContactNume] = useState('')
@@ -305,7 +306,7 @@ export default function Urgenta() {
                     <div>
                       <div style={lbl}>Indice de masă corporală (IMC)</div>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{imc.valoare}</div>
-                      <span style={{ display:'inline-flex', padding:'3px 10px', background:'#E1F5EE', color:'#085041', borderRadius:'12px', fontSize:'12px', fontWeight:500, marginTop:'4px' }}>✓ {imc.label}</span>
+                      <div style={{ marginTop:'6px', background:'#E1F5EE', borderRadius:'20px', padding:'4px 12px', fontSize:'12px', fontWeight:500, color:'#085041' }}>✓ {imc.label}</div>
                     </div>
                   </>
                 )}
@@ -326,7 +327,8 @@ export default function Urgenta() {
             ) : (
               <div style={{ fontSize:'24px', fontWeight:700, color:'#E24B4A' }}>{grupSanguin || '—'}</div>
             )}
-            {grupSanguin && <BadgeDoc atestat={false} />}
+            {editMode && <Checkbox checked={grupSanguinAtestat} onChange={() => setGrupSanguinAtestat(!grupSanguinAtestat)} label="Document care atestă" />}
+            {grupSanguin && <BadgeDoc atestat={grupSanguinAtestat} />}
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
