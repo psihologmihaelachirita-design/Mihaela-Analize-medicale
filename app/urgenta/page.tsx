@@ -182,7 +182,14 @@ export default function Urgenta() {
       asigurat_cnas: asiguratCnas,
       greutate: parseFloat(greutate) || null,
       inaltime: parseFloat(inaltime) || null,
-      diagnostice_json: JSON.stringify(diagnostice),
+      diagnostice_json: JSON.stringify(diagnostice.map(d => ({
+        ...d,
+        specialist: d.specialist ? d.specialist.charAt(0).toUpperCase() + d.specialist.slice(1) : '',
+        specialitate: d.specialitate ? d.specialitate.charAt(0).toUpperCase() + d.specialitate.slice(1) : '',
+        undeUrmarit: d.undeUrmarit ? d.undeUrmarit.charAt(0).toUpperCase() + d.undeUrmarit.slice(1) : '',
+        medicatie: d.medicatie ? d.medicatie.charAt(0).toUpperCase() + d.medicatie.slice(1) : '',
+        nume: d.nume ? d.nume.charAt(0).toUpperCase() + d.nume.slice(1) : '',
+      }))),
       implanturi_json: JSON.stringify(implanteList),
       interventii_json: JSON.stringify(interventii),
     })
@@ -387,7 +394,13 @@ export default function Urgenta() {
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
                       <div style={{ marginBottom:'8px' }}>
                         <label style={lbl}>Data de start</label>
-                        <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: 03/2018" style={inp} />
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px' }}>
+                          <select value={d.dataStart.split(' ')[0] || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${e.target.value} ${d.dataStart.split(' ')[1] || ''}`} : x))} style={inp}>
+                            <option value="">Lună</option>
+                            {['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'].map(l => <option key={l} value={l}>{l}</option>)}
+                          </select>
+                          <input type="number" value={d.dataStart.split(' ')[1] || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${d.dataStart.split(' ')[0] || ''} ${e.target.value}`} : x))} placeholder="An" style={inp} />
+                        </div>
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
