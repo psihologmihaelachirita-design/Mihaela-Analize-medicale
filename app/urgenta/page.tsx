@@ -242,7 +242,7 @@ export default function Urgenta() {
 
       <div style={{ maxWidth:'720px', margin:'0 auto', padding:'28px 24px' }}>
 
-        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'24px' }}>
+        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'24px', position:'sticky', top:'56px', background:'#f8f9fa', zIndex:9, paddingTop:'12px', paddingBottom:'12px' }}>
           <div>
             <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Card de urgență MedFile</div>
             <div style={{ fontSize:'13px', color:'#111', marginTop:'4px' }}>Date extrase automat sau declarate de titular</div>
