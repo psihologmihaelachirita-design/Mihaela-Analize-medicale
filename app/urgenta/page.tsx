@@ -254,7 +254,7 @@ export default function Urgenta() {
               </>
             ) : (
               <>
-                <button onClick={() => setEditMode(false)} style={{ padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Anulează</button>
+                <button onClick={() => { setEditMode(false); if (profil) { setCnp(profil.cnp || ''); setGrupSanguin(profil.grup_sanguin || ''); setAlergiiMed(parseAlergii(profil.alergii_medicamente)); setAlergiiAl(parseAlergii(profil.alergii_alimentare)); setContactNume(profil.contact_urgenta_nume || ''); setContactTel(profil.contact_urgenta_telefon || ''); setMedicNume(profil.medic_familie_nume || ''); setMedicTel(profil.medic_familie_telefon || ''); setAsiguratCnas(profil.asigurat_cnas || false); setGreutate(profil.greutate?.toString() || ''); setInaltime(profil.inaltime?.toString() || ''); setDiagnostice(profil.diagnostice_json ? JSON.parse(profil.diagnostice_json) : []); setImplanteList(profil.implanturi_json ? JSON.parse(profil.implanturi_json) : []); setInterventii(profil.interventii_json ? JSON.parse(profil.interventii_json) : []); } }} style={{ padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Anulează</button>
                 <button onClick={handleSalvare} disabled={salvare} style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>{salvare ? 'Se salvează...' : 'Salvează'}</button>
               </>
             )}
