@@ -56,7 +56,7 @@ function parseAlergii(val: string | null): string[] {
     : ['']
 }
 
-interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; undeUrmarit: string; medicatie: string; atestat: boolean }
+interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; specialitate: string; undeUrmarit: string; medicatie: string; atestat: boolean }
 interface ImplantItem { id: string; nume: string; dataImplant: string; spital: string; observatii: string; atestat: boolean }
 interface InterventieItem { id: string; nume: string; dataInterventie: string; spital: string; chirurg: string; atestat: boolean }
 
@@ -386,7 +386,7 @@ export default function Urgenta() {
                       </div>
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
                       <div style={{ marginBottom:'8px' }}>
-                        <label style={lbl}>Luna și anul de start <span style={{ color:'#E24B4A' }}>*</span></label>
+                        <label style={lbl}>Data de start</label>
                         <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: 03/2018" style={inp} />
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
@@ -404,10 +404,11 @@ export default function Urgenta() {
                   {diagnostice.filter(d => d.nume).map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
-                      {d.atestat && <BadgeDoc atestat={true} />}
+                      <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataStart && <div><div style={lbl}>Data de start</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataStart}</div></div>}
-                      {d.specialist && <div><div style={lbl}>Specialist</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialist}</div></div>}
+                      {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialist}</div></div>}
+                      {d.specialitate && <div><div style={lbl}>Specialitate</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialitate}</div></div>}
                       {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111' }}>{d.undeUrmarit}</div></div>}
                       {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', color:'#111' }}>{d.medicatie}</div></div>}
                     </div>
