@@ -406,12 +406,18 @@ export default function Urgenta() {
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
-                      {d.dataStart && <div><div style={lbl}>Luna / An start</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataStart}</div></div>}
+                      {d.dataStart && <div><div style={lbl}>Data de start</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataStart}</div></div>}
                       {d.specialist && <div><div style={lbl}>Specialist</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialist}</div></div>}
                       {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', color:'#111' }}>{d.undeUrmarit}</div></div>}
                       {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', color:'#111' }}>{d.medicatie}</div></div>}
                     </div>
                   ))}
+                  <div onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ background:'white', border:'0.5px dashed #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'8px', flexShrink:0, cursor:'pointer' }}>
+                    <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                      <span style={{ color:'#16705a', fontSize:'20px', lineHeight:1 }}>+</span>
+                    </div>
+                    <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>Adaugă diagnostic</div>
+                  </div>
                 </div>
               )}
             </div>
