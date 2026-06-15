@@ -396,10 +396,8 @@ export default function Urgenta() {
                         <label style={lbl}>Data de start</label>
                         <input value={d.dataStart} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: e.target.value} : x))} placeholder="ex: Ian 2000" style={inp} />
                       </div>
-                      <div style={{ ...g2, marginBottom:'8px' }}>
-                        <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
-                        <div><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
-                      </div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: e.target.value} : x))} placeholder="ex: Medicover" style={inp} /></div>
                       </div>
