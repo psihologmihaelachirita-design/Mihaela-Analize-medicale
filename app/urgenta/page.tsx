@@ -328,7 +328,7 @@ export default function Urgenta() {
               <div style={{ fontSize:'24px', fontWeight:700, color:'#E24B4A' }}>{grupSanguin || '—'}</div>
             )}
             {editMode && <Checkbox checked={grupSanguinAtestat} onChange={() => setGrupSanguinAtestat(!grupSanguinAtestat)} label="Document care atestă" />}
-            {grupSanguin && <BadgeDoc atestat={grupSanguinAtestat} />}
+            {grupSanguin && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={grupSanguinAtestat} /></div>}
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
