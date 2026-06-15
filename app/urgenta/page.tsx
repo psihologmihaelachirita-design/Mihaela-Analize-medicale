@@ -391,6 +391,9 @@ export default function Urgenta() {
                       </div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="ex: Dr. Ana Gheorghe" style={inp} /></div>
+                        <div><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
+                      </div>
+                      <div style={{ ...g2, marginBottom:'8px' }}>
                         <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: e.target.value} : x))} placeholder="ex: Medicover" style={inp} /></div>
                       </div>
                       <div style={{ marginBottom:'8px' }}><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: e.target.value} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
@@ -418,6 +421,11 @@ export default function Urgenta() {
                       <span style={{ color:'#16705a', fontSize:'20px', lineHeight:1 }}>+</span>
                     </div>
                     <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>Adaugă diagnostic</div>
+                  </div>
+                <div style={{ display:'flex', gap:'6px', justifyContent:'center', marginTop:'8px' }}>
+                    <div style={{ width:'20px', height:'6px', background:'#16705a', borderRadius:'3px' }}></div>
+                    {diagnostice.filter(d => d.nume).slice(1).map((_, i) => <div key={i} style={{ width:'6px', height:'6px', background:'#d1d5db', borderRadius:'50%' }}></div>)}
+                    <div style={{ width:'6px', height:'6px', background:'#d1d5db', borderRadius:'50%' }}></div>
                   </div>
                 </div>
               )}
