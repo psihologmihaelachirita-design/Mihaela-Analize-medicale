@@ -402,7 +402,7 @@ export default function Urgenta() {
                   {diagnostice.map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
-                      <BadgeDoc atestat={d.atestat} />
+                      {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataStart && <div><div style={lbl}>Luna / An start</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataStart}</div></div>}
                       {d.specialist && <div><div style={lbl}>Specialist</div><div style={{ fontSize:'13px', color:'#111' }}>{d.specialist}</div></div>}
@@ -445,7 +445,7 @@ export default function Urgenta() {
                   {implanteList.map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
-                      <BadgeDoc atestat={d.atestat} />
+                      {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataImplant && <div><div style={lbl}>Data implantării</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataImplant}</div></div>}
                       {d.spital && <div><div style={lbl}>Spital</div><div style={{ fontSize:'13px', color:'#111' }}>{d.spital}</div></div>}
@@ -487,7 +487,7 @@ export default function Urgenta() {
                   {interventii.map((d, i) => (
                     <div key={i} style={{ background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'220px', maxWidth:'220px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
-                      <BadgeDoc atestat={d.atestat} />
+                      {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                       {d.dataInterventie && <div><div style={lbl}>Data intervenției</div><div style={{ fontSize:'13px', color:'#111' }}>{d.dataInterventie}</div></div>}
                       {d.spital && <div><div style={lbl}>Spital</div><div style={{ fontSize:'13px', color:'#111' }}>{d.spital}</div></div>}
