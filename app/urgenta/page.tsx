@@ -56,7 +56,7 @@ function parseAlergii(val: string | null): string[] {
     : ['']
 }
 
-interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; specialitate: string; undeUrmarit: string; medicatie: string; atestat: boolean }
+interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; undeUrmarit: string; medicatie: string; atestat: boolean }
 interface ImplantItem { id: string; nume: string; dataImplant: string; spital: string; observatii: string; atestat: boolean }
 interface InterventieItem { id: string; nume: string; dataInterventie: string; spital: string; chirurg: string; atestat: boolean }
 
@@ -328,7 +328,7 @@ export default function Urgenta() {
               <div style={{ fontSize:'24px', fontWeight:700, color:'#E24B4A' }}>{grupSanguin || '—'}</div>
             )}
             {editMode && <Checkbox checked={grupSanguinAtestat} onChange={() => setGrupSanguinAtestat(!grupSanguinAtestat)} label="Document care atestă" />}
-            {grupSanguin && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={grupSanguinAtestat} /></div>}
+            {grupSanguin && <BadgeDoc atestat={grupSanguinAtestat} />}
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
@@ -368,10 +368,10 @@ export default function Urgenta() {
 
         {/* DIAGNOSTICE */}
         <div style={card}>
-          <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub={diagnostice.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', undeUrmarit:'', medicatie:'', atestat:false }]) : undefined} />
+          <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub={diagnostice.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) : undefined} />
           {diagnostice.length === 0 && !editMode && (
             <div style={{ padding:'18px 20px' }}>
-              <button onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
+              <button onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
             </div>
           )}
           {(diagnostice.length > 0 || editMode) && (
@@ -397,7 +397,7 @@ export default function Urgenta() {
                       <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
                     </div>
                   ))}
-                  <button onClick={() => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', undeUrmarit:'', medicatie:'', atestat:false }])} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
+                  <button onClick={() => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }])} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
                 </>
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
