@@ -386,7 +386,7 @@ export default function Urgenta() {
               {editMode ? (
                 <>
                   {diagnostice.map(d => (
-                    <div key={d.id} style={itemCard}>
+                    <div key={d.id} id={`diag-${d.id}`} style={itemCard}>
                       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px' }}>
                         <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Diagnostic</span>
                         <button onClick={() => setDiagnostice(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
@@ -411,12 +411,12 @@ export default function Urgenta() {
                       <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
                     </div>
                   ))}
-                  <button onClick={() => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }])} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
+                  <button onClick={() => { const newId = Date.now().toString(); setDiagnostice(prev => [...prev, { id: newId, nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]); setTimeout(() => document.getElementById(`diag-${newId}`)?.scrollIntoView({ behavior:'smooth', block:'center' }), 100) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
                 </>
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {diagnostice.filter(d => d.nume).map((d, i) => (
-                    <div key={i} style={{ background:'#fafaf9', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
+                    <div key={i} style={{ background:'#f0f4f3', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       <BadgeDoc atestat={d.atestat} />
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
@@ -471,7 +471,7 @@ export default function Urgenta() {
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {implanteList.map((d, i) => (
-                    <div key={i} style={{ background:'#fafaf9', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
+                    <div key={i} style={{ background:'#f0f4f3', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
@@ -513,7 +513,7 @@ export default function Urgenta() {
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
                   {interventii.map((d, i) => (
-                    <div key={i} style={{ background:'#fafaf9', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
+                    <div key={i} style={{ background:'#f0f4f3', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       {d.atestat && <BadgeDoc atestat={true} />}
                       <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
