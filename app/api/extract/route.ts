@@ -365,6 +365,9 @@ const INTERVALE_STANDARD: Record<string, [number | null, number | null, string]>
 
 function normalizeazaNume(nume: string): string {
   const numeLower = nume.toLowerCase().trim()
+    .replace(/ă/g, 'a').replace(/â/g, 'a').replace(/î/g, 'i')
+    .replace(/ș/g, 's').replace(/ş/g, 's')
+    .replace(/ț/g, 't').replace(/ţ/g, 't')
   return NOMENCLATOR[numeLower] || nume
 }
 
