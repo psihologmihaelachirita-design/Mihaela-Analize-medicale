@@ -140,7 +140,7 @@ export default function Profil() {
             <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key)}
-                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: 'white', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
+                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
                 <item.Icon size={16} stroke={1.5} />
                 {item.label}
               </div>
