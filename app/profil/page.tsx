@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { IconUser, IconStethoscope, IconVaccine, IconPhone } from '@tabler/icons-react'
+import { IconUser, IconStethoscope, IconVaccine, IconPhone, IconCreditCard, IconDownload, IconLock } from '@tabler/icons-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,7 +24,7 @@ export default function Profil() {
   const [mesaj, setMesaj] = useState('')
   const router = useRouter()
 
-  const [sectiuni, setSectiuni] = useState({ baza: true, medicale: true, vaccinuri: true, contacte: true })
+  const [sectiuni, setSectiuni] = useState({ baza: true, medicale: true, vaccinuri: true, contacte: true, abonament: true, export: true, confidentialitate: true })
   const [nume, setNume] = useState('')
   const [varsta, setVarsta] = useState('')
   const [sex, setSex] = useState('')
@@ -131,6 +131,9 @@ export default function Profil() {
     { key:'medicale', Icon: IconStethoscope, label:'Date medicale' },
     { key:'vaccinuri', Icon: IconVaccine, label:'Vaccinuri' },
     { key:'contacte', Icon: IconPhone, label:'Contacte urgență' },
+    { key:'abonament', Icon: IconCreditCard, label:'Abonament' },
+    { key:'export', Icon: IconDownload, label:'Export date' },
+    { key:'confidentialitate', Icon: IconLock, label:'Confidențialitate' },
   ]
 
   function Banner({ icon, title, sub, badge, skey }: { icon:string, title:string, sub:string, badge?:boolean, skey:keyof typeof sectiuni }) {
@@ -329,6 +332,59 @@ export default function Profil() {
             <button onClick={handleSalvare} disabled={salvare} style={{ padding:'10px 26px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer' }}>
               {salvare ? 'Se salvează...' : 'Salvează profilul'}
             </button>
+          </div>
+
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="💳" title="Abonament" sub="Planul tău curent" skey="abonament" />
+            {sectiuni.abonament && (
+              <div style={{ padding:'20px 22px' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div>
+                    <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Plan curent</div>
+                    <div style={{ fontSize:'12px', color:'#555', marginTop:'2px' }}>MedFile Basic</div>
+                  </div>
+                  <button style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>Upgrade</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="⬇" title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
+            {sectiuni.export && (
+              <div style={{ padding:'20px 22px' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div>
+                    <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Export complet dosar</div>
+                    <div style={{ fontSize:'12px', color:'#555', marginTop:'2px' }}>Analize + Card urgență în format PDF</div>
+                  </div>
+                  <button style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>⬇ Descarcă</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="🔒" title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
+            {sectiuni.confidentialitate && (
+              <div style={{ padding:'20px 22px' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'14px' }}>
+                  <div>
+                    <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Politica de confidențialitate</div>
+                    <div style={{ fontSize:'12px', color:'#555', marginTop:'2px' }}>Vezi cum procesăm datele tale</div>
+                  </div>
+                  <button style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Vezi →</button>
+                </div>
+                <div style={{ height:'0.5px', background:'#e5e7eb', margin:'14px 0' }}></div>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div>
+                    <div style={{ fontSize:'13px', fontWeight:500, color:'#E24B4A' }}>Ștergere cont</div>
+                    <div style={{ fontSize:'12px', color:'#555', marginTop:'2px' }}>Toate datele tale vor fi șterse permanent</div>
+                  </div>
+                  <button style={{ padding:'8px 16px', background:'white', border:'0.5px solid #E24B4A', borderRadius:'8px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', fontWeight:500 }}>Șterge cont</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
