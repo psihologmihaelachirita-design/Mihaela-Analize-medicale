@@ -101,7 +101,7 @@ export default function Profil() {
     return (
       <div onClick={() => toggleSectiune(skey)} style={{ background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px' }}>{icon}</div>
+          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px', color:'white' }}>{icon}</div>
           <div>
             <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
             <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.72)', marginTop:'2px' }}>{sub}</div>
@@ -140,7 +140,7 @@ export default function Profil() {
             <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key)}
-                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
+                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: 'white', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
                 <item.Icon size={16} stroke={1.5} />
                 {item.label}
               </div>
