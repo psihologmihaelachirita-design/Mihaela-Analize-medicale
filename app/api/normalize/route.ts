@@ -255,7 +255,7 @@ function normalizeaza(nume: string): string {
   return NOMENCLATOR[lower] || nume
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const { data: analize, error } = await supabase
       .from('analize')
