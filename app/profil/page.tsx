@@ -15,7 +15,7 @@ export default function Profil() {
   const [loading, setLoading] = useState(true)
   const [salvare, setSalvare] = useState(false)
   const [mesaj, setMesaj] = useState('')
-  const [sectiuneActiva, setSectiuneActiva] = useState('baza')
+  const [sectiuni, setSectiuni] = useState({ baza: true, abonament: true, export: true, confidentialitate: true })
   const router = useRouter()
 
   const [nume, setNume] = useState('')
@@ -24,15 +24,16 @@ export default function Profil() {
   const [cetatenie, setCetatenie] = useState('Română')
   const [email, setEmail] = useState('')
 
+  function toggleSectiune(key: keyof typeof sectiuni) {
+    setSectiuni(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
       setUser(session.user)
       setEmail(session.user.email || '')
-
-      const { data: profil } = await supabase
-        .from('profiluri').select('*').eq('id', session.user.id).single()
-
+      const { data: profil } = await supabase.from('profiluri').select('*').eq('id', session.user.id).single()
       if (profil) {
         const numeParts = (profil.nume || '').split(' ')
         setNume(numeParts[0] || '')
@@ -90,20 +91,23 @@ export default function Profil() {
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
   const navItems = [
-    { key:'baza', Icon: IconUser, label:'Date de bază' },
-    { key:'abonament', Icon: IconCreditCard, label:'Abonament' },
-    { key:'export', Icon: IconDownload, label:'Export date' },
-    { key:'confidentialitate', Icon: IconLock, label:'Confidențialitate' },
+    { key:'baza' as keyof typeof sectiuni, Icon: IconUser, label:'Date de bază' },
+    { key:'abonament' as keyof typeof sectiuni, Icon: IconCreditCard, label:'Abonament' },
+    { key:'export' as keyof typeof sectiuni, Icon: IconDownload, label:'Export date' },
+    { key:'confidentialitate' as keyof typeof sectiuni, Icon: IconLock, label:'Confidențialitate' },
   ]
 
-  function Banner({ icon, title, sub }: { icon: string, title: string, sub: string }) {
+  function Banner({ icon, title, sub, skey }: { icon: string, title: string, sub: string, skey: keyof typeof sectiuni }) {
     return (
-      <div style={{ background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', gap:'12px' }}>
-        <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px' }}>{icon}</div>
-        <div>
-          <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
-          <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.72)', marginTop:'2px' }}>{sub}</div>
+      <div onClick={() => toggleSectiune(skey)} style={{ background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px' }}>{icon}</div>
+          <div>
+            <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
+            <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.72)', marginTop:'2px' }}>{sub}</div>
+          </div>
         </div>
+        <span style={{ color:'rgba(255,255,255,0.8)', fontSize:'14px' }}>{sectiuni[skey] ? '▲' : '▼'}</span>
       </div>
     )
   }
@@ -111,7 +115,6 @@ export default function Profil() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
 
-      {/* Topbar */}
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 32px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
         <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
           <Link href="/dashboard" style={{ fontSize:'13px', color:'#16705a', fontWeight:500, textDecoration:'none' }}>← Dosar</Link>
@@ -126,7 +129,6 @@ export default function Profil() {
 
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
-        {/* Sidebar */}
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 20px 28px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'24px' }}>
             <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
@@ -134,12 +136,11 @@ export default function Profil() {
               <span style={{ fontSize:'16px', fontWeight:500, color:'#111' }}>MedFile</span>
             </div>
           </div>
-
           <div style={{ padding:'0 16px', flex:1 }}>
             <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
             {navItems.map(item => (
-              <div key={item.key} onClick={() => setSectiuneActiva(item.key)}
-                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuneActiva === item.key ? '#085041' : '#555', background: sectiuneActiva === item.key ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuneActiva === item.key ? 500 : 400 }}>
+              <div key={item.key} onClick={() => toggleSectiune(item.key)}
+                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
                 <item.Icon size={16} stroke={1.5} />
                 {item.label}
               </div>
@@ -147,7 +148,6 @@ export default function Profil() {
           </div>
         </div>
 
-        {/* Main */}
         <div style={{ padding:'28px', overflowY:'auto' }}>
 
           {mesaj && (
@@ -156,10 +156,9 @@ export default function Profil() {
             </div>
           )}
 
-          {/* DATE DE BAZA */}
-          {sectiuneActiva === 'baza' && (
-            <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-              <Banner icon="👤" title="Date de bază" sub="Preluate automat în cardul de urgență" />
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="👤" title="Date de bază" sub="Preluate automat în cardul de urgență" skey="baza" />
+            {sectiuni.baza && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={g2}>
                   <div><label style={lbl}>Nume</label><input value={nume} onChange={e => setNume(e.target.value)} placeholder="ex: Chirita" style={inp} /></div>
@@ -199,19 +198,18 @@ export default function Profil() {
                   </div>
                 </div>
                 <button onClick={handleSchimbaParola} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500, marginBottom:'16px' }}>Schimbă parola</button>
-                <div style={{ display:'flex', justifyContent:'flex-end', gap:'10px' }}>
+                <div style={{ display:'flex', justifyContent:'flex-end' }}>
                   <button onClick={handleSalvare} disabled={salvare} style={{ padding:'10px 26px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer' }}>
                     {salvare ? 'Se salvează...' : 'Salvează'}
                   </button>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* ABONAMENT */}
-          {sectiuneActiva === 'abonament' && (
-            <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-              <Banner icon="💳" title="Abonament" sub="Planul tău curent" />
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="💳" title="Abonament" sub="Planul tău curent" skey="abonament" />
+            {sectiuni.abonament && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div>
@@ -221,13 +219,12 @@ export default function Profil() {
                   <button style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>Upgrade</button>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* EXPORT DATE */}
-          {sectiuneActiva === 'export' && (
-            <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-              <Banner icon="⬇" title="Export date" sub="Descarcă toate datele tale din MedFile" />
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="⬇" title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
+            {sectiuni.export && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div>
@@ -237,13 +234,12 @@ export default function Profil() {
                   <button style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>⬇ Descarcă</button>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* CONFIDENTIALITATE */}
-          {sectiuneActiva === 'confidentialitate' && (
-            <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-              <Banner icon="🔒" title="Confidențialitate" sub="Drepturile tale conform GDPR" />
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon="🔒" title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
+            {sectiuni.confidentialitate && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'14px' }}>
                   <div>
@@ -261,8 +257,8 @@ export default function Profil() {
                   <button onClick={handleStergeContConfirm} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #E24B4A', borderRadius:'8px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', fontWeight:500 }}>Șterge cont</button>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
         </div>
       </div>
