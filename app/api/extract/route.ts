@@ -389,6 +389,23 @@ function getStatusStandard(valoare: number | null, numeNormalizat: string): stri
 
 export async function POST(request: NextRequest) {
   try {
+    const authHeader = request.headers.get('authorization')
+    const token = authHeader?.replace('Bearer ', '')
+    if (!token) return NextResponse.json({ error: 'Neautorizat.' }, { status: 401 })
+
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+      global: { headers: { Authorization: `Bearer ${token}` } }
+    })
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Neautorizat.' }, { status: 401 })
+
+    const azi = new Date().toISOString().split('T')[0]
+    const { count } = await supabase.from('analize').select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', azi)
+    if ((count || 0) >= 10) return NextResponse.json({ error: 'Ai atins limita de 10 upload-uri pe zi.' }, { status: 429 })
+
     const formData = await request.formData()
     const pdf = formData.get('pdf') as File
 
