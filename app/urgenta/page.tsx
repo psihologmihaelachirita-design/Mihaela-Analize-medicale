@@ -124,6 +124,7 @@ export default function Urgenta() {
   const [contactTel, setContactTel] = useState('')
   const [medicNume, setMedicNume] = useState('')
   const [medicTel, setMedicTel] = useState('')
+  const [fumator, setFumator] = useState<boolean | null>(null)
   const [asiguratCnas, setAsiguratCnas] = useState(false)
   const [greutate, setGreutate] = useState('')
   const [inaltime, setInaltime] = useState('')
@@ -239,7 +240,7 @@ export default function Urgenta() {
             <button onClick={() => setDropdown(!dropdown)} style={{ padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>{username} ▾</button>
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/cont" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Cont</Link>
+                <Link href="/profil" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Cont</Link>
                 <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
               </div>
             )}
