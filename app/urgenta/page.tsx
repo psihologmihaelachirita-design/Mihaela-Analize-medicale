@@ -128,7 +128,7 @@ export default function Urgenta() {
   const [greutate, setGreutate] = useState('')
   const [inaltime, setInaltime] = useState('')
   const [diagnostice, setDiagnostice] = useState<DiagnosticItem[]>([])
-  const [implanteList, setImplanteList] = useState<ImplantItem[]>([])
+  const [implanturiList, setimplanturiList] = useState<ImplantItem[]>([])
   const [interventii, setInterventii] = useState<InterventieItem[]>([])
 
   useEffect(() => {
@@ -150,7 +150,7 @@ export default function Urgenta() {
         setGreutate(data.greutate?.toString() || '')
         setInaltime(data.inaltime?.toString() || '')
         if (data.diagnostice_json) setDiagnostice(JSON.parse(data.diagnostice_json))
-        if (data.implanturi_json) setImplanteList(JSON.parse(data.implanturi_json))
+        if (data.implanturi_json) setimplanturiList(JSON.parse(data.implanturi_json))
         if (data.interventii_json) setInterventii(JSON.parse(data.interventii_json))
       }
       setLoading(false)
@@ -190,7 +190,7 @@ export default function Urgenta() {
         medicatie: d.medicatie ? d.medicatie.charAt(0).toUpperCase() + d.medicatie.slice(1) : '',
         nume: d.nume ? d.nume.charAt(0).toUpperCase() + d.nume.slice(1) : '',
       }))),
-      implanturi_json: JSON.stringify(implanteList),
+      implanturi_json: JSON.stringify(implanturiList),
       interventii_json: JSON.stringify(interventii),
     })
     if (error) { setMesaj('Eroare: ' + error.message); setSalvare(false); return }
@@ -262,7 +262,7 @@ export default function Urgenta() {
               </>
             ) : (
               <>
-                <button onClick={() => { setEditMode(false); if (profil) { setCnp(profil.cnp || ''); setGrupSanguin(profil.grup_sanguin || ''); setAlergiiMed(parseAlergii(profil.alergii_medicamente)); setAlergiiAl(parseAlergii(profil.alergii_alimentare)); setContactNume(profil.contact_urgenta_nume || ''); setContactTel(profil.contact_urgenta_telefon || ''); setMedicNume(profil.medic_familie_nume || ''); setMedicTel(profil.medic_familie_telefon || ''); setAsiguratCnas(profil.asigurat_cnas || false); setGreutate(profil.greutate?.toString() || ''); setInaltime(profil.inaltime?.toString() || ''); setDiagnostice(profil.diagnostice_json ? JSON.parse(profil.diagnostice_json) : []); setImplanteList(profil.implanturi_json ? JSON.parse(profil.implanturi_json) : []); setInterventii(profil.interventii_json ? JSON.parse(profil.interventii_json) : []); } }} style={{ padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Anulează</button>
+                <button onClick={() => { setEditMode(false); if (profil) { setCnp(profil.cnp || ''); setGrupSanguin(profil.grup_sanguin || ''); setAlergiiMed(parseAlergii(profil.alergii_medicamente)); setAlergiiAl(parseAlergii(profil.alergii_alimentare)); setContactNume(profil.contact_urgenta_nume || ''); setContactTel(profil.contact_urgenta_telefon || ''); setMedicNume(profil.medic_familie_nume || ''); setMedicTel(profil.medic_familie_telefon || ''); setAsiguratCnas(profil.asigurat_cnas || false); setGreutate(profil.greutate?.toString() || ''); setInaltime(profil.inaltime?.toString() || ''); setDiagnostice(profil.diagnostice_json ? JSON.parse(profil.diagnostice_json) : []); setimplanturiList(profil.implanturi_json ? JSON.parse(profil.implanturi_json) : []); setInterventii(profil.interventii_json ? JSON.parse(profil.interventii_json) : []); } }} style={{ padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Anulează</button>
                 <button onClick={handleSalvare} disabled={salvare} style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>{salvare ? 'Se salvează...' : 'Salvează'}</button>
               </>
             )}
@@ -446,31 +446,31 @@ export default function Urgenta() {
 
         {/* IMPLANTURI */}
         <div style={card}>
-          <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="Implante și dispozitive medicale" sub={implanteList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setImplanteList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
-          {(implanteList.length > 0 || editMode) && (
+          <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="implanturi și dispozitive medicale" sub={implanturiList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setimplanturiList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
+          {(implanturiList.length > 0 || editMode) && (
             <div style={body}>
               {editMode ? (
                 <>
-                  {implanteList.map(d => (
+                  {implanturiList.map(d => (
                     <div key={d.id} style={itemCard}>
                       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px' }}>
                         <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Implant / Dispozitiv</span>
-                        <button onClick={() => setImplanteList(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
+                        <button onClick={() => setimplanturiList(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume implant</label><input value={d.nume} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Stent coronarian" style={inp} /></div>
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume implant</label><input value={d.nume} onChange={e => setimplanturiList(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Stent coronarian" style={inp} /></div>
                       <div style={{ ...g2, marginBottom:'8px' }}>
-                        <div><label style={lbl}>Data implantării</label><input value={d.dataImplant} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, dataImplant: e.target.value} : x))} placeholder="ex: 03/2019" style={inp} /></div>
-                        <div><label style={lbl}>Spital</label><input value={d.spital} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, spital: e.target.value} : x))} placeholder="ex: Spitalul Fundeni" style={inp} /></div>
+                        <div><label style={lbl}>Data implantării</label><input value={d.dataImplant} onChange={e => setimplanturiList(prev => prev.map(x => x.id === d.id ? {...x, dataImplant: e.target.value} : x))} placeholder="ex: 03/2019" style={inp} /></div>
+                        <div><label style={lbl}>Spital</label><input value={d.spital} onChange={e => setimplanturiList(prev => prev.map(x => x.id === d.id ? {...x, spital: e.target.value} : x))} placeholder="ex: Spitalul Fundeni" style={inp} /></div>
                       </div>
-                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Observații critice</label><input value={d.observatii} onChange={e => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, observatii: e.target.value} : x))} placeholder="ex: Atenție RMN" style={inp} /></div>
-                      <Checkbox checked={d.atestat} onChange={() => setImplanteList(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest implant" />
+                      <div style={{ marginBottom:'8px' }}><label style={lbl}>Observații critice</label><input value={d.observatii} onChange={e => setimplanturiList(prev => prev.map(x => x.id === d.id ? {...x, observatii: e.target.value} : x))} placeholder="ex: Atenție RMN" style={inp} /></div>
+                      <Checkbox checked={d.atestat} onChange={() => setimplanturiList(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest implant" />
                     </div>
                   ))}
-                  <button onClick={() => setImplanteList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }])} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă implant</button>
+                  <button onClick={() => setimplanturiList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }])} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă implant</button>
                 </>
               ) : (
                 <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
-                  {implanteList.map((d, i) => (
+                  {implanturiList.map((d, i) => (
                     <div key={i} style={{ background:'#f0f4f3', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'10px', flexShrink:0 }}>
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{d.nume}</div>
                       {d.atestat && <BadgeDoc atestat={true} />}

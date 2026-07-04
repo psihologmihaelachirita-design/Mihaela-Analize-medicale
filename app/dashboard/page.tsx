@@ -193,7 +193,7 @@ export default function Dashboard() {
             </button>
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/cont" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Cont</Link>
+                <Link href="/profil" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Profil</Link>
                 <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'#ed1f37', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
               </div>
             )}
@@ -215,7 +215,7 @@ export default function Dashboard() {
           <Link href="/urgenta" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Urgență</Link>
           <Link href="/dosar" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Dosar</Link>
           <Link href="/upload" style={{ padding:'10px 12px', fontSize:'14px', color:'white', textDecoration:'none', fontWeight:500, borderRadius:'8px', background:'#16705a', textAlign:'center', marginTop:'4px' }}>+ Adaugă</Link>
-          <Link href="/cont" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Cont</Link>
+          <Link href="/profil" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Cont</Link>
           <div onClick={handleLogout} style={{ padding:'10px 12px', fontSize:'14px', color:'#ed1f37', cursor:'pointer', fontWeight:500, borderRadius:'8px' }}>Ieșire</div>
         </div>
       )}
