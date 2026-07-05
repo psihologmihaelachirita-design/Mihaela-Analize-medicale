@@ -316,8 +316,8 @@ export default function Urgenta() {
                       <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{imc.valoare}</div>
                       <div style={{ marginTop:'6px', background:'#E1F5EE', borderRadius:'20px', padding:'4px 12px', fontSize:'12px', fontWeight:500, color:'#085041', display:'block' }}>✓ {imc.label}</div>
                     </div>
-                    <div style={{ marginTop:'14px' }}>
-                      <div style={lbl}>Fumător</div>
+                    <div>
+                        <div style={lbl}>Fumător</div>
                       <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
                         {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
                           <div key={opt.label} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111', cursor: editMode ? 'pointer' : 'default' }} onClick={() => editMode && setFumator(opt.val)}>
