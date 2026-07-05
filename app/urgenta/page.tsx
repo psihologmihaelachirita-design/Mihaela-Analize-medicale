@@ -264,7 +264,7 @@ export default function Urgenta() {
           </div>
           <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase' as const, letterSpacing:'0.6px', marginBottom:'10px', padding:'0 20px' }}>Card de urgență</div>
           {navItems.map((item, i) => (
-            <div key={i} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color:'#555', cursor:'pointer', marginBottom:'2px', borderRadius:'8px' }}>
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color:'#555', cursor:'pointer', marginBottom:'2px', borderRadius:'8px', background:'transparent' }}>
               <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'#e5e7eb', flexShrink:0 }}></div>
               {item.label}
             </div>
