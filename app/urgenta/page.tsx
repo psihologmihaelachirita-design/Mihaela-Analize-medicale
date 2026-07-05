@@ -462,7 +462,7 @@ export default function Urgenta() {
 
         {/* IMPLANTURI */}
         <div style={card}>
-          <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="implanturi și dispozitive medicale" sub={implanturiList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setimplanturiList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
+          <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="Implanturi și dispozitive medicale" sub={implanturiList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setimplanturiList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
           {(implanturiList.length > 0 || editMode) && (
             <div style={body}>
               {editMode ? (
@@ -618,7 +618,6 @@ export default function Urgenta() {
             Datele din acest card sunt declarate de titular sau extrase din documente medicale atașate de titular. MedFile nu verifică, nu validează și nu certifică nicio informație medicală. Orice decizie clinică aparține exclusiv medicului curant, care are obligația să verifice datele înainte de orice intervenție.
           </div>
         </div>
-
       </div>
     </div>
   )
