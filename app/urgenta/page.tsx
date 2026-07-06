@@ -233,10 +233,10 @@ export default function Urgenta() {
 
       {/* Topbar */}
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
           <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
           <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
-        </div>
+        </Link>
         <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
           <Link href="/dashboard" style={navStyle}>Home</Link>
           <Link href="/panoramic" style={navStyle}>Panoramic</Link>
