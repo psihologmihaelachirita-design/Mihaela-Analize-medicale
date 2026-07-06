@@ -134,10 +134,7 @@ export default function Profil() {
 
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 20px 28px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'24px' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-              <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#16705a', fontSize:'20px', fontWeight:500 }}>✚</div>
-              <span style={{ fontSize:'16px', fontWeight:500, color:'#111' }}>MedFile</span>
-            </div>
+            
           </div>
           <div style={{ padding:'0 16px', flex:1 }}>
             <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
