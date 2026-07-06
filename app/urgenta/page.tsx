@@ -213,7 +213,7 @@ export default function Urgenta() {
 
   if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', fontFamily:'system-ui' }}><p style={{ color:'#111' }}>Se încarcă...</p></div>
 
-  const username = profil?.prenume || profil?.nume?.split(' ')[0] || user?.email?.split('@')[0]
+  const username = profil?.nume?.split(' ')[1] || user?.email?.split('@')[0]
   const varstaCalc = cnp.length === 13 ? calculeazaVarsta(cnp) : profil?.varsta
   const dataNasterii = cnp.length === 13 ? calculeazaDataNasterii(cnp) : ''
   const sexCalc = cnp.length === 13 ? calculeazaSex(cnp) : profil?.sex
