@@ -174,8 +174,8 @@ export default function Profil() {
             {sectiuni.baza && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={g2}>
-                  <div><label style={lbl}>Nume</label><input value={nume} onChange={e => setNume(e.target.value)} placeholder="ex: Chirita" style={inp} /></div>
                   <div><label style={lbl}>Prenume</label><input value={prenume} onChange={e => setPrenume(e.target.value)} placeholder="ex: Mihaela" style={inp} /></div>
+                  <div><label style={lbl}>Nume</label><input value={nume} onChange={e => setNume(e.target.value)} placeholder="ex: Chirita" style={inp} /></div>
                 </div>
                 <div style={g2}>
                   <div>
