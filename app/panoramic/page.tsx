@@ -139,8 +139,7 @@ export default function Panoramic() {
           <Link href="/urgenta" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Urgență</Link>
           <Link href="/dosar" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Dosar</Link>
           <Link href="/upload" style={{padding:'6px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'13px', fontWeight:500, textDecoration:'none', marginLeft:'4px'}}>+ Adaugă</Link>
-          <span style={{fontSize:'14px', color:'#111', fontWeight:500, marginLeft:'8px'}}>{numeAfisate.length} analize</span>
-        </div>
+          </div>
       </div>
 
       {/* Toolbar */}
