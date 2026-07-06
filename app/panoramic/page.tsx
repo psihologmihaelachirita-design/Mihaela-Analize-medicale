@@ -60,6 +60,8 @@ export default function Panoramic() {
   const [categoriiActive, setCategoriiActive] = useState<string[]>([])
   const [selected, setSelected] = useState<any>(null)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [dropdown, setDropdown] = useState(false)
+  const [username, setUsername] = useState('')
   const [search, setSearch] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
   const hoverTimeout = useRef<any>(null)
@@ -68,6 +70,7 @@ export default function Panoramic() {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
+      setUsername(session.user.email?.split('@')[0] || '')
       const { data } = await supabase
         .from('analize')
         .select('*')
