@@ -67,6 +67,11 @@ export default function Panoramic() {
   const hoverTimeout = useRef<any>(null)
   const router = useRouter()
 
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
@@ -142,6 +147,15 @@ export default function Panoramic() {
           <Link href="/urgenta" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Urgență</Link>
           <Link href="/dosar" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Dosar</Link>
           <Link href="/upload" style={{padding:'6px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'13px', fontWeight:500, textDecoration:'none', marginLeft:'4px'}}>+ Adaugă</Link>
+          <div style={{position:'relative', marginLeft:'8px'}}>
+            <button onClick={() => setDropdown(!dropdown)} style={{padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500}}>{username} ▾</button>
+            {dropdown && (
+              <div style={{position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100}}>
+                <Link href="/profil" style={{display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px'}}>Profil</Link>
+                <div onClick={handleLogout} style={{padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px'}}>Ieșire</div>
+              </div>
+            )}
+          </div>
           </div>
       </div>
 
