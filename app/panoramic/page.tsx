@@ -76,7 +76,9 @@ export default function Panoramic() {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
       const { data: profilData } = await supabase.from('profiluri').select('nume').eq('id', session.user.id).single()
-      setUsername(profilData?.nume || session.user.email?.split('@')[0] || '')
+      const numeComplet = profilData?.nume || ''
+      const prenume = numeComplet.split(' ').slice(1).join(' ')
+      setUsername(prenume || session.user.email?.split('@')[0] || '')
       const { data } = await supabase
         .from('analize')
         .select('*')
