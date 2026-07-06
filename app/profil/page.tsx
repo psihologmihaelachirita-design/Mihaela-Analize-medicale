@@ -183,7 +183,7 @@ export default function Profil() {
                     <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
                       {['F','M'].map(s => (
                         <label key={s} style={{ display:'flex', alignItems:'center', gap:'7px', fontSize:'13px', cursor:'pointer', color:'#111' }}>
-                          <div onClick={() => setSex(s)} style={{ width:'16px', height:'16px', borderRadius:'50%', border:'0.5px solid #e5e7eb', background: sex===s?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0 }}>
+                          <div onClick={() => setSex(s)} style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: sex===s?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0 }}>
                             {sex===s && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
                           </div>
                           {s==='F'?'Feminin':'Masculin'}
