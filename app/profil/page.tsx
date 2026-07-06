@@ -203,11 +203,11 @@ export default function Profil() {
                 <div style={g2}>
                   <div>
                     <label style={lbl}>Email</label>
-                    <input value={email} disabled style={{ ...inp, background:'#f8f9fa', color:'#aaa' }} />
+                    <input value={email} disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
                   </div>
                   <div>
                     <label style={lbl}>Parolă</label>
-                    <input value="••••••••" disabled style={{ ...inp, background:'#f8f9fa', color:'#aaa' }} />
+                    <input value="••••••••" disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
                   </div>
                 </div>
                 <button onClick={handleSchimbaParola} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500, marginBottom:'16px' }}>Schimbă parola</button>
