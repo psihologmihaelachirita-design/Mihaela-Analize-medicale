@@ -318,6 +318,19 @@ export default function Urgenta() {
                     <div><label style={lbl}>Greutate (kg)</label><input type="number" value={greutate} onChange={e => setGreutate(e.target.value)} placeholder="ex: 65" style={{ ...inp, textTransform:'none' as const }} /></div>
                     <div><label style={lbl}>Înălțime (cm)</label><input type="number" value={inaltime} onChange={e => setInaltime(e.target.value)} placeholder="ex: 168" style={{ ...inp, textTransform:'none' as const }} /></div>
                   </div>
+                  <div style={{ marginTop:'14px' }}>
+                    <label style={lbl}>Fumător</label>
+                    <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
+                      {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
+                        <div key={opt.label} onClick={() => setFumator(opt.val)} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111', cursor:'pointer' }}>
+                          <div style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                            {fumator===opt.val && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
+                          </div>
+                          {opt.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </>
               ) : (
                 <>
