@@ -15,6 +15,7 @@ export default function Profil() {
   const [loading, setLoading] = useState(true)
   const [salvare, setSalvare] = useState(false)
   const [mesaj, setMesaj] = useState('')
+  const [dropdown, setDropdown] = useState(false)
   const [sectiuni, setSectiuni] = useState({ baza: true, abonament: true, export: true, confidentialitate: true })
   const router = useRouter()
 
@@ -86,9 +87,11 @@ export default function Profil() {
 
   if (loading) return <p style={{ fontFamily:'system-ui', padding:'2rem', color:'#888' }}>Se încarcă...</p>
 
+  const username = `${nume} ${prenume}`.trim() || user?.email?.split('@')[0]
   const inp: React.CSSProperties = { width:'100%', padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', outline:'none', background:'white', color:'#111', fontFamily:'system-ui' }
   const lbl: React.CSSProperties = { display:'block', fontSize:'12px', fontWeight:500, color:'#555', marginBottom:'5px' }
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
+  const navStyle: React.CSSProperties = { padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }
 
   const navItems = [
     { key:'baza' as keyof typeof sectiuni, Icon: IconUser, label:'Date de bază' },
@@ -97,11 +100,13 @@ export default function Profil() {
     { key:'confidentialitate' as keyof typeof sectiuni, Icon: IconLock, label:'Confidențialitate' },
   ]
 
-  function Banner({ icon, title, sub, skey }: { icon: string, title: string, sub: string, skey: keyof typeof sectiuni }) {
+  function Banner({ icon: BannerIcon, title, sub, skey }: { icon: any, title: string, sub: string, skey: keyof typeof sectiuni }) {
     return (
       <div onClick={() => toggleSectiune(skey)} style={{ background:'#16705a', padding:'15px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px', filter:'brightness(0) invert(1)' }}>{icon}</div>
+          <div style={{ width:'32px', height:'32px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <BannerIcon size={16} color="white" stroke={1.5} />
+          </div>
           <div>
             <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
             <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.72)', marginTop:'2px' }}>{sub}</div>
@@ -115,39 +120,47 @@ export default function Profil() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
 
-      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 32px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
-          <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'8px', textDecoration:'none' }}>
-            <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-            <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
-          </Link>
-          <div style={{ width:'0.5px', height:'20px', background:'#e5e7eb' }}></div>
-          <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Profilul meu</span>
-        </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-          <span style={{ fontSize:'14px', color:'#111', fontWeight:500 }}>{nume || user?.email?.split('@')[0]}</span>
-          <button onClick={handleLogout} style={{ padding:'6px 14px', background:'transparent', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>Ieșire</button>
+      {/* Topbar */}
+      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
+        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
+          <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
+          <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
+        </Link>
+        <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+          <Link href="/" style={navStyle}>Home</Link>
+          <Link href="/panoramic" style={navStyle}>Panoramic</Link>
+          <Link href="/urgenta" style={navStyle}>Urgență</Link>
+          <Link href="/dosar" style={navStyle}>Dosar</Link>
+          <Link href="/upload" style={{ ...navStyle, background:'#16705a', color:'white', padding:'6px 14px', marginLeft:'4px' }}>+ Adaugă</Link>
+          <div style={{ position:'relative', marginLeft:'8px' }}>
+            <button onClick={() => setDropdown(!dropdown)} style={{ padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>{username} ▾</button>
+            {dropdown && (
+              <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
+                <Link href="/profil" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Profil</Link>
+                <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
+        {/* Sidebar */}
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
-          <div style={{ padding:'0 20px 28px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'24px' }}>
-            
-          </div>
           <div style={{ padding:'0 16px', flex:1 }}>
-            <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
+            <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase' as const, letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Secțiuni profil</div>
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key)}
                 style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
-                <item.Icon size={16} stroke={1.5} />
+                <item.Icon size={16} stroke={1.5} color={sectiuni[item.key] ? '#085041' : '#555'} />
                 {item.label}
               </div>
             ))}
           </div>
         </div>
 
+        {/* Main */}
         <div style={{ padding:'28px', overflowY:'auto' }}>
 
           {mesaj && (
@@ -157,7 +170,7 @@ export default function Profil() {
           )}
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-            <Banner icon="👤" title="Date de bază" sub="Preluate automat în cardul de urgență" skey="baza" />
+            <Banner icon={IconUser} title="Date de bază" sub="Preluate automat în cardul de urgență" skey="baza" />
             {sectiuni.baza && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={g2}>
@@ -208,7 +221,7 @@ export default function Profil() {
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-            <Banner icon="💳" title="Abonament" sub="Planul tău curent" skey="abonament" />
+            <Banner icon={IconCreditCard} title="Abonament" sub="Planul tău curent" skey="abonament" />
             {sectiuni.abonament && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -223,7 +236,7 @@ export default function Profil() {
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-            <Banner icon="⬇" title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
+            <Banner icon={IconDownload} title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
             {sectiuni.export && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -238,7 +251,7 @@ export default function Profil() {
           </div>
 
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-            <Banner icon="🔒" title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
+            <Banner icon={IconLock} title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
             {sectiuni.confidentialitate && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'14px' }}>
