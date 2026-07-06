@@ -176,13 +176,14 @@ export default function Dashboard() {
 
       {/* Topbar Desktop */}
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'60px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
           <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
           <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MedFile</span>
-        </div>
+        </Link>
 
         {/* Desktop nav */}
         <div style={{ display:'flex', alignItems:'center', gap:'4px' }} className="desktop-nav">
+          <Link href="/dashboard" style={navStyle}>Home</Link>
           <Link href="/panoramic" style={navStyle}>Panoramic</Link>
           <Link href="/urgenta" style={navStyle}>Urgență</Link>
           <Link href="/dosar" style={navStyle}>Dosar</Link>
@@ -216,12 +217,12 @@ export default function Dashboard() {
           <Link href="/dosar" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Dosar</Link>
           <Link href="/upload" style={{ padding:'10px 12px', fontSize:'14px', color:'white', textDecoration:'none', fontWeight:500, borderRadius:'8px', background:'#16705a', textAlign:'center', marginTop:'4px' }}>+ Adaugă</Link>
           <Link href="/profil" style={{ padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', fontWeight:500, borderRadius:'8px' }}>Cont</Link>
-          <div onClick={handleLogout} style={{ padding:'10px 12px', fontSize:'14px', color:'#ed1f37', cursor:'pointer', fontWeight:500, borderRadius:'8px' }}>Ieșire</div>
+          <div onClick={handleLogout} style={{ padding:'10px 12px', fontSize:'14px', color:'#aa1426', cursor:'pointer', fontWeight:500, borderRadius:'8px' }}>Ieșire</div>
         </div>
       )}
 
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
           .desktop-nav { display: none !important; }
           .mobile-menu-btn { display: flex !important; flex-direction: column; }
         }
