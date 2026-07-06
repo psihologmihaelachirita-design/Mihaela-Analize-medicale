@@ -128,15 +128,19 @@ export default function Panoramic() {
     <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', height:'100vh', display:'flex', flexDirection:'column'}}>
 
       {/* Topbar */}
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0}}>
-        <div style={{display:'flex', alignItems:'center', gap:'16px'}}>
-          <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'8px', textDecoration:'none'}}>
-            <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
-            <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
-          </Link>
-          <span style={{fontSize:'15px', fontWeight:500, color:'#111'}}>Vizualizare panoramică</span>
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0}}>
+        <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'10px', textDecoration:'none'}}>
+          <div style={{width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600}}>✚</div>
+          <span style={{fontSize:'18px', fontWeight:600, color:'#111'}}>MedFile</span>
+        </Link>
+        <div style={{display:'flex', alignItems:'center', gap:'4px'}}>
+          <Link href="/" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Home</Link>
+          <Link href="/panoramic" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#085041', textDecoration:'none', fontWeight:500, background:'#E1F5EE'}}>Panoramic</Link>
+          <Link href="/urgenta" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Urgență</Link>
+          <Link href="/dosar" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Dosar</Link>
+          <Link href="/upload" style={{padding:'6px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'13px', fontWeight:500, textDecoration:'none', marginLeft:'4px'}}>+ Adaugă</Link>
+          <span style={{fontSize:'14px', color:'#111', fontWeight:500, marginLeft:'8px'}}>{numeAfisate.length} analize</span>
         </div>
-        <span style={{fontSize:'14px', color:'#111', fontWeight:500}}>{numeAfisate.length} analize</span>
       </div>
 
       {/* Toolbar */}
