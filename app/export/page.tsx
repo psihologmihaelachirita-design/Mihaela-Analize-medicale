@@ -68,10 +68,10 @@ export default function Export() {
 
       {/* Topbar identic cu celelalte pagini */}
       <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', gap:'16px', position:'sticky', top:0, zIndex:10}}>
-        <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+        <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'8px', textDecoration:'none'}}>
           <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
           <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
-        </div>
+        </Link>
         <span style={{color:'#e5e7eb'}}>|</span>
         <Link href="/dashboard" style={{color:'#0F6E56', textDecoration:'none', fontSize:'14px', fontWeight:500}}>← Dosar</Link>
       </div>
