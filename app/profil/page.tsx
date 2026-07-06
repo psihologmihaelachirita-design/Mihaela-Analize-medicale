@@ -117,7 +117,10 @@ export default function Profil() {
 
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 32px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
         <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
-          <Link href="/dashboard" style={{ fontSize:'13px', color:'#16705a', fontWeight:500, textDecoration:'none' }}>← Dosar</Link>
+          <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'8px', textDecoration:'none' }}>
+            <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
+            <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
+          </Link>
           <div style={{ width:'0.5px', height:'20px', background:'#e5e7eb' }}></div>
           <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Profilul meu</span>
         </div>
