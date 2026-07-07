@@ -80,15 +80,16 @@ function BadgeDoc({ atestat }: { atestat: boolean }) {
     : <span style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'#FEF3C7', color:'#B45309', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>Fără document care atestă</span>
 }
 
-function Banner({ icon, title, sub, onAdd }: { icon: React.ReactNode, title: string, sub: string, onAdd?: () => void }) {
+function Banner({ icon, title, sub, onAdd, onToggle }: { icon: React.ReactNode, title: string, sub: string, onAdd?: () => void, onToggle?: () => void }) {
   return (
-    <div style={{ background:'#16705a', padding:'14px 20px', display:'flex', alignItems:'center', gap:'10px' }}>
+    <div onClick={onToggle} style={{ background:'#16705a', padding:'14px 20px', display:'flex', alignItems:'center', gap:'10px', cursor: onToggle ? 'pointer' : 'default' }}>
       <div style={{ width:'28px', height:'28px', background:'rgba(255,255,255,0.15)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{icon}</div>
       <div style={{ flex:1 }}>
         <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>{title}</div>
         <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.75)', marginTop:'1px' }}>{sub}</div>
       </div>
-      {onAdd && <div onClick={onAdd} style={{ fontSize:'13px', color:'rgba(255,255,255,0.9)', fontWeight:500, cursor:'pointer' }}>+ Adaugă</div>}
+      {onAdd && <div onClick={e => { e.stopPropagation(); onAdd() }} style={{ fontSize:'13px', color:'rgba(255,255,255,0.9)', fontWeight:500, cursor:'pointer' }}>+ Adaugă</div>}
+      {onToggle && <span style={{ color:'rgba(255,255,255,0.8)', fontSize:'12px', marginLeft:'8px' }}>▼</span>}
     </div>
   )
 }
@@ -235,7 +236,6 @@ export default function Urgenta() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
 
-      {/* Topbar */}
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
         <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
           <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
@@ -261,7 +261,6 @@ export default function Urgenta() {
 
       <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'calc(100vh - 56px)' }}>
 
-        {/* Sidebar */}
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'28px 0', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 20px 24px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'20px', display:'flex', alignItems:'center', gap:'10px' }}>
             <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
@@ -276,7 +275,6 @@ export default function Urgenta() {
           ))}
         </div>
 
-        {/* Content */}
         <div style={{ padding:'28px', overflowY:'auto' }}>
 
           <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'24px', position:'sticky', top:0, background:'#f8f9fa', zIndex:9, paddingTop:'12px', paddingBottom:'12px' }}>
@@ -302,86 +300,88 @@ export default function Urgenta() {
           {mesaj && <div style={{ padding:'12px 16px', borderRadius:'8px', marginBottom:'16px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'13px' }}>{mesaj}</div>}
 
           {/* DATE URGENTA */}
-          {sectiuni.urgenta && <div style={card}>
-            <Banner icon={<IconId size={14} color="white" stroke={1.5} />} title="Date de urgență" sub="Identitate și parametri fizici" />
-            <div style={body}>
-              {editMode ? (
-                <>
-                  <div style={{ marginBottom:'14px' }}>
-                    <label style={lbl}>CNP</label>
-                    <input value={cnp} onChange={e => setCnp(e.target.value)} placeholder="13 cifre" maxLength={13} style={{ ...inp, textTransform:'none' as const }} />
-                    {cnp.length === 13 && (
-                      <div style={{ display:'flex', gap:'16px', marginTop:'8px', fontSize:'12px', color:'#16705a', fontWeight:500 }}>
-                        <span>Data nașterii: {dataNasterii}</span>
-                        <span>Vârstă: {varstaCalc} ani</span>
-                        <span>Sex: {sexCalc}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div style={g2}>
-                    <div><label style={lbl}>Greutate (kg)</label><input type="number" value={greutate} onChange={e => setGreutate(e.target.value)} placeholder="ex: 65" style={{ ...inp, textTransform:'none' as const }} /></div>
-                    <div><label style={lbl}>Înălțime (cm)</label><input type="number" value={inaltime} onChange={e => setInaltime(e.target.value)} placeholder="ex: 168" style={{ ...inp, textTransform:'none' as const }} /></div>
-                  </div>
-                  <div style={{ marginTop:'14px' }}>
-                    <label style={lbl}>Fumător</label>
-                    <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
-                      {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
-                        <div key={opt.label} onClick={() => setFumator(opt.val)} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111', cursor:'pointer' }}>
-                          <div style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                            {fumator===opt.val && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
-                          </div>
-                          {opt.label}
+          <div style={card}>
+            <Banner icon={<IconId size={14} color="white" stroke={1.5} />} title="Date de urgență" sub="Identitate și parametri fizici" onToggle={() => toggleSectiune('urgenta')} />
+            {sectiuni.urgenta && (
+              <div style={body}>
+                {editMode ? (
+                  <>
+                    <div style={{ marginBottom:'14px' }}>
+                      <label style={lbl}>CNP</label>
+                      <input value={cnp} onChange={e => setCnp(e.target.value)} placeholder="13 cifre" maxLength={13} style={{ ...inp, textTransform:'none' as const }} />
+                      {cnp.length === 13 && (
+                        <div style={{ display:'flex', gap:'16px', marginTop:'8px', fontSize:'12px', color:'#16705a', fontWeight:500 }}>
+                          <span>Data nașterii: {dataNasterii}</span>
+                          <span>Vârstă: {varstaCalc} ani</span>
+                          <span>Sex: {sexCalc}</span>
                         </div>
-                      ))}
+                      )}
                     </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
-                    <div><div style={lbl}>Nume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ')[0] || '—'}</div></div>
-                    <div><div style={lbl}>Prenume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ').slice(1).join(' ') || '—'}</div></div>
-                    <div><div style={lbl}>CNP</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div></div>
-                    <div><div style={lbl}>Data nașterii</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{dataNasterii || '—'}</div></div>
-                  </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px' }}>
-                    <div><div style={lbl}>Vârstă</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{varstaCalc ? `${varstaCalc} ani` : '—'}</div></div>
-                    <div><div style={lbl}>Sex</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{sexCalc || '—'}</div></div>
-                    <div><div style={lbl}>Înălțime</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{inaltime ? `${inaltime} cm` : '—'}</div></div>
-                    <div><div style={lbl}>Greutate</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{greutate ? `${greutate} kg` : '—'}</div></div>
-                  </div>
-                  {imc && (
-                    <>
-                      <div style={divider}></div>
-                      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px' }}>
-                        <div>
-                          <div style={lbl}>Indice de masă corporală (IMC)</div>
-                          <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{imc.valoare}</div>
-                          <div style={{ marginTop:'6px', background:'#E1F5EE', borderRadius:'20px', padding:'4px 12px', fontSize:'12px', fontWeight:500, color:'#085041', display:'block' }}>✓ {imc.label}</div>
-                        </div>
-                        <div>
-                          <div style={lbl}>Fumător</div>
-                          <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
-                            {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
-                              <div key={opt.label} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111' }}>
-                                <div style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                                  {fumator===opt.val && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
+                    <div style={g2}>
+                      <div><label style={lbl}>Greutate (kg)</label><input type="number" value={greutate} onChange={e => setGreutate(e.target.value)} placeholder="ex: 65" style={{ ...inp, textTransform:'none' as const }} /></div>
+                      <div><label style={lbl}>Înălțime (cm)</label><input type="number" value={inaltime} onChange={e => setInaltime(e.target.value)} placeholder="ex: 168" style={{ ...inp, textTransform:'none' as const }} /></div>
+                    </div>
+                    <div style={{ marginTop:'14px' }}>
+                      <label style={lbl}>Fumător</label>
+                      <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
+                        {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
+                          <div key={opt.label} onClick={() => setFumator(opt.val)} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111', cursor:'pointer' }}>
+                            <div style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                              {fumator===opt.val && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
+                            </div>
+                            {opt.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
+                      <div><div style={lbl}>Nume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ')[0] || '—'}</div></div>
+                      <div><div style={lbl}>Prenume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ').slice(1).join(' ') || '—'}</div></div>
+                      <div><div style={lbl}>CNP</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div></div>
+                      <div><div style={lbl}>Data nașterii</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{dataNasterii || '—'}</div></div>
+                    </div>
+                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px' }}>
+                      <div><div style={lbl}>Vârstă</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{varstaCalc ? `${varstaCalc} ani` : '—'}</div></div>
+                      <div><div style={lbl}>Sex</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{sexCalc || '—'}</div></div>
+                      <div><div style={lbl}>Înălțime</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{inaltime ? `${inaltime} cm` : '—'}</div></div>
+                      <div><div style={lbl}>Greutate</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{greutate ? `${greutate} kg` : '—'}</div></div>
+                    </div>
+                    {imc && (
+                      <>
+                        <div style={divider}></div>
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px' }}>
+                          <div>
+                            <div style={lbl}>Indice de masă corporală (IMC)</div>
+                            <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{imc.valoare}</div>
+                            <div style={{ marginTop:'6px', background:'#E1F5EE', borderRadius:'20px', padding:'4px 12px', fontSize:'12px', fontWeight:500, color:'#085041', display:'block' }}>✓ {imc.label}</div>
+                          </div>
+                          <div>
+                            <div style={lbl}>Fumător</div>
+                            <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
+                              {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
+                                <div key={opt.label} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111' }}>
+                                  <div style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                                    {fumator===opt.val && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
+                                  </div>
+                                  {opt.label}
                                 </div>
-                                {opt.label}
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </div>}
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* GRUP SANGUIN + ALERGII */}
-          {sectiuni.urgenta && <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
             <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
               <div style={lbl}>Grup sanguin și Rh</div>
               {editMode ? (
@@ -429,78 +429,82 @@ export default function Urgenta() {
               )}
               {alergiiAl.filter(Boolean).length > 0 && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={false} /></div>}
             </div>
-          </div>}
+          </div>
 
           {/* DIAGNOSTICE */}
-          {sectiuni.diagnostice && <div style={card}>
-            <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub={diagnostice.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) : undefined} />
-            {diagnostice.length === 0 && !editMode && (
-              <div style={{ padding:'18px 20px' }}>
-                <button onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
-              </div>
-            )}
-            {(diagnostice.length > 0 || editMode) && (
-              <div style={body}>
-                {editMode ? (
-                  <>
-                    {diagnostice.map(d => (
-                      <div key={d.id} id={`diag-${d.id}`} style={itemCard}>
-                        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px' }}>
-                          <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Diagnostic</span>
-                          <button onClick={() => setDiagnostice(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
-                        </div>
-                        <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
-                        <div style={{ marginBottom:'8px' }}>
-                          <label style={lbl}>Data de start</label>
-                          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', marginTop:'4px' }}>
-                            <select value={d.dataStart ? d.dataStart.split(' ')[0] : ''} onChange={e => { const an = d.dataStart ? d.dataStart.split(' ')[1] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${e.target.value} ${an}`.trim()} : x)) }} style={inp}>
-                              <option value="">Lună</option>
-                              {['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'].map(l => <option key={l} value={l}>{l}</option>)}
-                            </select>
-                            <input type="text" value={d.dataStart ? d.dataStart.split(' ')[1] || '' : ''} onChange={e => { const luna = d.dataStart ? d.dataStart.split(' ')[0] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${luna} ${e.target.value}`.trim()} : x)) }} placeholder="An" style={{ ...inp, textTransform:'none' as const }} />
-                          </div>
-                        </div>
-                        <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
-                        <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
-                        <div style={{ ...g2, marginBottom:'8px' }}>
-                          <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: e.target.value} : x))} placeholder="ex: Medicover" style={inp} /></div>
-                          <div><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: e.target.value} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
-                        </div>
-                        <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
-                      </div>
-                    ))}
-                    <button onClick={() => { const newId = Date.now().toString(); setDiagnostice(prev => [...prev, { id: newId, nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]); setTimeout(() => document.getElementById(`diag-${newId}`)?.scrollIntoView({ behavior:'smooth', block:'center' }), 100) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
-                  </>
-                ) : (
-                  <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
-                    {diagnostice.filter(d => d.nume).map((d, i) => (
-                      <div key={i} style={{ background:'#fafaf9', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
-                        <div style={{ fontSize:'13px', color:'#111' }}>{(() => { const luni = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec']; const parts = d.dataStart.split('/'); if (parts.length === 2) { const l = parseInt(parts[0]); return `${luni[l-1] || parts[0].trim()} ${parts[1].trim()}`; } const partsSpace = d.dataStart.split(' '); if (partsSpace.length === 2) { const lunaText = partsSpace[0].trim(); const lunaGasita = luni.find(l => l.toLowerCase() === lunaText.toLowerCase().slice(0,3)); return `${lunaGasita || lunaText.charAt(0).toUpperCase() + lunaText.slice(1).toLowerCase()} ${partsSpace[1].trim()}`; } return d.dataStart.trim(); })()}</div>
-                        <div style={{ fontSize:'14px', fontWeight:600, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
-                        <BadgeDoc atestat={d.atestat} />
-                        <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
-                        {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.specialist}</div></div>}
-                        {d.specialitate && <div><div style={lbl}>Specialitate</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.specialitate}</div></div>}
-                        {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.undeUrmarit}</div></div>}
-                        {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.medicatie}</div></div>}
-                      </div>
-                    ))}
-                    <div onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ background:'white', border:'0.5px dashed #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'8px', flexShrink:0, cursor:'pointer' }}>
-                      <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <span style={{ color:'#16705a', fontSize:'20px', lineHeight:1 }}>+</span>
-                      </div>
-                      <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>Adaugă diagnostic</div>
-                    </div>
+          <div style={card}>
+            <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub={diagnostice.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onToggle={() => toggleSectiune('diagnostice')} onAdd={editMode ? () => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) : undefined} />
+            {sectiuni.diagnostice && (
+              <>
+                {diagnostice.length === 0 && !editMode && (
+                  <div style={{ padding:'18px 20px' }}>
+                    <button onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
                   </div>
                 )}
-              </div>
+                {(diagnostice.length > 0 || editMode) && (
+                  <div style={body}>
+                    {editMode ? (
+                      <>
+                        {diagnostice.map(d => (
+                          <div key={d.id} id={`diag-${d.id}`} style={itemCard}>
+                            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px' }}>
+                              <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Diagnostic</span>
+                              <button onClick={() => setDiagnostice(prev => prev.filter(x => x.id !== d.id))} style={{ border:'none', background:'none', cursor:'pointer', fontSize:'16px', color:'#aaa' }}>×</button>
+                            </div>
+                            <div style={{ marginBottom:'8px' }}><label style={lbl}>Nume diagnostic</label><input value={d.nume} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, nume: e.target.value} : x))} placeholder="ex: Hipotiroidism" style={inp} /></div>
+                            <div style={{ marginBottom:'8px' }}>
+                              <label style={lbl}>Data de start</label>
+                              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', marginTop:'4px' }}>
+                                <select value={d.dataStart ? d.dataStart.split(' ')[0] : ''} onChange={e => { const an = d.dataStart ? d.dataStart.split(' ')[1] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${e.target.value} ${an}`.trim()} : x)) }} style={inp}>
+                                  <option value="">Lună</option>
+                                  {['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'].map(l => <option key={l} value={l}>{l}</option>)}
+                                </select>
+                                <input type="text" value={d.dataStart ? d.dataStart.split(' ')[1] || '' : ''} onChange={e => { const luna = d.dataStart ? d.dataStart.split(' ')[0] || '' : ''; setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, dataStart: `${luna} ${e.target.value}`.trim()} : x)) }} placeholder="An" style={{ ...inp, textTransform:'none' as const }} />
+                              </div>
+                            </div>
+                            <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialist curant</label><input value={d.specialist} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialist: e.target.value} : x))} placeholder="Dr. " style={inp} /></div>
+                            <div style={{ marginBottom:'8px' }}><label style={lbl}>Specialitate</label><input value={d.specialitate || ''} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, specialitate: e.target.value} : x))} placeholder="ex: Endocrinologie" style={inp} /></div>
+                            <div style={{ ...g2, marginBottom:'8px' }}>
+                              <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: e.target.value} : x))} placeholder="ex: Medicover" style={inp} /></div>
+                              <div><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: e.target.value} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
+                            </div>
+                            <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
+                          </div>
+                        ))}
+                        <button onClick={() => { const newId = Date.now().toString(); setDiagnostice(prev => [...prev, { id: newId, nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]); setTimeout(() => document.getElementById(`diag-${newId}`)?.scrollIntoView({ behavior:'smooth', block:'center' }), 100) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
+                      </>
+                    ) : (
+                      <div style={{ display:'flex', gap:'12px', overflowX:'auto', paddingBottom:'8px' }}>
+                        {diagnostice.filter(d => d.nume).map((d, i) => (
+                          <div key={i} style={{ background:'#fafaf9', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
+                            <div style={{ fontSize:'13px', color:'#111' }}>{(() => { const luni = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec']; const parts = d.dataStart.split('/'); if (parts.length === 2) { const l = parseInt(parts[0]); return `${luni[l-1] || parts[0].trim()} ${parts[1].trim()}`; } const partsSpace = d.dataStart.split(' '); if (partsSpace.length === 2) { const lunaText = partsSpace[0].trim(); const lunaGasita = luni.find(l => l.toLowerCase() === lunaText.toLowerCase().slice(0,3)); return `${lunaGasita || lunaText.charAt(0).toUpperCase() + lunaText.slice(1).toLowerCase()} ${partsSpace[1].trim()}`; } return d.dataStart.trim(); })()}</div>
+                            <div style={{ fontSize:'14px', fontWeight:600, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
+                            <BadgeDoc atestat={d.atestat} />
+                            <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
+                            {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.specialist}</div></div>}
+                            {d.specialitate && <div><div style={lbl}>Specialitate</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.specialitate}</div></div>}
+                            {d.undeUrmarit && <div><div style={lbl}>Unde e urmărit</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.undeUrmarit}</div></div>}
+                            {d.medicatie && <div><div style={lbl}>Medicație</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.medicatie}</div></div>}
+                          </div>
+                        ))}
+                        <div onClick={() => { setEditMode(true); setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) }} style={{ background:'white', border:'0.5px dashed #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'8px', flexShrink:0, cursor:'pointer' }}>
+                          <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                            <span style={{ color:'#16705a', fontSize:'20px', lineHeight:1 }}>+</span>
+                          </div>
+                          <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>Adaugă diagnostic</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
             )}
-          </div>}
+          </div>
 
           {/* IMPLANTURI */}
-          {sectiuni.implanturi && <div style={card}>
-            <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="Implanturi și dispozitive" sub={implanteList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setImplanteList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
-            {(implanteList.length > 0 || editMode) && (
+          <div style={card}>
+            <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="Implanturi și dispozitive" sub={implanteList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onToggle={() => toggleSectiune('implanturi')} onAdd={editMode ? () => setImplanteList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
+            {sectiuni.implanturi && (implanteList.length > 0 || editMode) && (
               <div style={body}>
                 {editMode ? (
                   <>
@@ -537,12 +541,12 @@ export default function Urgenta() {
                 )}
               </div>
             )}
-          </div>}
+          </div>
 
           {/* INTERVENTII */}
-          {sectiuni.interventii && <div style={card}>
-            <Banner icon={<IconScissors size={14} color="white" stroke={1.5} />} title="Intervenții chirurgicale" sub={interventii.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setInterventii(prev => [...prev, { id: Date.now().toString(), nume:'', dataInterventie:'', spital:'', chirurg:'', atestat:false }]) : undefined} />
-            {(interventii.length > 0 || editMode) && (
+          <div style={card}>
+            <Banner icon={<IconScissors size={14} color="white" stroke={1.5} />} title="Intervenții chirurgicale" sub={interventii.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onToggle={() => toggleSectiune('interventii')} onAdd={editMode ? () => setInterventii(prev => [...prev, { id: Date.now().toString(), nume:'', dataInterventie:'', spital:'', chirurg:'', atestat:false }]) : undefined} />
+            {sectiuni.interventii && (interventii.length > 0 || editMode) && (
               <div style={body}>
                 {editMode ? (
                   <>
@@ -579,71 +583,75 @@ export default function Urgenta() {
                 )}
               </div>
             )}
-          </div>}
+          </div>
 
           {/* DATE CONTACT */}
-          {sectiuni.contact && <div style={card}>
-            <Banner icon={<IconPhone size={14} color="white" stroke={1.5} />} title="Date de contact" sub="Introduse de titular" />
-            <div style={body}>
-              {editMode ? (
-                <>
-                  <div style={{ ...g2, marginBottom:'14px' }}>
-                    <div><label style={lbl}>Persoană de contact — Nume</label><input value={contactNume} onChange={e => setContactNume(e.target.value)} placeholder="ex: Ion Popescu" style={inp} /></div>
-                    <div><label style={lbl}>Persoană de contact — Telefon</label><input value={contactTel} onChange={e => setContactTel(e.target.value)} placeholder="ex: 0721 000 000" style={{ ...inp, textTransform:'none' as const }} /></div>
-                  </div>
-                  <div style={divider}></div>
-                  <div style={{ ...g2, marginBottom:'14px' }}>
-                    <div><label style={lbl}>Medic de familie — Nume</label><input value={medicNume} onChange={e => setMedicNume(e.target.value)} placeholder="ex: Dr. Maria Ionescu" style={inp} /></div>
-                    <div><label style={lbl}>Medic de familie — Telefon</label><input value={medicTel} onChange={e => setMedicTel(e.target.value)} placeholder="ex: 021 000 0000" style={{ ...inp, textTransform:'none' as const }} /></div>
-                  </div>
-                  <div style={divider}></div>
-                  <Checkbox checked={asiguratCnas} onChange={() => setAsiguratCnas(!asiguratCnas)} label="Asigurat CNAS" />
-                </>
-              ) : (
-                <>
-                  <div style={{ ...g2, marginBottom:'14px' }}>
-                    <div>
-                      <div style={lbl}>Persoană de contact urgență</div>
-                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{contactNume || '—'}</div>
-                      <div style={{ fontSize:'13px', color:'#111', marginTop:'2px' }}>{contactTel}</div>
+          <div style={card}>
+            <Banner icon={<IconPhone size={14} color="white" stroke={1.5} />} title="Date de contact" sub="Introduse de titular" onToggle={() => toggleSectiune('contact')} />
+            {sectiuni.contact && (
+              <div style={body}>
+                {editMode ? (
+                  <>
+                    <div style={{ ...g2, marginBottom:'14px' }}>
+                      <div><label style={lbl}>Persoană de contact — Nume</label><input value={contactNume} onChange={e => setContactNume(e.target.value)} placeholder="ex: Ion Popescu" style={inp} /></div>
+                      <div><label style={lbl}>Persoană de contact — Telefon</label><input value={contactTel} onChange={e => setContactTel(e.target.value)} placeholder="ex: 0721 000 000" style={{ ...inp, textTransform:'none' as const }} /></div>
                     </div>
-                    <div>
-                      <div style={lbl}>Medic de familie</div>
-                      <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{medicNume || '—'}</div>
-                      <div style={{ fontSize:'13px', color:'#111', marginTop:'2px' }}>{medicTel}</div>
+                    <div style={divider}></div>
+                    <div style={{ ...g2, marginBottom:'14px' }}>
+                      <div><label style={lbl}>Medic de familie — Nume</label><input value={medicNume} onChange={e => setMedicNume(e.target.value)} placeholder="ex: Dr. Maria Ionescu" style={inp} /></div>
+                      <div><label style={lbl}>Medic de familie — Telefon</label><input value={medicTel} onChange={e => setMedicTel(e.target.value)} placeholder="ex: 021 000 0000" style={{ ...inp, textTransform:'none' as const }} /></div>
                     </div>
-                  </div>
-                  <div style={divider}></div>
-                  <div>
-                    <div style={lbl}>Asigurare CNAS</div>
-                    <span style={{ display:'inline-flex', padding:'4px 12px', background: asiguratCnas ? '#E1F5EE' : '#f8f9fa', color: asiguratCnas ? '#085041' : '#555', borderRadius:'12px', fontSize:'12px', fontWeight:500, marginTop:'6px' }}>
-                      {asiguratCnas ? '✓ Asigurat CNAS' : '— Nedeclarat'}
-                    </span>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>}
+                    <div style={divider}></div>
+                    <Checkbox checked={asiguratCnas} onChange={() => setAsiguratCnas(!asiguratCnas)} label="Asigurat CNAS" />
+                  </>
+                ) : (
+                  <>
+                    <div style={{ ...g2, marginBottom:'14px' }}>
+                      <div>
+                        <div style={lbl}>Persoană de contact urgență</div>
+                        <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{contactNume || '—'}</div>
+                        <div style={{ fontSize:'13px', color:'#111', marginTop:'2px' }}>{contactTel}</div>
+                      </div>
+                      <div>
+                        <div style={lbl}>Medic de familie</div>
+                        <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{medicNume || '—'}</div>
+                        <div style={{ fontSize:'13px', color:'#111', marginTop:'2px' }}>{medicTel}</div>
+                      </div>
+                    </div>
+                    <div style={divider}></div>
+                    <div>
+                      <div style={lbl}>Asigurare CNAS</div>
+                      <span style={{ display:'inline-flex', padding:'4px 12px', background: asiguratCnas ? '#E1F5EE' : '#f8f9fa', color: asiguratCnas ? '#085041' : '#555', borderRadius:'12px', fontSize:'12px', fontWeight:500, marginTop:'6px' }}>
+                        {asiguratCnas ? '✓ Asigurat CNAS' : '— Nedeclarat'}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* QR COD */}
-          {sectiuni.qr && <div style={card}>
-            <Banner icon={<IconQrcode size={14} color="white" stroke={1.5} />} title="QR Cod de urgență" sub="Date embedded offline" />
-            <div style={body}>
-              <div style={{ display:'flex', gap:'20px', alignItems:'center' }}>
-                <div style={{ width:'100px', height:'100px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                  <IconQrcode size={56} color="#e5e7eb" stroke={1} />
-                </div>
-                <div>
-                  <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Scanează pentru acces instant</div>
-                  <div style={{ fontSize:'12px', color:'#111', lineHeight:1.6, marginBottom:'12px' }}>QR codul va conține datele tale critice de urgență. În curând disponibil.</div>
-                  <div style={{ display:'flex', gap:'8px' }}>
-                    <button style={{ padding:'7px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'12px', fontWeight:500, cursor:'pointer' }}>⬇ Descarcă QR</button>
-                    <button style={{ padding:'7px 14px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111', cursor:'pointer', fontWeight:500 }}>⎙ Printează card</button>
+          <div style={card}>
+            <Banner icon={<IconQrcode size={14} color="white" stroke={1.5} />} title="QR Cod de urgență" sub="Date embedded offline" onToggle={() => toggleSectiune('qr')} />
+            {sectiuni.qr && (
+              <div style={body}>
+                <div style={{ display:'flex', gap:'20px', alignItems:'center' }}>
+                  <div style={{ width:'100px', height:'100px', background:'#f8f9fa', border:'0.5px solid #e5e7eb', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                    <IconQrcode size={56} color="#e5e7eb" stroke={1} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Scanează pentru acces instant</div>
+                    <div style={{ fontSize:'12px', color:'#111', lineHeight:1.6, marginBottom:'12px' }}>QR codul va conține datele tale critice de urgență. În curând disponibil.</div>
+                    <div style={{ display:'flex', gap:'8px' }}>
+                      <button style={{ padding:'7px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'12px', fontWeight:500, cursor:'pointer' }}>⬇ Descarcă QR</button>
+                      <button style={{ padding:'7px 14px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111', cursor:'pointer', fontWeight:500 }}>⎙ Printează card</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>}
+            )}
+          </div>
 
           {/* DISCLAIMER */}
           <div style={{ background:'white', borderLeft:'4px solid #E24B4A', borderTop:'0.5px solid #e5e7eb', borderRight:'0.5px solid #e5e7eb', borderBottom:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'20px 24px', marginTop:'4px' }}>
