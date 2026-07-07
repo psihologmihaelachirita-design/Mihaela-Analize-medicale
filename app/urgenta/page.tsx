@@ -104,13 +104,14 @@ function Checkbox({ checked, onChange, label }: { checked: boolean, onChange: ()
   )
 }
 
-const navItems = [
-  { label:'Date de urgență' },
-  { label:'Diagnostice cronice' },
-  { label:'Implanturi' },
-  { label:'Intervenții chirurgicale' },
-  { label:'Date de contact' },
-  { label:'QR Cod' },
+type SectiuneKey = 'urgenta' | 'diagnostice' | 'implanturi' | 'interventii' | 'contact' | 'qr'
+const sidebarItems: { key: SectiuneKey, label: string }[] = [
+  { key:'urgenta', label:'Date de urgență' },
+  { key:'diagnostice', label:'Diagnostice cronice' },
+  { key:'implanturi', label:'Implanturi' },
+  { key:'interventii', label:'Intervenții chirurgicale' },
+  { key:'contact', label:'Date de contact' },
+  { key:'qr', label:'QR Cod' },
 ]
 
 export default function Urgenta() {
@@ -121,7 +122,10 @@ export default function Urgenta() {
   const [mesaj, setMesaj] = useState('')
   const [editMode, setEditMode] = useState(false)
   const [dropdown, setDropdown] = useState(false)
+  const [sectiuni, setSectiuni] = useState<Record<SectiuneKey, boolean>>({ urgenta: true, diagnostice: true, implanturi: true, interventii: true, contact: true, qr: true })
   const router = useRouter()
+
+  function toggleSectiune(key: SectiuneKey) { setSectiuni(prev => ({ ...prev, [key]: !prev[key] })) }
 
   const [cnp, setCnp] = useState('')
   const [grupSanguin, setGrupSanguin] = useState('')
@@ -263,10 +267,10 @@ export default function Urgenta() {
             <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
             <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>MedFile</span>
           </div>
-          <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase' as const, letterSpacing:'0.6px', marginBottom:'10px', padding:'0 8px' }}>Card de urgență</div>
-          {navItems.map((item, i) => (
-            <div key={i} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', fontSize:'13px', color:'#085041', cursor:'pointer', marginBottom:'3px', borderRadius:'8px', background:'#E1F5EE' }}>
-              <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'#e5e7eb', flexShrink:0 }}></div>
+          <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase' as const, letterSpacing:'0.6px', marginBottom:'10px', padding:'0 20px' }}>Card de urgență</div>
+          {sidebarItems.map(item => (
+            <div key={item.key} onClick={() => toggleSectiune(item.key)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'2px' }}>
+              <div style={{ width:'6px', height:'6px', borderRadius:'50%', background: sectiuni[item.key] ? '#16705a' : '#e5e7eb', flexShrink:0 }}></div>
               {item.label}
             </div>
           ))}
@@ -298,7 +302,7 @@ export default function Urgenta() {
           {mesaj && <div style={{ padding:'12px 16px', borderRadius:'8px', marginBottom:'16px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'13px' }}>{mesaj}</div>}
 
           {/* DATE URGENTA */}
-          <div style={card}>
+          {sectiuni.urgenta && <div style={card}>
             <Banner icon={<IconId size={14} color="white" stroke={1.5} />} title="Date de urgență" sub="Identitate și parametri fizici" />
             <div style={body}>
               {editMode ? (
@@ -359,7 +363,7 @@ export default function Urgenta() {
                           <div style={lbl}>Fumător</div>
                           <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
                             {[{val:true,label:'Da'},{val:false,label:'Nu'}].map(opt => (
-                              <div key={opt.label} onClick={() => setFumator(opt.val)} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111', cursor:'pointer' }}>
+                              <div key={opt.label} style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', color:'#111' }}>
                                 <div style={{ width:'16px', height:'16px', borderRadius:'50%', border:'1.5px solid #16705a', background: fumator===opt.val?'#16705a':'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                                   {fumator===opt.val && <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'white' }}></div>}
                                 </div>
@@ -374,10 +378,10 @@ export default function Urgenta() {
                 </>
               )}
             </div>
-          </div>
+          </div>}
 
           {/* GRUP SANGUIN + ALERGII */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
+          {sectiuni.urgenta && <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
             <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px' }}>
               <div style={lbl}>Grup sanguin și Rh</div>
               {editMode ? (
@@ -425,10 +429,10 @@ export default function Urgenta() {
               )}
               {alergiiAl.filter(Boolean).length > 0 && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={false} /></div>}
             </div>
-          </div>
+          </div>}
 
           {/* DIAGNOSTICE */}
-          <div style={card}>
+          {sectiuni.diagnostice && <div style={card}>
             <Banner icon={<IconStethoscope size={14} color="white" stroke={1.5} />} title="Diagnostice cronice" sub={diagnostice.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setDiagnostice(prev => [...prev, { id: Date.now().toString(), nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]) : undefined} />
             {diagnostice.length === 0 && !editMode && (
               <div style={{ padding:'18px 20px' }}>
@@ -439,7 +443,7 @@ export default function Urgenta() {
               <div style={body}>
                 {editMode ? (
                   <>
-                    {diagnostice.filter(d => d.nume || editMode).map(d => (
+                    {diagnostice.map(d => (
                       <div key={d.id} id={`diag-${d.id}`} style={itemCard}>
                         <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px' }}>
                           <span style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Diagnostic</span>
@@ -472,7 +476,7 @@ export default function Urgenta() {
                     {diagnostice.filter(d => d.nume).map((d, i) => (
                       <div key={i} style={{ background:'#fafaf9', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'16px', minWidth:'200px', maxWidth:'200px', display:'flex', flexDirection:'column', gap:'8px', flexShrink:0 }}>
                         <div style={{ fontSize:'13px', color:'#111' }}>{(() => { const luni = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec']; const parts = d.dataStart.split('/'); if (parts.length === 2) { const l = parseInt(parts[0]); return `${luni[l-1] || parts[0].trim()} ${parts[1].trim()}`; } const partsSpace = d.dataStart.split(' '); if (partsSpace.length === 2) { const lunaText = partsSpace[0].trim(); const lunaGasita = luni.find(l => l.toLowerCase() === lunaText.toLowerCase().slice(0,3)); return `${lunaGasita || lunaText.charAt(0).toUpperCase() + lunaText.slice(1).toLowerCase()} ${partsSpace[1].trim()}`; } return d.dataStart.trim(); })()}</div>
-                        <div style={{ fontSize:'14px', fontWeight:500, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
+                        <div style={{ fontSize:'14px', fontWeight:600, color:'#111', textTransform:'capitalize' }}>{d.nume}</div>
                         <BadgeDoc atestat={d.atestat} />
                         <div style={{ height:'0.5px', background:'#e5e7eb' }}></div>
                         {d.specialist && <div><div style={lbl}>Specialist curant</div><div style={{ fontSize:'13px', fontWeight:600, color:'#111', textTransform:'capitalize', textAlign:'center' }}>{d.specialist}</div></div>}
@@ -491,10 +495,10 @@ export default function Urgenta() {
                 )}
               </div>
             )}
-          </div>
+          </div>}
 
           {/* IMPLANTURI */}
-          <div style={card}>
+          {sectiuni.implanturi && <div style={card}>
             <Banner icon={<IconDeviceHeartMonitor size={14} color="white" stroke={1.5} />} title="Implanturi și dispozitive" sub={implanteList.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setImplanteList(prev => [...prev, { id: Date.now().toString(), nume:'', dataImplant:'', spital:'', observatii:'', atestat:false }]) : undefined} />
             {(implanteList.length > 0 || editMode) && (
               <div style={body}>
@@ -533,10 +537,10 @@ export default function Urgenta() {
                 )}
               </div>
             )}
-          </div>
+          </div>}
 
           {/* INTERVENTII */}
-          <div style={card}>
+          {sectiuni.interventii && <div style={card}>
             <Banner icon={<IconScissors size={14} color="white" stroke={1.5} />} title="Intervenții chirurgicale" sub={interventii.length > 0 ? 'Declarate de titular sau extrase din documente' : 'Nicio intrare adăugată'} onAdd={editMode ? () => setInterventii(prev => [...prev, { id: Date.now().toString(), nume:'', dataInterventie:'', spital:'', chirurg:'', atestat:false }]) : undefined} />
             {(interventii.length > 0 || editMode) && (
               <div style={body}>
@@ -575,10 +579,10 @@ export default function Urgenta() {
                 )}
               </div>
             )}
-          </div>
+          </div>}
 
           {/* DATE CONTACT */}
-          <div style={card}>
+          {sectiuni.contact && <div style={card}>
             <Banner icon={<IconPhone size={14} color="white" stroke={1.5} />} title="Date de contact" sub="Introduse de titular" />
             <div style={body}>
               {editMode ? (
@@ -619,10 +623,10 @@ export default function Urgenta() {
                 </>
               )}
             </div>
-          </div>
+          </div>}
 
           {/* QR COD */}
-          <div style={card}>
+          {sectiuni.qr && <div style={card}>
             <Banner icon={<IconQrcode size={14} color="white" stroke={1.5} />} title="QR Cod de urgență" sub="Date embedded offline" />
             <div style={body}>
               <div style={{ display:'flex', gap:'20px', alignItems:'center' }}>
@@ -639,7 +643,7 @@ export default function Urgenta() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* DISCLAIMER */}
           <div style={{ background:'white', borderLeft:'4px solid #E24B4A', borderTop:'0.5px solid #e5e7eb', borderRight:'0.5px solid #e5e7eb', borderBottom:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'20px 24px', marginTop:'4px' }}>
