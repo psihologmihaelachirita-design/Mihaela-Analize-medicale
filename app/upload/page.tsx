@@ -76,6 +76,12 @@ export default function Upload() {
         pdf_nume: pdfNume
       }))
 
+      const { data: existente } = await supabase.from('analize').select('id').eq('user_id', session.user.id).eq('pdf_nume', fisier?.name || '').limit(1)
+      if (existente && existente.length > 0) {
+        const confirm = window.confirm(`Buletinul "${fisier?.name}" există deja. Vrei să îl suprascriei?`)
+        if (!confirm) { setSalvare(false); return }
+        await supabase.from('analize').delete().eq('user_id', session.user.id).eq('pdf_nume', fisier?.name || '')
+      }
       const { error } = await supabase.from('analize').insert(inserts)
       if (error) setEroare('Eroare la salvare: ' + error.message)
       else router.push('/dashboard')
