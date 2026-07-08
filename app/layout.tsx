@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <a href="/pricing" style={{display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px'}}>Prețuri</a>
               </div>
               <div>
-                <div style={{fontSize:'11px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'12px'}}>Legal</div>
+                <div style={{fontSize:'11px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'12px'}}>Confidențialitate</div>
                 <a href="/confidentialitate#politica" style={{display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px'}}>Politica de confidențialitate</a>
                 <a href="/confidentialitate#termeni" style={{display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px'}}>Termeni și condiții</a>
                 <a href="/confidentialitate#gdpr" style={{display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px'}}>GDPR</a>
