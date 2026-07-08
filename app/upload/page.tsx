@@ -94,13 +94,11 @@ export default function Upload() {
 
   return (
     <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh'}}>
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center', gap:'16px'}}>
-        <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
-          <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
-          <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
-        </div>
-        <span style={{color:'#e5e7eb'}}>|</span>
-        <Link href="/dashboard" style={{color:'#0F6E56', textDecoration:'none', fontSize:'14px', fontWeight:500}}>← Dosar</Link>
+      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+        <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'8px', textDecoration:'none'}}>
+          <div style={{width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600}}>✚</div>
+          <span style={{fontSize:'18px', fontWeight:600, color:'#111'}}>MedFile</span>
+        </Link>
       </div>
 
       <div style={{maxWidth:'680px', margin:'0 auto', padding:'2rem 1.5rem'}}>
