@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div style={{width:'24px', height:'24px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'12px', fontWeight:600}}>✚</div>
                 <span style={{fontSize:'14px', fontWeight:600, color:'#111'}}>MedFile</span>
               </div>
-              <span style={{fontSize:'12px', color:'#aaa'}}>© 2025 MedFile. Toate drepturile rezervate.</span>
+              <span style={{fontSize:'12px', color:'#aaa'}}>© 2026 MedFile. Toate drepturile rezervate.</span>
             </div>
           </div>
         </footer>
