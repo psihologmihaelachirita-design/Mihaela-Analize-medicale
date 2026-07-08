@@ -145,7 +145,7 @@ export default function Panoramic() {
           <span style={{fontSize:'18px', fontWeight:600, color:'#111'}}>MedFile</span>
         </Link>
         <div style={{display:'flex', alignItems:'center', gap:'4px'}}>
-          <Link href="/" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Home</Link>
+          <Link href="/dashboard" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Home</Link>
           <Link href="/panoramic" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#085041', textDecoration:'none', fontWeight:500, background:'#E1F5EE'}}>Panoramic</Link>
           <Link href="/urgenta" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Urgență</Link>
           <Link href="/dosar" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Dosar</Link>
