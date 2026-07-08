@@ -472,7 +472,18 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
       const { ref_min, ref_max, unitate_standard } = getIntervalStandard(numeNormalizat)
       const statusStandard = a.tip_rezultat === 'calitativ'
         ? a.status
-        : getStatusStandard(valoareNumerica, numeNormalizat)
+        : (() => {
+            const val = valoareNumerica
+            if (val === null) return 'necunoscut'
+            const minLab = parseFloat(a.referinta_min_lab)
+            const maxLab = parseFloat(a.referinta_max_lab)
+            if (!isNaN(minLab) && !isNaN(maxLab)) {
+              if (val < minLab) return 'sub'
+              if (val > maxLab) return 'peste'
+              return 'normal'
+            }
+            return getStatusStandard(val, numeNormalizat)
+          })()
 
       return {
         ...a,
