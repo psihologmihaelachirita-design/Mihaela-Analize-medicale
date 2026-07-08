@@ -37,7 +37,7 @@ export default function Upload() {
       const formData = new FormData()
       formData.append('pdf', fisier)
       formData.append('userId', session.user.id)
-      const res = await fetch('/api/extract', { method: 'POST', body: formData })
+          const res = await fetch('/api/extract', { method: 'POST', body: formData, headers: { 'Authorization': `Bearer ${session.access_token}` } })
       const data = await res.json()
       if (data.error) setEroare(data.error)
       else { setRezultat(data.analize || []); setLaborator(data.laborator || ''); setDataBuletin(data.data_buletin || ''); setOrasLaborator(data.oras_laborator || ''); setTaraLaborator(data.tara_laborator || ''); setMesaj(`S-au extras ${data.analize?.length || 0} analize din PDF!`) }
