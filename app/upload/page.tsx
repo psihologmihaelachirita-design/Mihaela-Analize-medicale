@@ -15,6 +15,8 @@ export default function Upload() {
   const [salvare, setSalvare] = useState(false)
   const [rezultat, setRezultat] = useState<any[]>([])
   const [eroare, setEroare] = useState('')
+  const [duplicat, setDuplicat] = useState(false)
+  const [insertsTemp, setInsertsTemp] = useState<any[]>([])
   const [mesaj, setMesaj] = useState('')
   const [laborator, setLaborator] = useState('')
   const [orasLaborator, setOrasLaborator] = useState('')
@@ -78,9 +80,10 @@ export default function Upload() {
 
       const { data: existente } = await supabase.from('analize').select('id').eq('user_id', session.user.id).eq('pdf_nume', fisier?.name || '').limit(1)
       if (existente && existente.length > 0) {
-        const confirm = window.confirm(`Buletinul "${fisier?.name}" există deja. Vrei să îl suprascriei?`)
-        if (!confirm) { setSalvare(false); return }
-        await supabase.from('analize').delete().eq('user_id', session.user.id).eq('pdf_nume', fisier?.name || '')
+        setInsertsTemp(inserts)
+        setDuplicat(true)
+        setSalvare(false)
+        return
       }
       const { error } = await supabase.from('analize').insert(inserts)
       if (error) setEroare('Eroare la salvare: ' + error.message)
@@ -126,6 +129,25 @@ export default function Upload() {
           )}
         </div>
 
+        {duplicat && (
+          <div style={{background:'#FCEBEB', border:'0.5px solid #E24B4A', borderRadius:'8px', padding:'16px', marginBottom:'16px'}}>
+            <div style={{fontSize:'13px', fontWeight:500, color:'#A32D2D', marginBottom:'12px'}}>Buletinul "{fisier?.name}" există deja în dosar. Ce vrei să faci?</div>
+            <div style={{display:'flex', gap:'8px'}}>
+              <button onClick={async () => {
+                setSalvare(true)
+                const { data: { session } } = await supabase.auth.getSession()
+                if (!session) return
+                await supabase.from('analize').delete().eq('user_id', session.user.id).eq('pdf_nume', fisier?.name || '')
+                const { error } = await supabase.from('analize').insert(insertsTemp)
+                if (error) setEroare('Eroare la salvare: ' + error.message)
+                else router.push('/dashboard')
+                setDuplicat(false)
+                setSalvare(false)
+              }} style={{padding:'8px 16px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer'}}>Suprascriere</button>
+              <button onClick={() => setDuplicat(false)} style={{padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500}}>Anulează</button>
+            </div>
+          </div>
+        )}
         {eroare && <p style={{color:'#E24B4A', marginBottom:'1rem', fontSize:'13px'}}>{eroare}</p>}
         {mesaj && <p style={{color:'#1D9E75', marginBottom:'1rem', fontSize:'13px', fontWeight:500}}>{mesaj}</p>}
 
