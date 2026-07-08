@@ -52,7 +52,7 @@ export default function Dashboard() {
     </div>
   )
 
-  const username = profil?.nume || user?.email?.split('@')[0]
+  const username = profil?.nume?.split(' ')[1] || user?.email?.split('@')[0]
 
   const acum = new Date()
   const acum3luni = new Date(acum); acum3luni.setMonth(acum.getMonth() - 3)
