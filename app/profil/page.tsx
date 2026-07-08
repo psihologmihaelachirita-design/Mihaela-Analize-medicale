@@ -127,7 +127,7 @@ export default function Profil() {
           <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
         </Link>
         <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
-          <Link href="/" style={navStyle}>Home</Link>
+          <Link href="/dashboard" style={navStyle}>Home</Link>
           <Link href="/panoramic" style={navStyle}>Panoramic</Link>
           <Link href="/urgenta" style={navStyle}>Urgență</Link>
           <Link href="/dosar" style={navStyle}>Dosar</Link>
