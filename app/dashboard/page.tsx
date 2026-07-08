@@ -183,7 +183,7 @@ export default function Dashboard() {
 
         {/* Desktop nav */}
         <div style={{ display:'flex', alignItems:'center', gap:'4px' }} className="desktop-nav">
-          <Link href="/" style={navStyle}>Home</Link>
+          <Link href="/dashboard" style={{ ...navStyle, background:'#E1F5EE', color:'#085041' }}>Home</Link>
           <Link href="/panoramic" style={navStyle}>Panoramic</Link>
           <Link href="/urgenta" style={navStyle}>Urgență</Link>
           <Link href="/dosar" style={navStyle}>Dosar</Link>
