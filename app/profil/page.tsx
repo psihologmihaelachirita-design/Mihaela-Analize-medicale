@@ -126,6 +126,7 @@ export default function Profil() {
   }, [])
 
   async function handleSalvare() {
+    if (cnp && !validCNP(cnp)) { setMesaj('CNP invalid — verifică numărul introdus.'); return }
     setSalvare(true)
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
