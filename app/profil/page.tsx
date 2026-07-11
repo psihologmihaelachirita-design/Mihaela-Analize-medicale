@@ -15,6 +15,7 @@ export default function Profil() {
   const [loading, setLoading] = useState(true)
   const [salvare, setSalvare] = useState(false)
   const [mesaj, setMesaj] = useState('')
+  const [eroareCNP, setEroareCNP] = useState('')
   const [dropdown, setDropdown] = useState(false)
   const [sectiuni, setSectiuni] = useState({ 
     cont: true, 
@@ -126,7 +127,7 @@ export default function Profil() {
   }, [])
 
   async function handleSalvare() {
-    if (cnp && !validCNP(cnp)) { setMesaj('CNP invalid — verifică numărul introdus.'); return }
+    if (cnp && !validCNP(cnp)) { setEroareCNP('CNP invalid — verifică numărul introdus.'); return }
     setSalvare(true)
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
