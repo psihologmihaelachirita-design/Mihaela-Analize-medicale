@@ -149,7 +149,7 @@ export default function Profil() {
         {/* Sidebar */}
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 16px', flex:1 }}>
-            <div style={{ fontSize:'15px', fontWeight:600, color:'#111', marginBottom:'10px', padding:'0 8px' }}>{prenume} {nume}</div>
+            <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'20px', padding:'0 8px', textAlign:'center' as const }}>{prenume} {nume}</div>
             {navItems.map(item => (
               <div key={item.key} onClick={() => toggleSectiune(item.key)}
                 style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'8px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'3px', fontWeight: sectiuni[item.key] ? 500 : 400 }}>
