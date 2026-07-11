@@ -37,7 +37,7 @@ export default function Profil() {
   const [adresa, setAdresa] = useState('')
   const [judet, setJudet] = useState('')
   const [identitateVerificata, setIdentitateVerificata] = useState(false)
-  const [modManual, setModManual] = useState(false) // Dacă utilizatorul vrea să introducă manual
+  const [modManual, setModManual] = useState(false)
 
   function toggleSectiune(key: keyof typeof sectiuni) {
     setSectiuni(prev => ({ ...prev, [key]: !prev[key] }))
@@ -53,7 +53,6 @@ export default function Profil() {
     return control === digits[12]
   }
 
-  // Funcție pentru extras sexul din CNP
   function extrageSexDinCNP(cnp: string) {
     if (!cnp || cnp.length < 1) return ''
     const sexCifra = parseInt(cnp.charAt(0))
@@ -62,7 +61,6 @@ export default function Profil() {
     return ''
   }
 
-  // Funcție pentru extras data nașterii din CNP
   function extrageDataNasteriiDinCNP(cnp: string) {
     if (!cnp || cnp.length < 7) return ''
     const an = parseInt(cnp.substring(1, 3))
@@ -79,14 +77,11 @@ export default function Profil() {
     return `${zi.toString().padStart(2, '0')}.${luna.toString().padStart(2, '0')}.${anComplet}`
   }
 
-  // Funcție pentru upload CI
   function handleUploadCI() {
-    // Simulare upload
     setIdentitateVerificata(true)
     setMesaj('CI uploadată cu succes! Datele au fost extrase automat.')
     setTimeout(() => setMesaj(''), 4000)
     
-    // Dacă avem CNP, extragem automat sex și data nașterii
     if (cnp && cnp.length >= 13) {
       const sexExtras = extrageSexDinCNP(cnp)
       if (sexExtras) setSex(sexExtras)
@@ -95,10 +90,8 @@ export default function Profil() {
     }
   }
 
-  // Funcție pentru reîncărcare CI
   function handleReincarcaCI() {
     setIdentitateVerificata(false)
-    // Resetăm datele extrase
     setSex('')
     setDataNasterii('')
   }
@@ -127,12 +120,19 @@ export default function Profil() {
   }, [])
 
   async function handleSalvare() {
-    if (cnp && !validCNP(cnp)) { setEroareCNP('CNP invalid — verifică numărul introdus.'); return }
+    // Validează CNP doar dacă există
+    if (cnp && cnp.length > 0 && !validCNP(cnp)) {
+      setEroareCNP('CNP invalid — verifică numărul introdus.')
+      return
+    }
+    setEroareCNP('')
     setSalvare(true)
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
+    if (!session) {
+      setSalvare(false)
+      return
+    }
     
-    // Extrage datele din CNP dacă nu sunt setate manual
     const sexExtras = modManual ? sex : (sex || extrageSexDinCNP(cnp))
     const dataExtrasa = modManual ? dataNasterii : (dataNasterii || extrageDataNasteriiDinCNP(cnp))
     
@@ -177,7 +177,6 @@ export default function Profil() {
     router.push('/')
   }
 
-  // Funcție pentru deschidere politică confidențialitate
   function handleVeziPolitica() {
     window.open('/politica-confidentialitate', '_blank')
   }
@@ -246,7 +245,6 @@ export default function Profil() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
 
-      {/* Topbar */}
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'60px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
         <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
           <div style={{ width:'34px', height:'34px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
@@ -272,7 +270,6 @@ export default function Profil() {
 
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
-        {/* Sidebar */}
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 16px', flex:1 }}>
             <div style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 8px', textAlign:'center' as const }}>{prenume} {nume}</div>
@@ -286,7 +283,6 @@ export default function Profil() {
           </div>
         </div>
 
-        {/* Main */}
         <div style={{ padding:'32px', overflowY:'auto' }}>
 
           {mesaj && (
@@ -424,8 +420,8 @@ export default function Profil() {
                           if (sexExtras) setSex(sexExtras)
                           const dataExtrasa = extrageDataNasteriiDinCNP(val)
                           if (dataExtrasa) setDataNasterii(dataExtrasa)
-                          if (!validCNP(val)) setMesaj('CNP invalid — verifică numărul introdus.')
-                          else setMesaj('')
+                          if (!validCNP(val)) setEroareCNP('CNP invalid — verifică numărul introdus.')
+                          else setEroareCNP('')
                         }
                       }} 
                       placeholder="2780315••••••" 
@@ -501,7 +497,7 @@ export default function Profil() {
             )}
           </div>
 
-          {/* SECȚIUNEA 3: ABONAMENT - NEMODIFICAT */}
+          {/* SECȚIUNEA 3: ABONAMENT */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconCreditCard} title="Abonament" sub="Planul tău curent" skey="abonament" />
             {sectiuni.abonament && (
@@ -517,7 +513,7 @@ export default function Profil() {
             )}
           </div>
 
-          {/* SECȚIUNEA 4: EXPORT DATE - NEMODIFICAT */}
+          {/* SECȚIUNEA 4: EXPORT DATE */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconDownload} title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
             {sectiuni.export && (
@@ -533,7 +529,7 @@ export default function Profil() {
             )}
           </div>
 
-          {/* SECȚIUNEA 5: CONFIDENTIALITATE - NEMODIFICAT */}
+          {/* SECȚIUNEA 5: CONFIDENTIALITATE */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconLock} title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
             {sectiuni.confidentialitate && (
