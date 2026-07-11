@@ -42,6 +42,16 @@ export default function Profil() {
     setSectiuni(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
+  function validCNP(cnp: string): boolean {
+    if (!cnp || cnp.length !== 13) return false
+    const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9]
+    const digits = cnp.split('').map(Number)
+    if (digits.some(isNaN)) return false
+    const sum = weights.reduce((acc, w, i) => acc + w * digits[i], 0)
+    const control = sum % 11 === 10 ? 1 : sum % 11
+    return control === digits[12]
+  }
+
   // Funcție pentru extras sexul din CNP
   function extrageSexDinCNP(cnp: string) {
     if (!cnp || cnp.length < 1) return ''
