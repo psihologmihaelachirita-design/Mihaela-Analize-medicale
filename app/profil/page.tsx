@@ -120,7 +120,10 @@ export default function Profil() {
   }, [])
 
   async function handleSalvare() {
-    // Verifică dacă CNP-ul e complet și valid
+    // Reset mesaje
+    setEroareCNP('')
+    
+    // Verifică CNP doar dacă există și e complet
     if (cnp && cnp.length > 0) {
       if (cnp.length !== 13) {
         setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
@@ -131,7 +134,7 @@ export default function Profil() {
         return
       }
     }
-    setEroareCNP('')
+    
     setSalvare(true)
     
     const { data: { session } } = await supabase.auth.getSession()
@@ -156,6 +159,7 @@ export default function Profil() {
       judet: judet || null,
       identitate_verificata: identitateVerificata,
     })
+    
     if (error) {
       setMesaj('Eroare: ' + error.message)
     } else {
