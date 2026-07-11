@@ -120,15 +120,23 @@ export default function Profil() {
   }, [])
 
   async function handleSalvare() {
-    // Validează CNP doar dacă există
-    if (cnp && cnp.length > 0 && !validCNP(cnp)) {
-      setEroareCNP('CNP invalid — verifică numărul introdus.')
-      return
+    // Verifică dacă CNP-ul e complet și valid
+    if (cnp && cnp.length > 0) {
+      if (cnp.length !== 13) {
+        setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
+        return
+      }
+      if (!validCNP(cnp)) {
+        setEroareCNP('CNP invalid — verifică numărul introdus.')
+        return
+      }
     }
     setEroareCNP('')
     setSalvare(true)
+    
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
+      setMesaj('Eroare: Nu ești autentificat!')
       setSalvare(false)
       return
     }
@@ -148,8 +156,11 @@ export default function Profil() {
       judet: judet || null,
       identitate_verificata: identitateVerificata,
     })
-    if (error) setMesaj('Eroare: ' + error.message)
-    else setMesaj('Salvat!')
+    if (error) {
+      setMesaj('Eroare: ' + error.message)
+    } else {
+      setMesaj('Date salvate cu succes!')
+    }
     setSalvare(false)
     setTimeout(() => setMesaj(''), 3000)
   }
@@ -415,13 +426,20 @@ export default function Profil() {
                       onChange={e => {
                         const val = e.target.value
                         setCnp(val)
-                        if (!modManual && val.length >= 13) {
-                          const sexExtras = extrageSexDinCNP(val)
-                          if (sexExtras) setSex(sexExtras)
-                          const dataExtrasa = extrageDataNasteriiDinCNP(val)
-                          if (dataExtrasa) setDataNasterii(dataExtrasa)
-                          if (!validCNP(val)) setEroareCNP('CNP invalid — verifică numărul introdus.')
-                          else setEroareCNP('')
+                        if (!modManual && val.length === 13) {
+                          if (validCNP(val)) {
+                            const sexExtras = extrageSexDinCNP(val)
+                            if (sexExtras) setSex(sexExtras)
+                            const dataExtrasa = extrageDataNasteriiDinCNP(val)
+                            if (dataExtrasa) setDataNasterii(dataExtrasa)
+                            setEroareCNP('')
+                          } else {
+                            setEroareCNP('CNP invalid — verifică numărul introdus.')
+                          }
+                        } else if (val.length > 0 && val.length < 13) {
+                          setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
+                        } else {
+                          setEroareCNP('')
                         }
                       }} 
                       placeholder="2780315••••••" 
