@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { IconUser, IconCreditCard, IconDownload, IconLock } from '@tabler/icons-react'
+import { IconUser, IconCreditCard, IconDownload, IconLock, IconMail, IconPhone, IconKey, IconShield, IconId } from '@tabler/icons-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,7 +16,13 @@ export default function Profil() {
   const [salvare, setSalvare] = useState(false)
   const [mesaj, setMesaj] = useState('')
   const [dropdown, setDropdown] = useState(false)
-  const [sectiuni, setSectiuni] = useState({ baza: true, abonament: true, export: true, confidentialitate: true })
+  const [sectiuni, setSectiuni] = useState({ 
+    cont: true, 
+    identitate: true, 
+    abonament: true, 
+    export: true, 
+    confidentialitate: true 
+  })
   const router = useRouter()
 
   const [nume, setNume] = useState('')
@@ -24,6 +30,12 @@ export default function Profil() {
   const [sex, setSex] = useState('')
   const [cetatenie, setCetatenie] = useState('Română')
   const [email, setEmail] = useState('')
+  const [telefon, setTelefon] = useState('')
+  const [cnp, setCnp] = useState('')
+  const [dataNasterii, setDataNasterii] = useState('')
+  const [adresa, setAdresa] = useState('')
+  const [judet, setJudet] = useState('')
+  const [identitateVerificata, setIdentitateVerificata] = useState(false)
 
   function toggleSectiune(key: keyof typeof sectiuni) {
     setSectiuni(prev => ({ ...prev, [key]: !prev[key] }))
@@ -41,6 +53,12 @@ export default function Profil() {
         setPrenume(numeParts.slice(1).join(' ') || '')
         setSex(profil.sex || '')
         setCetatenie(profil.cetatenie || 'Română')
+        setTelefon(profil.telefon || '')
+        setCnp(profil.cnp || '')
+        setDataNasterii(profil.data_nasterii || '')
+        setAdresa(profil.adresa || '')
+        setJudet(profil.judet || '')
+        setIdentitateVerificata(profil.identitate_verificata || false)
       }
       setLoading(false)
     })
@@ -55,6 +73,12 @@ export default function Profil() {
       nume: `${nume} ${prenume}`.trim(),
       sex: sex || null,
       cetatenie: cetatenie || null,
+      telefon: telefon || null,
+      cnp: cnp || null,
+      data_nasterii: dataNasterii || null,
+      adresa: adresa || null,
+      judet: judet || null,
+      identitate_verificata: identitateVerificata,
     })
     if (error) setMesaj('Eroare: ' + error.message)
     else setMesaj('Salvat!')
@@ -94,7 +118,8 @@ export default function Profil() {
   const navStyle: React.CSSProperties = { padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }
 
   const navItems = [
-    { key:'baza' as keyof typeof sectiuni, Icon: IconUser, label:'Date de bază' },
+    { key:'cont' as keyof typeof sectiuni, Icon: IconUser, label:'Contul meu' },
+    { key:'identitate' as keyof typeof sectiuni, Icon: IconId, label:'Identitate' },
     { key:'abonament' as keyof typeof sectiuni, Icon: IconCreditCard, label:'Abonament' },
     { key:'export' as keyof typeof sectiuni, Icon: IconDownload, label:'Export date' },
     { key:'confidentialitate' as keyof typeof sectiuni, Icon: IconLock, label:'Confidențialitate' },
@@ -169,15 +194,94 @@ export default function Profil() {
             </div>
           )}
 
+          {/* SECȚIUNEA 1: CONTUL MEU */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
-            <Banner icon={IconUser} title="Date de bază" sub="Preluate automat în cardul de urgență" skey="baza" />
-            {sectiuni.baza && (
+            <Banner icon={IconUser} title="Contul meu" sub="Email, telefon, parolă și securitate" skey="cont" />
+            {sectiuni.cont && (
               <div style={{ padding:'20px 22px' }}>
                 <div style={g2}>
-                  <div><label style={lbl}>Prenume</label><input value={prenume} onChange={e => setPrenume(e.target.value)} placeholder="ex: Mihaela" style={inp} /></div>
-                  <div><label style={lbl}>Nume</label><input value={nume} onChange={e => setNume(e.target.value)} placeholder="ex: Chirita" style={inp} /></div>
+                  <div>
+                    <label style={lbl}>Email</label>
+                    <input value={email} onChange={e => setEmail(e.target.value)} style={inp} />
+                  </div>
+                  <div>
+                    <label style={lbl}>Telefon</label>
+                    <input value={telefon} onChange={e => setTelefon(e.target.value)} placeholder="ex: 0721 000 000" style={inp} />
+                  </div>
                 </div>
                 <div style={g2}>
+                  <div>
+                    <label style={lbl}>Parolă</label>
+                    <input value="********" disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
+                  </div>
+                  <div>
+                    <label style={lbl}>Ultima modificare</label>
+                    <input value="15 Ian 2025" disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
+                  </div>
+                </div>
+                <button onClick={handleSchimbaParola} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500, marginBottom:'16px' }}>Schimbă parola</button>
+
+                <div style={{ height:'0.5px', background:'#e5e7eb', margin:'16px 0' }}></div>
+                
+                <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'12px' }}>Autentificare în 2 pași</div>
+                <div style={{ fontSize:'12px', color:'#555', marginBottom:'16px' }}>Activează una sau ambele metode pentru securitate sporită</div>
+                
+                <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', background:'#f8f9fa', borderRadius:'8px' }}>
+                    <div>
+                      <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>SMS</div>
+                      <div style={{ fontSize:'12px', color:'#555' }}>Cod trimis pe numărul de telefon înregistrat</div>
+                    </div>
+                    <button style={{ padding:'6px 16px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'12px', cursor:'pointer' }}>Activează</button>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', background:'#f8f9fa', borderRadius:'8px' }}>
+                    <div>
+                      <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Google Authenticator</div>
+                      <div style={{ fontSize:'12px', color:'#555' }}>Cod generat de aplicația Google Authenticator</div>
+                    </div>
+                    <button style={{ padding:'6px 16px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'12px', cursor:'pointer' }}>Activează</button>
+                  </div>
+                </div>
+
+                <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'20px' }}>
+                  <button onClick={handleSalvare} disabled={salvare} style={{ padding:'10px 26px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer' }}>
+                    {salvare ? 'Se salvează...' : 'Salvează'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* SECȚIUNEA 2: IDENTITATE */}
+          <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
+            <Banner icon={IconId} title="Identitate" sub="Date extrase din actul de identitate" skey="identitate" />
+            {sectiuni.identitate && (
+              <div style={{ padding:'20px 22px' }}>
+                <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'12px' }}>Verifică-ți identitatea</div>
+                <div style={{ fontSize:'12px', color:'#555', marginBottom:'16px' }}>Uploadează o fotografie a actului tău de identitate. Imaginea nu va fi stocată.</div>
+                
+                <div style={{ display:'flex', gap:'12px', marginBottom:'16px' }}>
+                  <button style={{ padding:'10px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>📷 Uploadează CI</button>
+                  {identitateVerificata && <span style={{ padding:'10px 16px', background:'#E1F5EE', color:'#0F6E56', borderRadius:'8px', fontSize:'13px', fontWeight:500 }}>✔ Identitate verificată</span>}
+                </div>
+
+                <div style={{ padding:'12px 16px', background:'#FFF8E6', borderRadius:'8px', marginBottom:'16px', fontSize:'12px', color:'#8A6D00' }}>
+                  ⚠️ Prin uploadarea actului de identitate confirmi că datele sunt ale tale și sunt corecte. Imaginea CI nu va fi stocată — doar datele extrase.
+                </div>
+
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px' }}>
+                  <div>
+                    <label style={lbl}>Nume</label>
+                    <input value={nume} onChange={e => setNume(e.target.value)} style={inp} />
+                  </div>
+                  <div>
+                    <label style={lbl}>Prenume</label>
+                    <input value={prenume} onChange={e => setPrenume(e.target.value)} style={inp} />
+                  </div>
+                  <div>
+                    <label style={lbl}>CNP</label>
+                    <input value={cnp} onChange={e => setCnp(e.target.value)} placeholder="2780315••••••" style={inp} />
+                  </div>
                   <div>
                     <label style={lbl}>Sex</label>
                     <div style={{ display:'flex', gap:'16px', marginTop:'6px' }}>
@@ -192,26 +296,31 @@ export default function Profil() {
                     </div>
                   </div>
                   <div>
+                    <label style={lbl}>Data nașterii</label>
+                    <input value={dataNasterii} onChange={e => setDataNasterii(e.target.value)} placeholder="15.03.1978" style={inp} />
+                  </div>
+                  <div>
                     <label style={lbl}>Cetățenie</label>
                     <select value={cetatenie} onChange={e => setCetatenie(e.target.value)} style={{ ...inp, cursor:'pointer' }}>
                       <option>Română</option>
                       <option>Alta</option>
                     </select>
                   </div>
-                </div>
-                <div style={{ height:'0.5px', background:'#e5e7eb', margin:'16px 0' }}></div>
-                <div style={g2}>
                   <div>
-                    <label style={lbl}>Email</label>
-                    <input value={email} disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
+                    <label style={lbl}>Adresă</label>
+                    <input value={adresa} onChange={e => setAdresa(e.target.value)} placeholder="Completează manual" style={inp} />
                   </div>
                   <div>
-                    <label style={lbl}>Parolă</label>
-                    <input value="••••••••" disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
+                    <label style={lbl}>Județ</label>
+                    <input value={judet} onChange={e => setJudet(e.target.value)} placeholder="București" style={inp} />
                   </div>
                 </div>
-                <button onClick={handleSchimbaParola} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500, marginBottom:'16px' }}>Schimbă parola</button>
-                <div style={{ display:'flex', justifyContent:'flex-end' }}>
+
+                <div style={{ padding:'12px 16px', background:'#FFF8E6', borderRadius:'8px', marginTop:'16px', fontSize:'12px', color:'#8A6D00' }}>
+                  ⚠️ Nu am putut extrage adresa din CI. Te rugăm să o completezi manual.
+                </div>
+
+                <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'20px' }}>
                   <button onClick={handleSalvare} disabled={salvare} style={{ padding:'10px 26px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer' }}>
                     {salvare ? 'Se salvează...' : 'Salvează'}
                   </button>
@@ -220,6 +329,7 @@ export default function Profil() {
             )}
           </div>
 
+          {/* SECȚIUNEA 3: ABONAMENT - NEMODIFICAT */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon={IconCreditCard} title="Abonament" sub="Planul tău curent" skey="abonament" />
             {sectiuni.abonament && (
@@ -235,6 +345,7 @@ export default function Profil() {
             )}
           </div>
 
+          {/* SECȚIUNEA 4: EXPORT DATE - NEMODIFICAT */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon={IconDownload} title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
             {sectiuni.export && (
@@ -250,6 +361,7 @@ export default function Profil() {
             )}
           </div>
 
+          {/* SECȚIUNEA 5: CONFIDENTIALITATE - NEMODIFICAT */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'14px', overflow:'hidden' }}>
             <Banner icon={IconLock} title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
             {sectiuni.confidentialitate && (
