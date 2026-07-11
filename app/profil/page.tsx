@@ -417,6 +417,8 @@ export default function Profil() {
                           if (sexExtras) setSex(sexExtras)
                           const dataExtrasa = extrageDataNasteriiDinCNP(val)
                           if (dataExtrasa) setDataNasterii(dataExtrasa)
+                          if (!validCNP(val)) setMesaj('CNP invalid — verifică numărul introdus.')
+                          else setMesaj('')
                         }
                       }} 
                       placeholder="2780315••••••" 
