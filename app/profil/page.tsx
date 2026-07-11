@@ -294,6 +294,11 @@ export default function Profil() {
               {mesaj}
             </div>
           )}
+          {eroareCNP && (
+            <div style={{ padding:'14px 18px', borderRadius:'8px', marginBottom:'18px', background:'#FCEBEB', color:'#A32D2D', fontSize:'14px' }}>
+              {eroareCNP}
+            </div>
+          )}
 
           {/* SECȚIUNEA 1: CONTUL MEU */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
