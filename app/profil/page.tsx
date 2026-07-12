@@ -103,9 +103,8 @@ export default function Profil() {
       setEmail(session.user.email || '')
       const { data: profil } = await supabase.from('profiluri').select('*').eq('id', session.user.id).single()
       if (profil) {
-        const numeParts = (profil.nume || '').split(' ')
-        setNume(numeParts[0] || '')
-        setPrenume(numeParts.slice(1).join(' ') || '')
+        setNume(profil.nume || '')
+        setPrenume(profil.prenume || '')
         setSex(profil.sex || '')
         setCetatenie(profil.cetatenie || 'Română')
         setTelefon(profil.telefon || '')
