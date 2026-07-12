@@ -525,7 +525,7 @@ export default function Profil() {
                     <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Plan curent</div>
                     <div style={{ fontSize:'14px', color:'#555', marginTop:'3px' }}>MedFile Basic</div>
                   </div>
-                  <button style={{ padding:'10px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer' }}>Upgrade</button>
+                  <Link href="/pricing" style={{ padding:'10px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer', textDecoration:'none', display:'inline-block' }}>Upgrade</Link>
                 </div>
               </div>
             )}
