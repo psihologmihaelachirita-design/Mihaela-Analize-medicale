@@ -120,19 +120,16 @@ export default function Profil() {
   }, [])
 
   async function handleSalvare() {
-    // Reset mesaje
     setEroareCNP('')
+    setMesaj('')
     
-    // Verifică CNP doar dacă există și e complet
-    if (cnp && cnp.length > 0) {
-      if (cnp.length !== 13) {
-        setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
-        return
-      }
-      if (!validCNP(cnp)) {
-        setEroareCNP('CNP invalid — verifică numărul introdus.')
-        return
-      }
+    if (cnp && cnp.length > 0 && cnp.length !== 13) {
+      setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
+      return
+    }
+    if (cnp && cnp.length === 13 && !validCNP(cnp)) {
+      setEroareCNP('CNP invalid — verifică numărul introdus.')
+      return
     }
     
     setSalvare(true)
@@ -144,17 +141,15 @@ export default function Profil() {
       return
     }
     
-    const sexExtras = modManual ? sex : (sex || extrageSexDinCNP(cnp))
-    const dataExtrasa = modManual ? dataNasterii : (dataNasterii || extrageDataNasteriiDinCNP(cnp))
-    
     const { error } = await supabase.from('profiluri').upsert({
       id: session.user.id,
-      nume: `${nume} ${prenume}`.trim(),
-      sex: sexExtras || null,
+      nume: nume,
+      prenume: prenume,
+      sex: sex || null,
       cetatenie: cetatenie || null,
       telefon: telefon || null,
       cnp: cnp || null,
-      data_nasterii: dataExtrasa || null,
+      data_nasterii: dataNasterii || null,
       adresa: adresa || null,
       judet: judet || null,
       identitate_verificata: identitateVerificata,
@@ -429,8 +424,9 @@ export default function Profil() {
                       value={cnp} 
                       onChange={e => {
                         const val = e.target.value
+                        if (!/^\d*$/.test(val)) return
                         setCnp(val)
-                        if (!modManual && val.length === 13) {
+                        if (val.length === 13) {
                           if (validCNP(val)) {
                             const sexExtras = extrageSexDinCNP(val)
                             if (sexExtras) setSex(sexExtras)
