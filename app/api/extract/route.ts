@@ -491,8 +491,6 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
         status: statusStandard,
         referinta_min: ref_min,
         referinta_max: ref_max,
-        referinta_min_lab: a.referinta_min_lab,
-        referinta_max_lab: a.referinta_max_lab,
         unitate_standard: unitate_standard,
       }
     })
