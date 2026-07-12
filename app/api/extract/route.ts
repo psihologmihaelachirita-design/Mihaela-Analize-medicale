@@ -489,8 +489,8 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
         ...a,
         nume: numeNormalizat,
         status: statusStandard,
-        referinta_min: ref_min,
-        referinta_max: ref_max,
+        referinta_min: parseFloat(a.referinta_min_lab) || ref_min,
+        referinta_max: parseFloat(a.referinta_max_lab) || ref_max,
         unitate_standard: unitate_standard,
       }
     })
