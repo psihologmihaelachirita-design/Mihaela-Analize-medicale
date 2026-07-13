@@ -7,107 +7,86 @@ export default function Pricing() {
       name: 'Individual',
       price: '9.99',
       period: '/lună',
-      description: 'Pentru o singură persoană',
+      description: 'Doar pentru tine',
       features: [
-        '1 dosar medical personal',
-        'Upload nelimitat PDF-uri',
-        'Extragere automată cu AI',
-        'Vizualizare panoramică',
-        'Intervale de referință din laboratorul tău',
-        'QR cod de urgență',
-        'Export PDF dosar',
-        'Date stocate securizat în Europa'
+        '1 dosar medical',
+        'Upload nelimitat',
+        'Extragere AI',
+        'Panoramic analize',
+        'Card urgență',
+        'Export PDF'
       ],
       popular: false,
-      buttonText: 'Începe gratuit 14 zile',
-      buttonVariant: 'outline'
     },
     {
       id: 'family1',
       name: 'Family 1',
       price: '16.99',
       period: '/lună',
-      description: 'Tu + 1 aparținător (părinte/copil/bunic)',
+      description: 'Tu + 1 aparținător',
       features: [
         '2 dosare medicale',
-        'Upload nelimitat PDF-uri',
-        'Extragere automată cu AI',
-        'Vizualizare panoramică per dosar',
-        'Intervale de referință din laboratorul tău',
-        'QR cod de urgență per dosar',
-        'Export PDF dosar',
-        'Date stocate securizat în Europa'
+        'Upload nelimitat',
+        'Extragere AI',
+        'Panoramic per dosar',
+        'Card urgență per dosar',
+        'Export PDF'
       ],
       popular: false,
-      buttonText: 'Începe gratuit 14 zile',
-      buttonVariant: 'outline'
     },
     {
       id: 'family2',
       name: 'Family 2',
       price: '22.99',
       period: '/lună',
-      description: 'Tu + 2 aparținători (părinte/copil/bunic)',
+      description: 'Tu + 2 aparținători',
       features: [
         '3 dosare medicale',
-        'Upload nelimitat PDF-uri',
-        'Extragere automată cu AI',
-        'Vizualizare panoramică per dosar',
-        'Intervale de referință din laboratorul tău',
-        'QR cod de urgență per dosar',
-        'Export PDF dosar',
-        'Date stocate securizat în Europa'
+        'Upload nelimitat',
+        'Extragere AI',
+        'Panoramic per dosar',
+        'Card urgență per dosar',
+        'Export PDF'
       ],
       popular: true,
-      buttonText: 'Începe gratuit 14 zile',
-      buttonVariant: 'primary'
     },
     {
       id: 'family3',
       name: 'Family 3',
       price: '27.99',
       period: '/lună',
-      description: 'Tu + 3 aparținători (părinte/copil/bunic)',
+      description: 'Tu + 3 aparținători',
       features: [
         '4 dosare medicale',
-        'Upload nelimitat PDF-uri',
-        'Extragere automată cu AI',
-        'Vizualizare panoramică per dosar',
-        'Intervale de referință din laboratorul tău',
-        'QR cod de urgență per dosar',
-        'Export PDF dosar',
-        'Date stocate securizat în Europa'
+        'Upload nelimitat',
+        'Extragere AI',
+        'Panoramic per dosar',
+        'Card urgență per dosar',
+        'Export PDF'
       ],
       popular: false,
-      buttonText: 'Începe gratuit 14 zile',
-      buttonVariant: 'outline'
     },
     {
       id: 'family4',
       name: 'Family 4',
       price: '32.99',
       period: '/lună',
-      description: 'Tu + 4 aparținători (părinte/copil/bunic)',
+      description: 'Tu + 4 aparținători',
       features: [
         '5 dosare medicale',
-        'Upload nelimitat PDF-uri',
-        'Extragere automată cu AI',
-        'Vizualizare panoramică per dosar',
-        'Intervale de referință din laboratorul tău',
-        'QR cod de urgență per dosar',
-        'Export PDF dosar',
-        'Date stocate securizat în Europa'
+        'Upload nelimitat',
+        'Extragere AI',
+        'Panoramic per dosar',
+        'Card urgență per dosar',
+        'Export PDF'
       ],
       popular: false,
-      buttonText: 'Începe gratuit 14 zile',
-      buttonVariant: 'outline'
     }
   ]
 
   return (
     <main style={{minHeight:'100vh', background:'#f8f9fa', fontFamily:'system-ui,-apple-system,sans-serif'}}>
 
-      {/* Nav */}
       <nav style={{padding:'0 2rem', height:'60px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'0.5px solid #e5e7eb', background:'white'}}>
         <Link href="/" style={{textDecoration:'none', display:'flex', flexDirection:'column'}}>
           <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
@@ -135,24 +114,24 @@ export default function Pricing() {
               style={{
                 background:'white',
                 border: plan.popular ? '2px solid #16705a' : '0.5px solid #e5e7eb',
-                borderRadius:'16px',
-                padding:'1.5rem',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column'
+                borderRadius:'14px',
+                padding:'20px 16px',
+                position:'relative',
+                display:'flex',
+                flexDirection:'column'
               }}
             >
               {plan.popular && (
                 <div style={{
                   position:'absolute',
-                  top:'-14px',
+                  top:'-13px',
                   left:'50%',
                   transform:'translateX(-50%)',
                   background:'#16705a',
                   color:'white',
-                  padding:'4px 16px',
+                  padding:'3px 14px',
                   borderRadius:'20px',
-                  fontSize:'12px',
+                  fontSize:'11px',
                   fontWeight:500,
                   whiteSpace:'nowrap'
                 }}>
@@ -160,15 +139,15 @@ export default function Pricing() {
                 </div>
               )}
 
-              <div style={{fontSize:'13px', fontWeight:500, color:'#888', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px'}}>
+              <div style={{fontSize:'11px', fontWeight:600, color:'#888', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'8px'}}>
                 {plan.name}
               </div>
 
-              <div style={{fontSize:'32px', fontWeight:500, color:'#111', marginBottom:'2px'}}>
-                {plan.price} lei<span style={{fontSize:'14px', color:'#888', fontWeight:400}}>{plan.period}</span>
+              <div style={{fontSize:'28px', fontWeight:600, color:'#111', marginBottom:'2px'}}>
+                {plan.price} lei<span style={{fontSize:'13px', color:'#888', fontWeight:400}}>{plan.period}</span>
               </div>
 
-              <div style={{fontSize:'13px', color:'#16705a', fontWeight:500, marginBottom:'16px', minHeight:'40px'}}>
+              <div style={{fontSize:'12px', color:'#16705a', fontWeight:500, marginBottom:'16px', minHeight:'32px'}}>
                 {plan.description}
               </div>
 
@@ -177,30 +156,32 @@ export default function Pricing() {
                 style={{
                   display:'block',
                   textAlign:'center',
-                  padding:'12px',
+                  padding:'10px',
                   background: plan.popular ? '#16705a' : '#f8f9fa',
                   border: plan.popular ? 'none' : '0.5px solid #e5e7eb',
                   borderRadius:'8px',
-                  fontSize:'14px',
+                  fontSize:'13px',
                   color: plan.popular ? 'white' : '#111',
                   fontWeight:500,
                   textDecoration:'none',
-                  marginBottom:'20px'
+                  marginBottom:'16px'
                 }}
               >
-                {plan.buttonText}
+                Începe gratuit
               </Link>
 
-              <div style={{fontSize:'13px', color:'#555', lineHeight:2, flex:1}}>
+              <div style={{fontSize:'12px', color:'#555', lineHeight:2, flex:1}}>
                 {plan.features.map((feature, idx) => (
-                  <div key={idx}>✓ {feature}</div>
+                  <div key={idx} style={{display:'flex', alignItems:'flex-start', gap:'6px'}}>
+                    <span style={{color:'#16705a', fontWeight:600, flexShrink:0}}>✓</span>
+                    {feature}
+                  </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
 
-        {/* FAQ */}
         <div style={{background:'white', border:'0.5px solid #e5e7eb', borderRadius:'16px', padding:'2rem', marginTop:'2rem'}}>
           <h2 style={{fontSize:'18px', fontWeight:500, color:'#111', marginBottom:'1.5rem'}}>Întrebări frecvente</h2>
           {[
