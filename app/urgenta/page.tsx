@@ -106,13 +106,13 @@ function Checkbox({ checked, onChange, label }: { checked: boolean, onChange: ()
 }
 
 type SectiuneKey = 'urgenta' | 'diagnostice' | 'implanturi' | 'interventii' | 'contact' | 'qr'
-const sidebarItems: { key: SectiuneKey, label: string }[] = [
-  { key:'urgenta', label:'Date de urgență' },
-  { key:'diagnostice', label:'Diagnostice cronice' },
-  { key:'implanturi', label:'Implanturi' },
-  { key:'interventii', label:'Intervenții chirurgicale' },
-  { key:'contact', label:'Date de contact' },
-  { key:'qr', label:'QR Cod' },
+const sidebarItems: { key: SectiuneKey, label: string, Icon: any }[] = [
+  { key:'urgenta', label:'Date de urgență', Icon: IconId },
+  { key:'diagnostice', label:'Diagnostice cronice', Icon: IconStethoscope },
+  { key:'implanturi', label:'Implanturi', Icon: IconDeviceHeartMonitor },
+  { key:'interventii', label:'Intervenții chirurgicale', Icon: IconScissors },
+  { key:'contact', label:'Date de contact', Icon: IconPhone },
+  { key:'qr', label:'QR Cod', Icon: IconQrcode },
 ]
 
 export default function Urgenta() {
@@ -269,7 +269,7 @@ export default function Urgenta() {
           <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 20px', textAlign:'center' as const }}>{profil?.prenume} {profil?.nume}</div>
           {sidebarItems.map(item => (
             <div key={item.key} onClick={() => toggleSectiune(item.key)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'2px' }}>
-              <div style={{ width:'6px', height:'6px', borderRadius:'50%', background: sectiuni[item.key] ? '#16705a' : '#e5e7eb', flexShrink:0 }}></div>
+              <item.Icon size={16} stroke={1.5} color={sectiuni[item.key] ? '#085041' : '#555'} />
               {item.label}
             </div>
           ))}
