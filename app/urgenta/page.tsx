@@ -266,7 +266,7 @@ export default function Urgenta() {
             <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
             <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>MedFile</span>
           </div>
-          <div style={{ fontSize:'11px', fontWeight:500, color:'#aaa', textTransform:'uppercase' as const, letterSpacing:'0.6px', marginBottom:'10px', padding:'0 20px' }}>Card de urgență</div>
+          <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 20px', textAlign:'center' as const }}>{profil?.prenume} {profil?.nume}</div>
           {sidebarItems.map(item => (
             <div key={item.key} onClick={() => toggleSectiune(item.key)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'2px' }}>
               <div style={{ width:'6px', height:'6px', borderRadius:'50%', background: sectiuni[item.key] ? '#16705a' : '#e5e7eb', flexShrink:0 }}></div>
