@@ -218,7 +218,7 @@ export default function Urgenta() {
 
   if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', fontFamily:'system-ui' }}><p style={{ color:'#111' }}>Se încarcă...</p></div>
 
-  const username = profil?.nume?.split(' ')[1] || user?.email?.split('@')[0]
+  const username = profil?.prenume || profil?.nume?.split(' ')[0] || user?.email?.split('@')[0]
   const varstaCalc = cnp.length === 13 ? calculeazaVarsta(cnp) : profil?.varsta
   const dataNasterii = cnp.length === 13 ? calculeazaDataNasterii(cnp) : ''
   const sexCalc = cnp.length === 13 ? calculeazaSex(cnp) : profil?.sex
@@ -338,8 +338,8 @@ export default function Urgenta() {
                 ) : (
                   <>
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
-                      <div><div style={lbl}>Nume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ')[0] || '—'}</div></div>
-                      <div><div style={lbl}>Prenume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume?.split(' ').slice(1).join(' ') || '—'}</div></div>
+                      <div><div style={lbl}>Nume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume || '—'}</div></div>
+                      <div><div style={lbl}>Prenume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.prenume || '—'}</div></div>
                       <div><div style={lbl}>CNP</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div></div>
                       <div><div style={lbl}>Data nașterii</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{dataNasterii || '—'}</div></div>
                     </div>
