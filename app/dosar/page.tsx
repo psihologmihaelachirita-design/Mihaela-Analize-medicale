@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { IconHeartbeat, IconStethoscope, IconSurgery, IconFileText, IconSearch } from '@tabler/icons-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -72,12 +71,11 @@ export default function Dosar() {
     externare: rapoarte.filter(r => r.tip === 'externare').length,
   }
 
-  // Configurare casete – exact ca în dashboard
   const casete = [
-    { key:'familie', label:'Medic de familie', sub:'Consultații, rețete și trimiteri', icon: IconHeartbeat, bg:'#E1F5EE', color:'#085041' },
-    { key:'specialist', label:'Medic specialist', sub:'Consultații și rapoarte specialiști', icon: IconStethoscope, bg:'#EEF2FF', color:'#1D4ED8' },
-    { key:'interventie', label:'Raport intervenție medicală', sub:'Intervenții chirurgicale și proceduri', icon: IconSurgery, bg:'#FEF3C7', color:'#B45309' },
-    { key:'externare', label:'Scrisoare de externare', sub:'Scrisori cu analize, concluzii și investigații', icon: IconFileText, bg:'#FCE7F3', color:'#9D174D' },
+    { key:'familie', label:'Medic de familie', sub:'Consultații, rețete și trimiteri', icon:'🏥', bg:'#E1F5EE' },
+    { key:'specialist', label:'Medic specialist', sub:'Consultații și rapoarte specialiști', icon:'👨‍⚕️', bg:'#EEF2FF' },
+    { key:'interventie', label:'Raport intervenție medicală', sub:'Intervenții chirurgicale și proceduri', icon:'🔬', bg:'#FEF3C7' },
+    { key:'externare', label:'Scrisoare de externare', sub:'Scrisori cu analize, concluzii și investigații', icon:'📋', bg:'#FCE7F3' },
   ]
 
   const thStyle: React.CSSProperties = { padding:'8px 12px', textAlign:'left' as const, fontSize:'11px', fontWeight:500, color:'#555', textTransform:'uppercase' as const, letterSpacing:'0.5px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa', cursor:'pointer', whiteSpace:'nowrap' as const }
@@ -120,14 +118,13 @@ export default function Dosar() {
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'28px' }}>
           {casete.map(c => {
             const isActive = filtruCategorie === c.key
-            const IconComponent = c.icon
             return (
               <div
                 key={c.key}
                 onClick={() => setFiltruCategorie(isActive ? 'toate' : c.key)}
                 style={{
                   background:'white',
-                  border: isActive ? `2px solid #16705a` : '0.5px solid #e5e7eb',
+                  border: isActive ? '2px solid #16705a' : '0.5px solid #e5e7eb',
                   borderRadius:'12px',
                   padding:'16px 18px',
                   cursor:'pointer',
@@ -146,11 +143,12 @@ export default function Dosar() {
                   display:'flex',
                   alignItems:'center',
                   justifyContent:'center',
-                  color: isActive ? 'white' : c.color,
+                  color: isActive ? 'white' : '#111',
+                  fontSize:'22px',
                   flexShrink:0,
                   transition:'all 0.15s ease'
                 }}>
-                  <IconComponent size={20} stroke={1.5} />
+                  {c.icon}
                 </div>
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{c.label}</div>
@@ -167,10 +165,10 @@ export default function Dosar() {
           })}
         </div>
 
-        {/* Bara filtre – ca în dashboard (stilizare asemănătoare) */}
+        {/* Filtre – stilizare asemănătoare dashboard */}
         <div style={{ display:'flex', flexWrap:'wrap', gap:'10px', alignItems:'center', marginBottom:'16px', background:'white', padding:'12px 16px', borderRadius:'12px', border:'0.5px solid #e5e7eb' }}>
           <div style={{ flex:1, minWidth:'180px', display:'flex', alignItems:'center', gap:'8px', background:'#f8f9fa', padding:'4px 12px', borderRadius:'8px', border:'0.5px solid #e5e7eb' }}>
-            <IconSearch size={16} color="#888" />
+            <span style={{ fontSize:'14px', color:'#888' }}>🔍</span>
             <input
               value={cautare}
               onChange={e => setCautare(e.target.value)}
