@@ -56,7 +56,7 @@ export default function Dosar() {
 
   const rapoarteFiltrate = rapoarte.filter(r => {
     const matchCategorie = filtruCategorie === 'toate' || r.tip === filtruCategorie
-    const matchCautare = cautare === '' || 
+    const matchCautare = cautare === '' ||
       r.medic.toLowerCase().includes(cautare.toLowerCase()) ||
       r.unitate.toLowerCase().includes(cautare.toLowerCase()) ||
       r.diagnostic.toLowerCase().includes(cautare.toLowerCase()) ||
@@ -78,7 +78,8 @@ export default function Dosar() {
     { key:'externare', label:'Scrisoare de externare', sub:'Scrisori cu analize, concluzii și investigații', icon:'📋', bg:'#FCE7F3' },
   ]
 
-  const lbl: React.CSSProperties = { fontSize:'11px', fontWeight:600, color:'#888', textTransform:'uppercase' as const, letterSpacing:'0.5px' }
+  const thStyle: React.CSSProperties = { padding:'11px 16px', textAlign:'left' as const, fontSize:'11px', fontWeight:600, color:'#555', textTransform:'uppercase' as const, letterSpacing:'0.5px', borderBottom:'0.5px solid #e5e7eb', background:'#f8f9fa', cursor:'pointer', whiteSpace:'nowrap' as const }
+  const tdStyle: React.CSSProperties = { padding:'13px 16px', fontSize:'13px', color:'#111', borderBottom:'0.5px solid #e5e7eb', verticalAlign:'middle' as const }
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
@@ -107,32 +108,34 @@ export default function Dosar() {
         </div>
       </div>
 
-      <div style={{ maxWidth:'960px', margin:'0 auto', padding:'32px 24px' }}>
+      <div style={{ maxWidth:'960px', margin:'0 auto', padding:'28px 24px' }}>
 
-        <div style={{ fontSize:'22px', fontWeight:600, color:'#111', marginBottom:'6px' }}>Dosarul meu medical</div>
-        <div style={{ fontSize:'13px', color:'#555', marginBottom:'28px' }}>Toate rapoartele, consultațiile și documentele tale medicale.</div>
+        <div style={{ fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Dosarul meu medical</div>
+        <div style={{ fontSize:'13px', color:'#111', marginBottom:'24px' }}>Toate rapoartele, consultațiile și documentele tale medicale.</div>
 
         {/* 4 CASETE */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'36px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'28px' }}>
           {casete.map(c => (
-            <div key={c.key} onClick={() => setFiltruCategorie(c.key)}
-              style={{ background:'white', border: filtruCategorie === c.key ? '2px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'14px', padding:'24px', cursor:'pointer', display:'flex', flexDirection:'column', gap:'12px' }}>
-              <div style={{ width:'44px', height:'44px', background:c.bg, borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'22px' }}>{c.icon}</div>
-              <div style={{ fontSize:'14px', fontWeight:600, color:'#111' }}>{c.label}</div>
+            <div key={c.key} onClick={() => setFiltruCategorie(c.key === filtruCategorie ? 'toate' : c.key)}
+              style={{ background:'white', border: filtruCategorie === c.key ? '2px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'12px', padding:'18px 20px', cursor:'pointer', display:'flex', flexDirection:'column', gap:'10px' }}>
+              <div style={{ width:'40px', height:'40px', background:c.bg, borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'20px' }}>{c.icon}</div>
+              <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{c.label}</div>
               <div style={{ fontSize:'12px', color:'#555', lineHeight:1.5 }}>{c.sub}</div>
-              <span style={{ display:'inline-flex', padding:'3px 10px', background:'#E1F5EE', color:'#085041', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>{counts[c.key as keyof typeof counts]} rapoarte</span>
-              <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500, marginTop:'auto' }}>Vezi toate →</div>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                <span style={{ display:'inline-flex', padding:'3px 10px', background:'#E1F5EE', color:'#085041', borderRadius:'12px', fontSize:'11px', fontWeight:500 }}>{counts[c.key as keyof typeof counts]} rapoarte</span>
+                <span style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>Vezi toate →</span>
+              </div>
             </div>
           ))}
         </div>
 
         {/* FILTRE */}
-        <div style={{ fontSize:'15px', fontWeight:600, color:'#111', marginBottom:'12px' }}>Rapoarte recente</div>
+        <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'12px' }}>Rapoarte recente</div>
         <div style={{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center', marginBottom:'12px' }}>
           <input value={cautare} onChange={e => setCautare(e.target.value)} placeholder="🔍 Caută medic, clinică, diagnostic..."
-            style={{ padding:'7px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', background:'white', color:'#111', width:'240px', outline:'none' }} />
+            style={{ padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', background:'white', color:'#111', width:'260px', outline:'none' }} />
           <select value={filtruCategorie} onChange={e => setFiltruCategorie(e.target.value)}
-            style={{ padding:'7px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', background:'white', color:'#111', cursor:'pointer' }}>
+            style={{ padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', background:'white', color:'#111', cursor:'pointer' }}>
             <option value="toate">Toate categoriile</option>
             <option value="familie">Medic familie</option>
             <option value="specialist">Specialist</option>
@@ -140,7 +143,7 @@ export default function Dosar() {
             <option value="externare">Externare</option>
           </select>
           <select value={filtruPerioda} onChange={e => setFiltruPerioda(e.target.value)}
-            style={{ padding:'7px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', background:'white', color:'#111', cursor:'pointer' }}>
+            style={{ padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', background:'white', color:'#111', cursor:'pointer' }}>
             <option value="30">Ultimele 30 zile</option>
             <option value="90">Ultimele 3 luni</option>
             <option value="365">Ultimul an</option>
@@ -149,36 +152,39 @@ export default function Dosar() {
         </div>
 
         {/* TABEL */}
-        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', overflow:'hidden' }}>
+        <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden' }}>
           <table style={{ width:'100%', borderCollapse:'collapse' }}>
             <thead>
-              <tr style={{ background:'#f8f9fa' }}>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}>Data ↕</th>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}>Tip</th>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}>Medic ↕</th>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}>Specialitate ↕</th>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}>Unitate medicală ↕</th>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}>Diagnostic</th>
-                <th style={{ ...lbl, padding:'10px 14px', textAlign:'left', borderBottom:'0.5px solid #e5e7eb' }}></th>
+              <tr>
+                <th style={thStyle}>Data ↕</th>
+                <th style={thStyle}>Tip</th>
+                <th style={thStyle}>Medic ↕</th>
+                <th style={thStyle}>Specialitate ↕</th>
+                <th style={thStyle}>Unitate medicală ↕</th>
+                <th style={thStyle}>Diagnostic</th>
+                <th style={thStyle}></th>
               </tr>
             </thead>
             <tbody>
               {rapoarteFiltrate.length === 0 ? (
                 <tr><td colSpan={7} style={{ textAlign:'center', padding:'32px', color:'#aaa', fontSize:'13px' }}>Niciun raport găsit.</td></tr>
               ) : rapoarteFiltrate.map((r, i) => (
-                <tr key={r.id} style={{ borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none', cursor:'pointer' }}
+                <tr key={r.id}
+                  style={{ background:'white' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#f8f9fa')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'white')}>
-                  <td style={{ padding:'12px 14px', fontSize:'12px', color:'#111' }}>{new Date(r.data).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' })}</td>
-                  <td style={{ padding:'12px 14px' }}>
-                    <span style={{ padding:'3px 8px', borderRadius:'10px', fontSize:'10px', fontWeight:500, background:tipColor[r.tip].bg, color:tipColor[r.tip].color }}>{tipLabel[r.tip]}</span>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none' }}>
+                    {new Date(r.data).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' })}
                   </td>
-                  <td style={{ padding:'12px 14px', fontSize:'12px', color:'#111' }}>{r.medic}</td>
-                  <td style={{ padding:'12px 14px', fontSize:'12px', color:'#111' }}>{r.specialitate}</td>
-                  <td style={{ padding:'12px 14px', fontSize:'12px', color:'#111' }}>{r.unitate}</td>
-                  <td style={{ padding:'12px 14px', fontSize:'11px', color:'#555', fontStyle:'italic' }}>{r.diagnostic}</td>
-                  <td style={{ padding:'12px 14px' }}>
-                    <span style={{ fontSize:'11px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>📄 Vezi PDF</span>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none' }}>
+                    <span style={{ padding:'4px 10px', borderRadius:'10px', fontSize:'11px', fontWeight:500, background:tipColor[r.tip].bg, color:tipColor[r.tip].color }}>{tipLabel[r.tip]}</span>
+                  </td>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none' }}>{r.medic}</td>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none' }}>{r.specialitate}</td>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none' }}>{r.unitate}</td>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none', color:'#555', fontStyle:'italic' }}>{r.diagnostic}</td>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '0.5px solid #e5e7eb' : 'none' }}>
+                    <span style={{ fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>📄 PDF</span>
                   </td>
                 </tr>
               ))}
