@@ -258,12 +258,12 @@ export default function Urgenta() {
                   <div><div style={{ fontWeight:500 }}>Buletin de analize</div><div style={{ fontSize:'11px', color:'#888', marginTop:'1px' }}>Upload PDF și extragere AI</div></div>
                 </Link>
                 <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
-                <div onClick={() => setDropdownAdd(false)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'13px', color:'#111', borderRadius:'6px', cursor:'pointer' }}>
+                <Link href="/raport" onClick={() => setDropdownAdd(false)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'13px', color:'#111', borderRadius:'6px', cursor:'pointer', textDecoration:'none' }}>
                   <div style={{ width:'32px', height:'32px', background:'#16705a', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                     <svg viewBox="0 0 24 24" width="15" height="15" stroke="white" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </div>
                   <div><div style={{ fontWeight:500 }}>Raport medical</div><div style={{ fontSize:'11px', color:'#888', marginTop:'1px' }}>Consultație, intervenție sau externare</div></div>
-                </div>
+                </Link>
               </div>
             )}
           </div>
