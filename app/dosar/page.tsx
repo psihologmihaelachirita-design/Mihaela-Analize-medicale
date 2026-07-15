@@ -72,11 +72,12 @@ export default function Dosar() {
     externare: rapoarte.filter(r => r.tip === 'externare').length,
   }
 
+  // ICONIȚE ALBE PE FUNDAL VERDE
   const casete = [
-    { key:'familie', label:'Medic de familie', sub:'Consultații, rețete și trimiteri', icon:'🏥', bg:'#E1F5EE' },
-    { key:'specialist', label:'Medic specialist', sub:'Consultații și rapoarte specialiști', icon:'👨‍⚕️', bg:'#EEF2FF' },
-    { key:'interventie', label:'Raport intervenție medicală', sub:'Intervenții chirurgicale și proceduri', icon:'🔬', bg:'#FEF3C7' },
-    { key:'externare', label:'Scrisoare de externare', sub:'Scrisori cu analize, concluzii și investigații', icon:'📋', bg:'#FCE7F3' },
+    { key:'familie', label:'Medic de familie', sub:'Consultații, rețete și trimiteri', icon: IconUserHeart, bg:'#E1F5EE' },
+    { key:'specialist', label:'Medic specialist', sub:'Consultații și rapoarte specialiști', icon: IconStethoscope, bg:'#EEF2FF' },
+    { key:'interventie', label:'Raport intervenție medicală', sub:'Intervenții chirurgicale și proceduri', icon: IconScissors, bg:'#FEF3C7' },
+    { key:'externare', label:'Scrisoare de externare', sub:'Scrisori cu analize, concluzii și investigații', icon: IconFileText, bg:'#FCE7F3' },
   ]
 
   // Stiluri îmbunătățite
@@ -136,36 +137,51 @@ export default function Dosar() {
         <div style={{ fontSize:'28px', fontWeight:600, color:'#0f172a', marginBottom:'6px' }}>Dosarul meu medical</div>
         <div style={{ fontSize:'16px', color:'#64748b', marginBottom:'32px' }}>Toate rapoartele, consultațiile și documentele tale medicale.</div>
 
-        {/* 4 CASETE - ÎMBUNĂTĂȚITE */}
+        {/* 4 CASETE - ICONIȚE ALBE PE FUNDAL VERDE */}
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'36px' }}>
-          {casete.map(c => (
-            <div 
-              key={c.key} 
-              onClick={() => setFiltruCategorie(c.key === filtruCategorie ? 'toate' : c.key)}
-              style={{ 
-                background:'white', 
-                border: filtruCategorie === c.key ? '2px solid #16705a' : '1px solid #e5e7eb', 
-                borderRadius:'16px', 
-                padding:'24px 22px', 
-                cursor:'pointer', 
-                display:'flex', 
-                flexDirection:'column', 
-                alignItems:'center',
-                textAlign:'center',
-                gap:'8px',
-                transition: 'all 0.15s ease',
-                boxShadow: filtruCategorie === c.key ? '0 4px 16px rgba(22, 112, 90, 0.12)' : '0 2px 8px rgba(0,0,0,0.04)',
-              }}
-            >
-              <div style={{ width:'52px', height:'52px', background:'#16705a', borderRadius:'14px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px' }}>{c.icon}</div>
-              <div style={{ fontSize:'18px', fontWeight:700, color:'#0f172a', marginTop:'4px' }}>{c.label}</div>
-              <div style={{ fontSize:'14px', color:'#64748b', lineHeight:1.5, maxWidth:'280px' }}>{c.sub}</div>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', marginTop:'6px' }}>
-                <span style={{ display:'inline-flex', padding:'4px 14px', background:'#E1F5EE', color:'#085041', borderRadius:'20px', fontSize:'13px', fontWeight:600 }}>{counts[c.key as keyof typeof counts]} rapoarte</span>
-                <span style={{ fontSize:'14px', color:'#16705a', fontWeight:600 }}>Vezi toate →</span>
+          {casete.map(c => {
+            const isActive = filtruCategorie === c.key
+            const IconComponent = c.icon
+            return (
+              <div 
+                key={c.key} 
+                onClick={() => setFiltruCategorie(c.key === filtruCategorie ? 'toate' : c.key)}
+                style={{ 
+                  background:'white', 
+                  border: isActive ? '2px solid #16705a' : '1px solid #e5e7eb', 
+                  borderRadius:'16px', 
+                  padding:'24px 22px', 
+                  cursor:'pointer', 
+                  display:'flex', 
+                  flexDirection:'column', 
+                  alignItems:'center',
+                  textAlign:'center',
+                  gap:'8px',
+                  transition: 'all 0.15s ease',
+                  boxShadow: isActive ? '0 4px 16px rgba(22, 112, 90, 0.12)' : '0 2px 8px rgba(0,0,0,0.04)',
+                }}
+              >
+                <div style={{ 
+                  width:'52px', 
+                  height:'52px', 
+                  background:'#16705a', 
+                  borderRadius:'14px', 
+                  display:'flex', 
+                  alignItems:'center', 
+                  justifyContent:'center',
+                  color:'white'
+                }}>
+                  <IconComponent size={24} stroke={1.5} color="white" />
+                </div>
+                <div style={{ fontSize:'18px', fontWeight:700, color:'#0f172a', marginTop:'4px' }}>{c.label}</div>
+                <div style={{ fontSize:'14px', color:'#64748b', lineHeight:1.5, maxWidth:'280px' }}>{c.sub}</div>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', marginTop:'6px' }}>
+                  <span style={{ display:'inline-flex', padding:'4px 14px', background:'#E1F5EE', color:'#085041', borderRadius:'20px', fontSize:'13px', fontWeight:600 }}>{counts[c.key as keyof typeof counts]} rapoarte</span>
+                  <span style={{ fontSize:'14px', color:'#16705a', fontWeight:600 }}>Vezi toate →</span>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* FILTRE */}
@@ -247,4 +263,3 @@ export default function Dosar() {
     </div>
   )
 }
-
