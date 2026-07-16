@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Topbar from '@/components/Topbar'
 import { IconChartBar, IconHeartRateMonitor } from '@tabler/icons-react'
 
 const supabase = createClient(
@@ -52,7 +53,7 @@ export default function Dashboard() {
     </div>
   )
 
-  const username = profil?.prenume || profil?.nume?.split(' ')[0] || user?.email?.split('@')[0]
+  const username = profil?.prenume || user?.email?.split('@')[0] || 'Utilizator'
 
   const acum = new Date()
   const acum3luni = new Date(acum); acum3luni.setMonth(acum.getMonth() - 3)
@@ -173,42 +174,7 @@ export default function Dashboard() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }} onClick={() => { setDropdown(false); setMobileMenu(false) }}>
-
-      {/* Topbar Desktop */}
-      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'60px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
-          <div style={{ width:'36px', height:'36px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MedFile</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <div style={{ display:'flex', alignItems:'center', gap:'4px' }} className="desktop-nav">
-          <Link href="/dashboard" style={{ ...navStyle, background:'#E1F5EE', color:'#085041' }}>Home</Link>
-          <Link href="/panoramic" style={navStyle}>Panoramic</Link>
-          <Link href="/urgenta" style={navStyle}>Urgență</Link>
-          <Link href="/dosar" style={navStyle}>Dosar</Link>
-          <Link href="/upload" style={{ ...navStyle, background:'#16705a', color:'white', padding:'6px 14px', marginLeft:'4px' }}>+ Adaugă</Link>
-          <div style={{ position:'relative', marginLeft:'8px' }} onClick={e => e.stopPropagation()}>
-            <button onClick={() => setDropdown(!dropdown)} style={{ padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>
-              {username} ▾
-            </button>
-            {dropdown && (
-              <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/profil" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Profil</Link>
-                <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'#ed1f37', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile hamburger */}
-        <button onClick={e => { e.stopPropagation(); setMobileMenu(!mobileMenu) }} style={{ display:'none', border:'none', background:'none', cursor:'pointer', padding:'4px' }} className="mobile-menu-btn" aria-label="Meniu">
-          <div style={{ width:'22px', height:'2px', background:'#111', borderRadius:'2px', marginBottom:'5px' }}></div>
-          <div style={{ width:'22px', height:'2px', background:'#111', borderRadius:'2px', marginBottom:'5px' }}></div>
-          <div style={{ width:'22px', height:'2px', background:'#111', borderRadius:'2px' }}></div>
-        </button>
-      </div>
-
+<Topbar username={username} activePage="home" onLogout={handleLogout} />
       {/* Mobile menu */}
       {mobileMenu && (
         <div onClick={e => e.stopPropagation()} style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'12px 16px', display:'flex', flexDirection:'column', gap:'2px', position:'sticky', top:'60px', zIndex:9 }}>
