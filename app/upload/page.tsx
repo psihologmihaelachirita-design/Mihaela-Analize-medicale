@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Topbar from '@/components/Topbar'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,6 +11,8 @@ const supabase = createClient(
 )
 
 export default function Upload() {
+  const [user, setUser] = useState<any>(null)
+  const [profil, setProfil] = useState<any>(null)
   const [fisier, setFisier] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [salvare, setSalvare] = useState(false)
@@ -19,6 +22,22 @@ export default function Upload() {
   const [insertsTemp, setInsertsTemp] = useState<any[]>([])
   const [mesaj, setMesaj] = useState('')
   const [laborator, setLaborator] = useState('')
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      setUser(session.user)
+      const { data } = await supabase.from('profiluri').select('prenume, nume').eq('id', session.user.id).single()
+      setProfil(data)
+    })
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    window.location.href = '/'
+  }
+
+  const username = profil?.prenume || user?.email?.split('@')[0] || ''
   const [orasLaborator, setOrasLaborator] = useState('')
   const [taraLaborator, setTaraLaborator] = useState('')
   const [dataBuletin, setDataBuletin] = useState('')
@@ -94,13 +113,7 @@ export default function Upload() {
 
   return (
     <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh'}}>
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-        <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'8px', textDecoration:'none'}}>
-          <div style={{width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600}}>✚</div>
-          <span style={{fontSize:'18px', fontWeight:600, color:'#111'}}>MedFile</span>
-        </Link>
-      </div>
-
+      <Topbar username={username} activePage={undefined} onLogout={handleLogout} />
       <div style={{maxWidth:'680px', margin:'0 auto', padding:'2rem 1.5rem'}}>
         <h1 style={{fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'6px'}}>Adaugă analize</h1>
         <p style={{color:'#888', marginBottom:'2rem', fontSize:'13px'}}>Uploadează buletinul de analize în format PDF — platforma va extrage automat toate valorile</p>
