@@ -21,12 +21,7 @@ export default function Dosar() {
   const [filtruPerioda, setFiltruPerioda] = useState('30')
   const router = useRouter()
 
-  const rapoarte = [
-    { id:1, data:'2026-07-12', tip:'specialist', medic:'Dr. Ionescu Maria', specialitate:'Endocrinologie', unitate:'Medicover București', diagnostic:'Hipotiroidism', pdf:null },
-    { id:2, data:'2026-07-08', tip:'familie', medic:'Dr. Popescu Ion', specialitate:'Medicina generală', unitate:'Cabinet Dr. Popescu', diagnostic:'Infecție respiratorie', pdf:null },
-    { id:3, data:'2026-07-02', tip:'externare', medic:'Dr. Dumitrescu Andrei', specialitate:'Chirurgie', unitate:'Spitalul Fundeni', diagnostic:'Colecistită acută', pdf:null },
-    { id:4, data:'2026-07-01', tip:'interventie', medic:'Dr. Constantin Mihai', specialitate:'Chirurgie', unitate:'Spitalul Colentina', diagnostic:'Colecistectomie laparoscopică', pdf:null },
-  ]
+  const [rapoarte, setRapoarte] = useState<any[]>([])
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -34,6 +29,8 @@ export default function Dosar() {
       setUser(session.user)
       const { data } = await supabase.from('profiluri').select('prenume, nume').eq('id', session.user.id).single()
       setProfil(data)
+      const { data: rapoarteData } = await supabase.from('rapoarte').select('*').eq('user_id', session.user.id).order('data_raport', { ascending: false })
+      setRapoarte(rapoarteData || [])
       setLoading(false)
     })
   }, [])
