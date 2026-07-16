@@ -13,9 +13,9 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
   const [dropdownAdd, setDropdownAdd] = useState(false)
 
   const linkStyle = (page: string): React.CSSProperties => ({
-    padding: '6px 10px',
+    padding: '8px 14px',
     borderRadius: '8px',
-    fontSize: '13px',
+    fontSize: '15px',
     color: activePage === page ? '#085041' : '#111',
     textDecoration: 'none',
     fontWeight: 500,
@@ -23,13 +23,13 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
   })
 
   return (
-    <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-      <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
-        <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-        <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MediPanel</span>
+    <div style={{ background:'white', borderBottom:'1px solid #e5e7eb', padding:'0 32px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
+      <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'12px', textDecoration:'none' }}>
+        <div style={{ width:'38px', height:'38px', background:'#E1F5EE', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
+        <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MediPanel</span>
       </Link>
 
-      <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
         <Link href="/dashboard" style={linkStyle('home')}>Home</Link>
         <Link href="/panoramic" style={linkStyle('panoramic')}>Panoramic</Link>
         <Link href="/urgenta" style={linkStyle('urgenta')}>Urgență</Link>
@@ -38,13 +38,13 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
         {/* Dropdown Adaugă */}
         <div style={{ position:'relative', marginLeft:'4px' }}>
           <button onClick={() => { setDropdownAdd(!dropdownAdd); setDropdown(false) }}
-            style={{ padding:'6px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>
+            style={{ padding:'8px 16px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer' }}>
             + Adaugă ▾
           </button>
           {dropdownAdd && (
-            <div style={{ position:'absolute', right:0, top:'38px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'6px', minWidth:'220px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100 }}>
+            <div style={{ position:'absolute', right:0, top:'42px', background:'white', border:'1px solid #e5e7eb', borderRadius:'10px', padding:'6px', minWidth:'240px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100 }}>
               <Link href="/upload" onClick={() => setDropdownAdd(false)}
-                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
+                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
                 onMouseEnter={e => e.currentTarget.style.background='#f8f9fa'}
                 onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                 <div style={{ width:'32px', height:'32px', background:'#16705a', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -52,12 +52,12 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
                 </div>
                 <div>
                   <div style={{ fontWeight:500 }}>Buletin de analize</div>
-                  <div style={{ fontSize:'11px', color:'#888', marginTop:'1px' }}>Upload PDF și extragere AI</div>
+                  <div style={{ fontSize:'12px', color:'#888', marginTop:'1px' }}>Upload PDF și extragere AI</div>
                 </div>
               </Link>
               <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
               <Link href="/raport" onClick={() => setDropdownAdd(false)}
-                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
+                style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'14px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
                 onMouseEnter={e => e.currentTarget.style.background='#f8f9fa'}
                 onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                 <div style={{ width:'32px', height:'32px', background:'#16705a', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -65,7 +65,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
                 </div>
                 <div>
                   <div style={{ fontWeight:500 }}>Raport medical</div>
-                  <div style={{ fontSize:'11px', color:'#888', marginTop:'1px' }}>Consultație, intervenție sau externare</div>
+                  <div style={{ fontSize:'12px', color:'#888', marginTop:'1px' }}>Consultație, intervenție sau externare</div>
                 </div>
               </Link>
             </div>
@@ -73,22 +73,22 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
         </div>
 
         {/* Dropdown username */}
-        <div style={{ position:'relative', marginLeft:'8px' }}>
+        <div style={{ position:'relative', marginLeft:'12px' }}>
           <button onClick={() => { setDropdown(!dropdown); setDropdownAdd(false) }}
-            style={{ padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>
+            style={{ padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>
             {username} ▾
           </button>
           {dropdown && (
-            <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'6px', minWidth:'160px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100 }}>
+            <div style={{ position:'absolute', right:0, top:'42px', background:'white', border:'1px solid #e5e7eb', borderRadius:'10px', padding:'6px', minWidth:'160px', boxShadow:'0 8px 24px rgba(0,0,0,0.08)', zIndex:100 }}>
               <Link href="/profil" onClick={() => setDropdown(false)}
-                style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
+                style={{ display:'block', padding:'10px 14px', fontSize:'14px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
                 onMouseEnter={e => e.currentTarget.style.background='#f8f9fa'}
                 onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                 Profil
               </Link>
               <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
               <div onClick={() => { setDropdown(false); onLogout() }}
-                style={{ padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}
+                style={{ padding:'10px 14px', fontSize:'14px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}
                 onMouseEnter={e => e.currentTarget.style.background='#f8f9fa'}
                 onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                 Ieșire
