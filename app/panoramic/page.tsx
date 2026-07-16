@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Topbar from '@/components/Topbar'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -135,30 +136,7 @@ export default function Panoramic() {
 
   return (
     <div style={{fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', height:'100vh', display:'flex', flexDirection:'column'}}>
-
-      {/* Topbar */}
-      <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0}}>
-        <Link href="/dashboard" style={{display:'flex', alignItems:'center', gap:'10px', textDecoration:'none'}}>
-          <div style={{width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600}}>✚</div>
-          <span style={{fontSize:'18px', fontWeight:600, color:'#111'}}>MedFile</span>
-        </Link>
-        <div style={{display:'flex', alignItems:'center', gap:'4px'}}>
-          <Link href="/dashboard" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Home</Link>
-          <Link href="/panoramic" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#085041', textDecoration:'none', fontWeight:500, background:'#E1F5EE'}}>Panoramic</Link>
-          <Link href="/urgenta" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Urgență</Link>
-          <Link href="/dosar" style={{padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500}}>Dosar</Link>
-          <Link href="/upload" style={{padding:'6px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'13px', fontWeight:500, textDecoration:'none', marginLeft:'4px'}}>+ Adaugă</Link>
-          <div style={{position:'relative', marginLeft:'8px'}}>
-            <button onClick={() => setDropdown(!dropdown)} style={{padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500}}>{username} ▾</button>
-            {dropdown && (
-              <div style={{position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100}}>
-                <Link href="/profil" style={{display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px'}}>Profil</Link>
-                <div onClick={handleLogout} style={{padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px'}}>Ieșire</div>
-              </div>
-            )}
-          </div>
-          </div>
-      </div>
+<Topbar username={username} activePage="panoramic" onLogout={handleLogout} />
 
       {/* Toolbar */}
       <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'8px 24px', display:'flex', alignItems:'center', gap:'10px', flexShrink:0}}>
