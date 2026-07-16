@@ -108,29 +108,7 @@ export default function Dosar() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
 
-      {/* Topbar */}
-      <div style={{ background:'white', borderBottom:'1px solid #e5e7eb', padding:'0 32px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'12px', textDecoration:'none' }}>
-          <div style={{ width:'38px', height:'38px', background:'#E1F5EE', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MediPanel</span>
-        </Link>
-        <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-          <Link href="/dashboard" style={navStyle}>Home</Link>
-          <Link href="/panoramic" style={navStyle}>Panoramic</Link>
-          <Link href="/urgenta" style={navStyle}>Urgență</Link>
-          <Link href="/dosar" style={{ ...navStyle, background:'#E1F5EE', color:'#085041' }}>Dosar</Link>
-          <Link href="/upload" style={{ ...navStyle, background:'#16705a', color:'white', padding:'8px 16px', marginLeft:'4px' }}>+ Adaugă</Link>
-          <div style={{ position:'relative', marginLeft:'12px' }}>
-            <button onClick={() => setDropdown(!dropdown)} style={{ padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>{username} ▾</button>
-            {dropdown && (
-              <div style={{ position:'absolute', right:0, top:'40px', background:'white', border:'1px solid #e5e7eb', borderRadius:'10px', padding:'6px', minWidth:'150px', boxShadow:'0 8px 24px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/profil" style={{ display:'block', padding:'10px 14px', fontSize:'14px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Profil</Link>
-                <div onClick={handleLogout} style={{ padding:'10px 14px', fontSize:'14px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <Topbar username={username} activePage="dosar" onLogout={handleLogout} />
 
       <div style={{ maxWidth:'1200px', margin:'0 auto', padding:'36px 28px' }}>
 
