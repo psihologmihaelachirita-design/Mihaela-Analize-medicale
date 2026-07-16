@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Topbar from '@/components/Topbar'
 import { IconId, IconStethoscope, IconDeviceHeartMonitor, IconScissors, IconPhone, IconQrcode } from '@tabler/icons-react'
 
 const supabase = createClient(
@@ -236,48 +237,7 @@ export default function Urgenta() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
-
-      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
-          <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
-        </Link>
-        <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
-          <Link href="/dashboard" style={navStyle}>Home</Link>
-          <Link href="/panoramic" style={navStyle}>Panoramic</Link>
-          <Link href="/urgenta" style={{ ...navStyle, background:'#E1F5EE', color:'#085041' }}>Urgență</Link>
-          <Link href="/dosar" style={navStyle}>Dosar</Link>
-          <div style={{ position:'relative', marginLeft:'4px' }}>
-            <button onClick={() => setDropdownAdd(!dropdownAdd)} style={{ padding:'6px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>+ Adaugă ▾</button>
-            {dropdownAdd && (
-              <div style={{ position:'absolute', right:0, top:'38px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'6px', minWidth:'220px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/upload" onClick={() => setDropdownAdd(false)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>
-                  <div style={{ width:'32px', height:'32px', background:'#16705a', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                    <svg viewBox="0 0 24 24" width="15" height="15" stroke="white" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><path d="M9 12h6M9 16h4"/></svg>
-                  </div>
-                  <div><div style={{ fontWeight:500 }}>Buletin de analize</div><div style={{ fontSize:'11px', color:'#888', marginTop:'1px' }}>Upload PDF și extragere AI</div></div>
-                </Link>
-                <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
-                <Link href="/raport" onClick={() => setDropdownAdd(false)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', fontSize:'13px', color:'#111', borderRadius:'6px', cursor:'pointer', textDecoration:'none' }}>
-                  <div style={{ width:'32px', height:'32px', background:'#16705a', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                    <svg viewBox="0 0 24 24" width="15" height="15" stroke="white" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  </div>
-                  <div><div style={{ fontWeight:500 }}>Raport medical</div><div style={{ fontSize:'11px', color:'#888', marginTop:'1px' }}>Consultație, intervenție sau externare</div></div>
-                </Link>
-              </div>
-            )}
-          </div>
-          <div style={{ position:'relative', marginLeft:'8px' }}>
-            <button onClick={() => setDropdown(!dropdown)} style={{ padding:'6px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>{username} ▾</button>
-            {dropdown && (
-              <div style={{ position:'absolute', right:0, top:'36px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/profil" style={{ display:'block', padding:'8px 12px', fontSize:'13px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Profil</Link>
-                <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'13px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <Topbar username={username} activePage="urgenta" onLogout={handleLogout} />
 
       <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'calc(100vh - 56px)' }}>
 
