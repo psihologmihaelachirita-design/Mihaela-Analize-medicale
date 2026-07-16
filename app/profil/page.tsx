@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Topbar from '@/components/Topbar'
 import { IconUser, IconCreditCard, IconDownload, IconLock, IconId } from '@tabler/icons-react'
 
 const supabase = createClient(
@@ -254,29 +255,7 @@ export default function Profil() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
 
-      <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'60px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
-        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
-          <div style={{ width:'34px', height:'34px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MedFile</span>
-        </Link>
-        <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-          <Link href="/dashboard" style={navStyle}>Home</Link>
-          <Link href="/panoramic" style={navStyle}>Panoramic</Link>
-          <Link href="/urgenta" style={navStyle}>Urgență</Link>
-          <Link href="/dosar" style={navStyle}>Dosar</Link>
-          <Link href="/upload" style={{ ...navStyle, background:'#16705a', color:'white', padding:'6px 16px', marginLeft:'4px' }}>+ Adaugă</Link>
-          <div style={{ position:'relative', marginLeft:'10px' }}>
-            <button onClick={() => setDropdown(!dropdown)} style={{ padding:'6px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>{username} ▾</button>
-            {dropdown && (
-              <div style={{ position:'absolute', right:0, top:'38px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'4px', minWidth:'140px', boxShadow:'0 4px 12px rgba(0,0,0,0.08)', zIndex:100 }}>
-                <Link href="/profil" style={{ display:'block', padding:'8px 12px', fontSize:'14px', color:'#111', textDecoration:'none', borderRadius:'6px' }}>Profil</Link>
-                <div onClick={handleLogout} style={{ padding:'8px 12px', fontSize:'14px', color:'#E24B4A', cursor:'pointer', borderRadius:'6px' }}>Ieșire</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
+      <Topbar username={username} activePage="profil" onLogout={handleLogout} />
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
 
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
