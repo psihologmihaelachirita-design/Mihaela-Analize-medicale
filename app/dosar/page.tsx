@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Topbar from '@/components/Topbar'
 import { IconStethoscope, IconUserHeart, IconScissors, IconFileText } from '@tabler/icons-react'
 
 const supabase = createClient(
