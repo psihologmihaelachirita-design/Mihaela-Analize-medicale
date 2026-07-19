@@ -265,8 +265,8 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
                 style={{ padding:'9px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>
                 Anulează
               </button>
-              <button onClick={handleSalvareApartinator} disabled={salvare}
-                style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>
+              <button onClick={handleSalvareApartinator} disabled={salvare || !fisierCI || !relatie || !acord}
+                style={{ padding:'9px 18px', background: fisierCI && relatie && acord ? '#16705a' : '#d1d5db', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor: fisierCI && relatie && acord ? 'pointer' : 'not-allowed' }}>
                 {salvare ? 'Se salvează...' : 'Asociază aparținător'}
               </button>
             </div>
