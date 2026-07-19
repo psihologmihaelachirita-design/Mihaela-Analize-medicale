@@ -34,16 +34,20 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
   const [profilActiv, setProfilActiv] = useState<{ tip: 'eu' | 'apartinator', id: string | null, prenume: string, nume: string }>({ tip: 'eu', id: null, prenume: '', nume: '' })
 
   useEffect(() => {
-    const saved = localStorage.getItem('profilActiv')
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      if (parsed.tip === 'eu') localStorage.removeItem('profilActiv')
-      else setProfilActiv(parsed)
-    }
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) return
       const { data } = await supabase.from('apartinatori').select('id, nume, prenume, relatie').eq('user_id', session.user.id)
-      setApartinatori(data || [])
+      const lista = data || []
+      setApartinatori(lista)
+      const saved = localStorage.getItem('profilActiv')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.tip === 'apartinator' && lista.find((a: Apartinator) => a.id === parsed.id)) {
+          setProfilActiv(parsed)
+        } else {
+          localStorage.removeItem('profilActiv')
+        }
+      }
     })
   }, [])
 
