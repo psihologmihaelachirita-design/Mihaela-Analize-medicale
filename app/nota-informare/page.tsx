@@ -1,14 +1,42 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import Topbar from '@/components/Topbar'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export default function NotaInformare() {
+  const [user, setUser] = useState<any>(null)
+  const [profil, setProfil] = useState<any>(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      setUser(session.user)
+      const { data } = await supabase.from('profiluri').select('prenume, nume').eq('id', session.user.id).single()
+      setProfil(data)
+    })
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
+  const username = profil?.prenume || user?.email?.split('@')[0] || ''
+
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
-      <div style={{ background:'white', borderBottom:'1px solid #e5e7eb', padding:'0 32px', height:'64px', display:'flex', alignItems:'center' }}>
-        <a href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'12px', textDecoration:'none' }}>
-          <div style={{ width:'38px', height:'38px', background:'#E1F5EE', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MediPanel</span>
-        </a>
-      </div>
+      <Topbar username={username} onLogout={handleLogout} />
 
       <div style={{ maxWidth:'780px', margin:'0 auto', padding:'40px 24px' }}>
+        <Link href="javascript:history.back()" style={{ fontSize:'13px', color:'#16705a', fontWeight:500, textDecoration:'none', display:'inline-block', marginBottom:'16px' }}>← Înapoi</Link>
         <h1 style={{ fontSize:'24px', fontWeight:600, color:'#111', marginBottom:'8px' }}>Notă de informare cu privire la prelucrarea datelor cu caracter personal</h1>
         <p style={{ fontSize:'14px', color:'#555', marginBottom:'32px' }}>Procesul de asociere a unui aparținător la contul dumneavoastră MediPanel</p>
 
