@@ -30,7 +30,8 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
   const [acord, setAcord] = useState(false)
   const [fisierCI, setFisierCI] = useState<File | null>(null)
   const [salvare, setSalvare] = useState(false)
-  const [profilActiv, setProfilActiv] = useState<{ tip: 'eu' | 'apartinator', id: string | null, nume: string }>({ tip: 'eu', id: null, nume: username })
+  const [eroare, setEroare] = useState('')
+  const [profilActiv, setProfilActiv] = useState<{ tip: 'eu' | 'apartinator', id: string | null, prenume: string, nume: string }>({ tip: 'eu', id: null, prenume: '', nume: '' })
 
   useEffect(() => {
     const saved = localStorage.getItem('profilActiv')
@@ -42,8 +43,8 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
     })
   }, [])
 
-  function switchProfil(tip: 'eu' | 'apartinator', id: string | null, nume: string) {
-    const profil = { tip, id, nume }
+  function switchProfil(tip: 'eu' | 'apartinator', id: string | null, prenume: string, nume: string) {
+    const profil = { tip, id, prenume, nume }
     localStorage.setItem('profilActiv', JSON.stringify(profil))
     setProfilActiv(profil)
     setDropdown(false)
@@ -51,19 +52,17 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
   }
 
   async function handleSalvareApartinator() {
-    if (!relatie || !acord) return
+    setEroare('')
+    if (!fisierCI) { setEroare('Te rugăm să încarci CI-ul aparținătorului.'); return }
+    if (!relatie) { setEroare('Te rugăm să selectezi relația cu aparținătorul.'); return }
+    if (!acord) { setEroare('Te rugăm să bifezi acordul.'); return }
     setSalvare(true)
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
-    let nume = '', prenume = '', cnp = ''
-    if (fisierCI) {
-      // TODO: extragere AI din CI
-    }
-
     const { error } = await supabase.from('apartinatori').insert({
       user_id: session.user.id,
-      nume, prenume, cnp, relatie,
+      nume: '', prenume: '', cnp: '', relatie,
     })
 
     if (!error) {
@@ -103,7 +102,6 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
           <Link href="/urgenta" style={linkStyle('urgenta')}>Urgență</Link>
           <Link href="/dosar" style={linkStyle('dosar')}>Dosar</Link>
 
-          {/* Dropdown Adaugă */}
           <div style={{ position:'relative', marginLeft:'4px' }}>
             <button onClick={() => { setDropdownAdd(!dropdownAdd); setDropdown(false) }}
               style={{ padding:'8px 16px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer' }}>
@@ -140,25 +138,23 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
             )}
           </div>
 
-          {/* Dropdown username */}
           <div style={{ position:'relative', marginLeft:'12px' }}>
             <button onClick={() => { setDropdown(!dropdown); setDropdownAdd(false) }}
               style={{ padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>
-              {profilActiv.tip === 'eu' ? username : profilActiv.nume} ▾
+              {profilActiv.tip === 'apartinator' ? `${profilActiv.prenume} ${profilActiv.nume}` : username} ▾
             </button>
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'42px', background:'white', border:'1px solid #e5e7eb', borderRadius:'12px', padding:'6px', minWidth:'220px', boxShadow:'0 8px 24px rgba(0,0,0,0.08)', zIndex:100 }}>
-
                 {apartinatori.length > 0 && (
                   <>
                     <div style={{ padding:'4px 12px 6px', fontSize:'11px', fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.5px' }}>Aparținători</div>
                     {apartinatori.map(a => (
-                      <div key={a.id} onClick={() => switchProfil('apartinator', a.id, `${a.prenume} ${a.nume}`)}
+                      <div key={a.id} onClick={() => switchProfil('apartinator', a.id, a.prenume, a.nume)}
                         style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', borderRadius:'8px', cursor:'pointer', background: profilActiv.id === a.id ? '#E1F5EE' : 'transparent' }}
                         onMouseEnter={e => e.currentTarget.style.background='#f8f9fa'}
                         onMouseLeave={e => e.currentTarget.style.background= profilActiv.id === a.id ? '#E1F5EE' : 'transparent'}>
                         <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:'#EEF2FF', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:600, color:'#4338CA', flexShrink:0 }}>
-                          {a.prenume.charAt(0).toUpperCase()}
+                          {a.prenume?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                         <div style={{ flex:1 }}>
                           <div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{a.prenume} {a.nume}</div>
@@ -198,11 +194,11 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
         </div>
       </div>
 
-      {/* Banner apartinator activ */}
+      {/* Banner apartinator activ - verde deschis, text bold negru */}
       {profilActiv.tip === 'apartinator' && (
-        <div style={{ background:'#FEF3C7', borderBottom:'1px solid #FCD34D', padding:'10px 32px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div style={{ fontSize:'14px', color:'#92400E', fontWeight:500 }}>👤 Vizualizezi dosarul lui {profilActiv.nume}</div>
-          <div onClick={() => switchProfil('eu', null, username)} style={{ fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>← Înapoi la profilul meu</div>
+        <div style={{ background:'#E1F5EE', borderBottom:'1px solid #A7F3D0', padding:'10px 32px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div style={{ fontSize:'14px', color:'#111', fontWeight:700 }}>👤 Vizualizezi dosarul lui {profilActiv.prenume} {profilActiv.nume}</div>
+          <div onClick={() => switchProfil('eu', null, '', '')} style={{ fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>← Înapoi la profilul meu</div>
         </div>
       )}
 
@@ -214,21 +210,19 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
             <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'4px', textAlign:'center' }}>Asociază aparținător</div>
             <div style={{ fontSize:'13px', color:'#555', marginBottom:'24px', textAlign:'center' }}>Adaugă un membru al familiei pentru a-i gestiona dosarul medical.</div>
 
-            {/* 1. Nota informare */}
             <div style={{ marginBottom:'20px' }}>
               <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>1. Notă de informare</div>
               <div style={{ background:'#E1F5EE', borderRadius:'8px', padding:'12px 14px', display:'flex', alignItems:'center', gap:'10px' }}>
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="#085041" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <div style={{ fontSize:'13px', color:'#085041' }}>Înainte de a continua, citește <a href="/nota-informare" style={{ color:'#085041', fontWeight:600 }}>nota de informare privind prelucrarea datelor cu caracter personal</a> pentru acest proces.</div>
+                <div style={{ fontSize:'13px', color:'#085041' }}>Înainte de a continua, citește <a href="/nota-informare" target="_blank" style={{ color:'#085041', fontWeight:600 }}>nota de informare privind prelucrarea datelor cu caracter personal</a> pentru acest proces.</div>
               </div>
             </div>
 
-            {/* 2. Upload CI */}
             <div style={{ marginBottom:'20px' }}>
-              <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>2. Document identitate aparținător (CI)</div>
+              <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>2. Document identitate aparținător (CI) *</div>
               <div onClick={() => document.getElementById('ci-input')?.click()}
                 style={{ border: fisierCI ? '1.5px solid #16705a' : '1.5px dashed #e5e7eb', borderRadius:'10px', padding:'24px', textAlign:'center', background: fisierCI ? '#E1F5EE20' : '#f8f9fa', cursor:'pointer' }}>
-                <input id="ci-input" type="file" accept="image/*,.pdf" style={{ display:'none' }} onChange={e => setFisierCI(e.target.files?.[0] || null)} />
+                <input id="ci-input" type="file" accept="image/*,.pdf" style={{ display:'none' }} onChange={e => { setFisierCI(e.target.files?.[0] || null); setEroare('') }} />
                 <div style={{ fontSize:'28px', marginBottom:'8px' }}>📄</div>
                 <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>
                   {fisierCI ? `✓ ${fisierCI.name}` : 'Trage fișierul CI aici sau apasă pentru a selecta'}
@@ -237,22 +231,20 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
               </div>
             </div>
 
-            {/* 3. Relatie */}
             <div style={{ marginBottom:'20px' }}>
-              <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>3. Relație cu aparținătorul</div>
+              <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>3. Relație cu aparținătorul *</div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'8px' }}>
                 {['copil', 'parinte', 'bunic'].map(r => (
                   <button key={r} onClick={() => setRelatie(r)}
                     style={{ padding:'10px 14px', border: relatie === r ? '2px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color: relatie === r ? '#085041' : '#111', background: relatie === r ? '#E1F5EE' : 'white', cursor:'pointer', fontWeight: relatie === r ? 600 : 500 }}>
-                    {relatieLabel[r] || r}
+                    {relatieLabel[r]}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* 4. Acord */}
             <div style={{ marginBottom:'0' }}>
-              <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>4. Acord</div>
+              <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>4. Acord *</div>
               <div onClick={() => setAcord(!acord)}
                 style={{ display:'flex', alignItems:'flex-start', gap:'10px', padding:'14px', background:'#f8f9fa', borderRadius:'8px', cursor:'pointer' }}>
                 <div style={{ width:'18px', height:'18px', border:'1.5px solid #16705a', borderRadius:'4px', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', marginTop:'1px', background: acord ? '#16705a' : 'white' }}>
@@ -262,13 +254,19 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
               </div>
             </div>
 
+            {eroare && (
+              <div style={{ marginTop:'12px', padding:'10px 14px', background:'#FCEBEB', borderRadius:'8px', fontSize:'13px', color:'#A32D2D' }}>
+                {eroare}
+              </div>
+            )}
+
             <div style={{ display:'flex', gap:'8px', justifyContent:'flex-end', marginTop:'24px' }}>
-              <button onClick={() => setModalApartinator(false)}
+              <button onClick={() => { setModalApartinator(false); setEroare(''); setRelatie(''); setAcord(false); setFisierCI(null) }}
                 style={{ padding:'9px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>
                 Anulează
               </button>
-              <button onClick={handleSalvareApartinator} disabled={!relatie || !acord || salvare}
-                style={{ padding:'9px 18px', background: relatie && acord ? '#16705a' : '#aaa', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor: relatie && acord ? 'pointer' : 'not-allowed' }}>
+              <button onClick={handleSalvareApartinator} disabled={salvare}
+                style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>
                 {salvare ? 'Se salvează...' : 'Asociază aparținător'}
               </button>
             </div>
