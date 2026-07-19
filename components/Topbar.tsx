@@ -117,19 +117,6 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'42px', background:'white', border:'1px solid #e5e7eb', borderRadius:'12px', padding:'6px', minWidth:'220px', boxShadow:'0 8px 24px rgba(0,0,0,0.08)', zIndex:100 }}>
                 
-                <div style={{ padding:'4px 12px 6px', fontSize:'11px', fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:'0.5px' }}>Profil activ</div>
-                
-                <div onClick={() => switchProfil('eu', null, username)}
-                  style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', borderRadius:'8px', cursor:'pointer', background: profilActiv.tip === 'eu' ? '#E1F5EE' : 'transparent' }}
-                  onMouseEnter={e => e.currentTarget.style.background='#E1F5EE'}
-                  onMouseLeave={e => e.currentTarget.style.background= profilActiv.tip === 'eu' ? '#E1F5EE' : 'transparent'}>
-                  <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:'#E1F5EE', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:600, color:'#085041', flexShrink:0 }}>
-                    {username.charAt(0).toUpperCase()}
-                  </div>
-                  <div style={{ fontSize:'14px', fontWeight:500, color: profilActiv.tip === 'eu' ? '#085041' : '#111', flex:1 }}>{username}</div>
-                  {profilActiv.tip === 'eu' && <span style={{ color:'#085041', fontSize:'14px' }}>✓</span>}
-                </div>
-
                 {apartinatori.length > 0 && (
                   <>
                     <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
