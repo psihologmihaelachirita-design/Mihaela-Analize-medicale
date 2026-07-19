@@ -219,7 +219,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
               <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>1. Notă de informare</div>
               <div style={{ background:'#E1F5EE', borderRadius:'8px', padding:'12px 14px', display:'flex', alignItems:'center', gap:'10px' }}>
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="#085041" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <div style={{ fontSize:'13px', color:'#085041' }}>Înainte de a continua, citește <a href="https://www.reginamaria.ro/asocierea-copilului-minor-la-contul-parintelui-nota-de-informare" target="_blank" style={{ color:'#085041', fontWeight:600 }}>nota de informare privind prelucrarea datelor cu caracter personal</a> pentru acest proces.</div>
+                <div style={{ fontSize:'13px', color:'#085041' }}>Înainte de a continua, citește <a href="/nota-informare" style={{ color:'#085041', fontWeight:600 }}>nota de informare privind prelucrarea datelor cu caracter personal</a> pentru acest proces.</div>
               </div>
             </div>
 
