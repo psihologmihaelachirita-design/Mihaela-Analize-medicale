@@ -168,7 +168,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
           <div style={{ position:'relative', marginLeft:'12px' }}>
             <button onClick={() => { setDropdown(!dropdown); setDropdownAdd(false) }}
               style={{ padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>
-              {profilActiv.tip === 'apartinator' ? `${profilActiv.prenume} ${profilActiv.nume}` : username} ▾
+              {profilActiv.tip === 'apartinator' && profilActiv.prenume ? `${profilActiv.prenume} ${profilActiv.nume}` : username} ▾
             </button>
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'42px', background:'white', border:'1px solid #e5e7eb', borderRadius:'12px', padding:'6px', minWidth:'220px', boxShadow:'0 8px 24px rgba(0,0,0,0.08)', zIndex:100 }}>
