@@ -58,11 +58,34 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
     if (!acord) { setEroare('Te rugăm să bifezi acordul.'); return }
     setSalvare(true)
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
+    if (!session) { setSalvare(false); return }
+
+    const base64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve((reader.result as string).split(',')[1])
+      reader.onerror = reject
+      reader.readAsDataURL(fisierCI)
+    })
+
+    let numeCI = '', prenumeCI = '', cnpCI = ''
+    try {
+      const resp = await fetch('/api/extrage-raport', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pdf: base64,
+          prompt: 'Extrage din acest act de identitate: nume, prenume, CNP. Răspunde DOAR cu JSON fără text suplimentar: {"nume":"...","prenume":"...","cnp":"..."}'
+        })
+      })
+      const respData = await resp.json()
+      numeCI = respData.nume || ''
+      prenumeCI = respData.prenume || ''
+      cnpCI = respData.cnp || ''
+    } catch {}
 
     const { error } = await supabase.from('apartinatori').insert({
       user_id: session.user.id,
-      nume: '', prenume: '', cnp: '', relatie,
+      nume: numeCI, prenume: prenumeCI, cnp: cnpCI, relatie,
     })
 
     if (!error) {
@@ -194,7 +217,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
         </div>
       </div>
 
-      {/* Banner apartinator activ - verde deschis, text bold negru */}
+      {/* Banner apartinator activ */}
       {profilActiv.tip === 'apartinator' && (
         <div style={{ background:'#E1F5EE', borderBottom:'1px solid #A7F3D0', padding:'10px 32px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div style={{ fontSize:'14px', color:'#111', fontWeight:700 }}>👤 Vizualizezi dosarul lui {profilActiv.prenume} {profilActiv.nume}</div>
@@ -221,7 +244,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
             <div style={{ marginBottom:'20px' }}>
               <div style={{ fontSize:'12px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'8px' }}>2. Document identitate aparținător (CI) *</div>
               <div onClick={() => document.getElementById('ci-input')?.click()}
-                style={{ border: fisierCI ? '1.5px solid #16705a' : '1.5px dashed #e5e7eb', borderRadius:'10px', padding:'24px', textAlign:'center', background: fisierCI ? '#E1F5EE20' : '#f8f9fa', cursor:'pointer' }}>
+                style={{ border: fisierCI ? '1.5px solid #16705a' : '1.5px dashed #e5e7eb', borderRadius:'10px', padding:'24px', textAlign:'center', background: fisierCI ? '#f0fdf8' : '#f8f9fa', cursor:'pointer' }}>
                 <input id="ci-input" type="file" accept="image/*,.pdf" style={{ display:'none' }} onChange={e => { setFisierCI(e.target.files?.[0] || null); setEroare('') }} />
                 <div style={{ fontSize:'28px', marginBottom:'8px' }}>📄</div>
                 <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>
@@ -267,7 +290,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
               </button>
               <button onClick={handleSalvareApartinator} disabled={salvare || !fisierCI || !relatie || !acord}
                 style={{ padding:'9px 18px', background: fisierCI && relatie && acord ? '#16705a' : '#d1d5db', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor: fisierCI && relatie && acord ? 'pointer' : 'not-allowed' }}>
-                {salvare ? 'Se salvează...' : 'Asociază aparținător'}
+                {salvare ? 'Se extrag datele...' : 'Asociază aparținător'}
               </button>
             </div>
           </div>
