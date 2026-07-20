@@ -113,7 +113,7 @@ export default function Raport() {
   const username = profil?.prenume || user?.email?.split('@')[0]
   const navStyle: React.CSSProperties = { padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }
   const inp: React.CSSProperties = { width:'100%', padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', outline:'none', fontFamily:'system-ui', boxSizing:'border-box' as const }
-  const inpDinamic = (val: string): React.CSSProperties => ({ ...inp, fontWeight: val ? 600 : 400, color: val ? '#111' : '#aaa' })
+  const inpDinamic = (val: string): React.CSSProperties => ({ ...inp, fontWeight: val ? 600 : 400, color: '#111' })
   const lbl: React.CSSProperties = { display:'block', fontSize:'12px', fontWeight:500, color:'#555', marginBottom:'5px' }
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
