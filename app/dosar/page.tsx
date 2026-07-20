@@ -220,8 +220,8 @@ export default function Dosar() {
                     {new Date(r.data).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' })}
                   </td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
-                    <span style={{ padding:'5px 14px', borderRadius:'20px', fontSize:'13px', fontWeight:600, background:tipColor[r.tip].bg, color:tipColor[r.tip].color }}>
-                      {tipLabel[r.tip]}
+                    <span style={{ padding:'5px 14px', borderRadius:'20px', fontSize:'13px', fontWeight:600, background:tipColor[r.tip]?.bg || '#f0f0f0', color:tipColor[r.tip]?.color || '#555' }}>
+                      {tipLabel[r.tip] || r.tip || '-'}
                     </span>
                   </td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', fontWeight:500 }}>{r.medic}</td>
