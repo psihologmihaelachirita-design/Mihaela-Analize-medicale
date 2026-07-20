@@ -227,8 +227,7 @@ export default function Raport() {
               {/* Specialitate lista vizibila */}
               <div>,
                 <label style={lbl}>Specialitate</label>
-                <div
-                  <div style={{ border:'0.5px solid #e5e7eb', borderRadius:'8px', maxHeight:'180px', overflowY:'auto', background:'white', padding:'4px 0' }}>
+                <div style={{ border:'0.5px solid #e5e7eb', borderRadius:'8px', maxHeight:'180px', overflowY:'auto', background:'white', padding:'4px 0' }}>
                     {SPECIALITATI.map(s => {
                       const isSelected = specialitate === s
                       return (
