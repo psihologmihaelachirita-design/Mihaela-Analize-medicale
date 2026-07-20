@@ -43,7 +43,6 @@ export default function Raport() {
   const [unitate, setUnitate] = useState('')
   const [diagnostic, setDiagnostic] = useState('')
   const [extragere, setExtragere] = useState(false)
-  const [dropSpecialitate, setDropSpecialitate] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -157,8 +156,12 @@ export default function Raport() {
                     const result = await response.json()
                     if (result.medic) setMedic(result.medic)
                     if (result.specialitate) {
-                      if (SPECIALITATI.includes(result.specialitate)) {
-                        setSpecialitate(result.specialitate)
+                      const match = SPECIALITATI.find(s =>
+                        s.toLowerCase().includes(result.specialitate.toLowerCase()) ||
+                        result.specialitate.toLowerCase().includes(s.toLowerCase().split(' ')[0])
+                      )
+                      if (match) {
+                        setSpecialitate(match)
                       } else {
                         setSpecialitate('Altă specialitate')
                         setAltaSpecialitate(result.specialitate)
@@ -224,53 +227,29 @@ export default function Raport() {
               </div>
             </div>
             <div style={g2}>
-              {/* Specialitate lista vizibila */}
-              <div>,
+              <div>
                 <label style={lbl}>Specialitate</label>
                 <div style={{ border:'0.5px solid #e5e7eb', borderRadius:'8px', maxHeight:'180px', overflowY:'auto', background:'white', padding:'4px 0' }}>
-                    {SPECIALITATI.map(s => {
-                      const isSelected = specialitate === s
-                      return (
-                        <div
-                          key={s}
-                          onClick={() => { setSpecialitate(s); if (s !== 'Altă specialitate') setAltaSpecialitate('') }}
-                          style={{
-                            padding: '10px 14px',
-                            fontSize: '13px',
-                            cursor: 'pointer',
-                            backgroundColor: isSelected ? '#E1F5EE' : 'white',
-                            color: isSelected ? '#085041' : '#111',
-                            fontWeight: isSelected ? 600 : 400,
-                            transition: 'background 0.1s ease'
-                          }}
-                          onMouseEnter={e => {
-                            if (!isSelected) e.currentTarget.style.backgroundColor = '#f8f9fa'
-                          }}
-                          onMouseLeave={e => {
-                            if (!isSelected) e.currentTarget.style.backgroundColor = 'white'
-                          }}
-                        >
-                          {s}
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
+                  {SPECIALITATI.map(s => {
+                    const isSelected = specialitate === s
+                    return (
+                      <div key={s}
+                        onClick={() => { setSpecialitate(s); if (s !== 'Altă specialitate') setAltaSpecialitate('') }}
+                        style={{ padding:'8px 14px', fontSize:'13px', cursor:'pointer', backgroundColor: isSelected ? '#E1F5EE' : 'white', color: isSelected ? '#085041' : '#111', fontWeight: isSelected ? 600 : 400, borderBottom:'0.5px solid #f0f0f0' }}
+                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.backgroundColor = '#f8f9fa' }}
+                        onMouseLeave={e => { if (!isSelected) e.currentTarget.style.backgroundColor = 'white' }}>
+                        {s}
+                      </div>
+                    )
+                  })}
+                </div>
                 {specialitate === 'Altă specialitate' && (
-                  <input
-                    value={altaSpecialitate}
-                    onChange={e => setAltaSpecialitate(e.target.value)}
-                    placeholder="Introdu specialitatea personalizată"
-                    style={{
-                      ...inpDinamic(altaSpecialitate),
-                      marginTop: '8px',
-                      borderColor: altaSpecialitate ? '#16705a' : '#e5e7eb',
-                    }}
-                    autoFocus
-                  />
+                  <input value={altaSpecialitate} onChange={e => setAltaSpecialitate(e.target.value)}
+                    placeholder="Introdu specialitatea"
+                    style={{ ...inpDinamic(altaSpecialitate), marginTop:'8px' }}
+                    autoFocus />
                 )}
               </div>
-              {/* Clinica / Spital */}
               <div>
                 <label style={lbl}>Clinică / Spital</label>
                 <input value={unitate} onChange={e => setUnitate(e.target.value)} style={inpDinamic(unitate)} />
