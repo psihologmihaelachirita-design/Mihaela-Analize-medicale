@@ -190,10 +190,10 @@ export default function Raport() {
           <div style={{ padding:'20px' }}>
             <div style={g2}>
               <div><label style={lbl}>Data raportului</label><input type="date" value={dataRaport} onChange={e => setDataRaport(e.target.value)} style={inpDinamic(dataRaport)} /></div>
-              <div><label style={lbl}>Medic</label><input value={medic} onChange={e => setMedic(e.target.value)} placeholder="ex: Endocrinologie" style={inpDinamic(medic)} /></div>
+              <div><label style={lbl}>Medic</label><input value={medic} onChange={e => setMedic(e.target.value)} placeholder="ex: Hipotiroidism" style={inpDinamic(medic)} /></div>
             </div>
             <div style={g2}>
-              <div><label style={lbl}>Specialitate</label><input value={specialitate} onChange={e => setSpecialitate(e.target.value)} placeholder="ex: Endocrinologie" style={inpDinamic(specialitate)} /></div>
+              <div><label style={lbl}>Specialitate</label><input value={specialitate} onChange={e => setSpecialitate(e.target.value)} placeholder="ex: Hipotiroidism" style={inpDinamic(specialitate)} /></div>
               <div><label style={lbl}>Clinică / Spital</label><input value={unitate} onChange={e => setUnitate(e.target.value)} placeholder="ex: Hipotiroidism" style={inpDinamic(unitate)} /></div>
             </div>
             <div><label style={lbl}>Diagnostic</label><input value={diagnostic} onChange={e => setDiagnostic(e.target.value)} placeholder="ex: Hipotiroidism" style={inpDinamic(diagnostic)} /></div>
