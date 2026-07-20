@@ -224,50 +224,17 @@ export default function Raport() {
               </div>
             </div>
             <div style={g2}>
-              {/* Specialitate dropdown */}
-              <div style={{ position:'relative' }}>
+              {/* Specialitate lista vizibila */}
+              <div>,
                 <label style={lbl}>Specialitate</label>
                 <div
-                  onClick={() => setDropSpecialitate(!dropSpecialitate)}
-                  style={{
-                    ...inpDinamic(specialitate),
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    userSelect: 'none' as any,
-                    backgroundColor: 'white',
-                    borderColor: '#e5e7eb',
-                  }}
-                >
-                  <span style={{ color: specialitate ? '#111' : '#aaa', fontWeight: specialitate ? 600 : 400 }}>
-                    {specialitate || 'Selectează specialitatea'}
-                  </span>
-                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="#111" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-                {dropSpecialitate && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    right: 0,
-                    background: 'white',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                    zIndex: 50,
-                    maxHeight: '600px',
-                    overflowY: 'auto',
-                    marginTop: '4px'
-                  }}>
+                  <div style={{ border:'0.5px solid #e5e7eb', borderRadius:'8px', maxHeight:'180px', overflowY:'auto', background:'white', padding:'4px 0' }}>
                     {SPECIALITATI.map(s => {
                       const isSelected = specialitate === s
                       return (
                         <div
                           key={s}
-                          onClick={() => { setSpecialitate(s); setDropSpecialitate(false) }}
+                          onClick={() => { setSpecialitate(s); if (s !== 'Altă specialitate') setAltaSpecialitate('') }}
                           style={{
                             padding: '10px 14px',
                             fontSize: '13px',
