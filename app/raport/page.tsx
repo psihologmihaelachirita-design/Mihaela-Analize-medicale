@@ -10,13 +10,28 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+const SPECIALITATI = [
+  'Alergologie și imunologie clinică','Anatomie patologică','Anestezie și terapie intensivă',
+  'Cardiologie','Chirurgie cardiovasculară','Chirurgie generală','Chirurgie orală și maxilo-facială',
+  'Chirurgie pediatrică','Chirurgie plastică, estetică și microchirurgie','Chirurgie toracică',
+  'Dermatologie și venerologie','Diabet zaharat, nutriție și boli metabolice','Endocrinologie',
+  'Epidemiologie','Gastroenterologie','Genetică medicală','Geriatrie și gerontologie',
+  'Hematologie','Hepatologie','Igienă și sănătate publică','Medicină de familie',
+  'Medicină de urgență','Medicină fizică și de reabilitare','Medicină internă',
+  'Medicină legală','Medicină muncii','Nefrologie','Neonatologie','Neurochirurgie',
+  'Neurologie','Neurologie pediatrică','Oftalmologie','Oncologie medicală',
+  'Ortopedie și traumatologie','Otorinolaringologie','Pediatrie','Pneumologie',
+  'Psihiatrie','Psihiatrie pediatrică','Radiologie și imagistică medicală',
+  'Radioterapie','Reumatologie','Urologie','Altă specialitate'
+]
+
 export default function Raport() {
   const [user, setUser] = useState<any>(null)
   const [profil, setProfil] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [salvare, setSalvare] = useState(false)
   const [mesaj, setMesaj] = useState('')
-  const [dropdown, setDropdown] = useState(false)
+  const [mesajValidare, setMesajValidare] = useState('')
   const router = useRouter()
 
   const [fisier, setFisier] = useState<File | null>(null)
@@ -24,9 +39,11 @@ export default function Raport() {
   const [dataRaport, setDataRaport] = useState('')
   const [medic, setMedic] = useState('')
   const [specialitate, setSpecialitate] = useState('')
+  const [altaSpecialitate, setAltaSpecialitate] = useState('')
   const [unitate, setUnitate] = useState('')
   const [diagnostic, setDiagnostic] = useState('')
   const [extragere, setExtragere] = useState(false)
+  const [dropSpecialitate, setDropSpecialitate] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -43,42 +60,15 @@ export default function Raport() {
     router.push('/')
   }
 
-  async function handleExtragere() {
-    if (!fisier) return
-    setExtragere(true)
-    setMesaj('Se extrag datele din PDF...')
-    try {
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve((reader.result as string).split(',')[1])
-        reader.onerror = reject
-        reader.readAsDataURL(fisier)
-      })
-      const response = await fetch('/api/extrage-raport', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pdf: base64 })
-      })
-      const result = await response.json()
-      if (result.medic) setMedic(result.medic)
-      if (result.specialitate) setSpecialitate(result.specialitate)
-      if (result.unitate) setUnitate(result.unitate)
-      if (result.diagnostic) setDiagnostic(result.diagnostic)
-      if (result.data_raport) setDataRaport(result.data_raport)
-      setMesaj('Date extrase cu succes. Verifică și completează.')
-    } catch (e) {
-      setMesaj('Extragerea a eșuat — completează manual.')
-    }
-    setExtragere(false)
-  }
-
   async function handleSalvare() {
-    if (!categorie) { setMesaj('Selectează categoria raportului.'); return }
-    if (!dataRaport) { setMesaj('Completează data raportului.'); return }
-    if (!medic) { setMesaj('Completează numele medicului.'); return }
-    if (!specialitate) { setMesaj('Completează specialitatea.'); return }
-    if (!unitate) { setMesaj('Completează clinica sau spitalul.'); return }
-    if (!diagnostic) { setMesaj('Completează diagnosticul.'); return }
+    setMesajValidare('')
+    const specialitateFinal = specialitate === 'Altă specialitate' ? altaSpecialitate : specialitate
+    if (!categorie) { setMesajValidare('Selectează categoria raportului.'); return }
+    if (!dataRaport) { setMesajValidare('Completează data raportului.'); return }
+    if (!medic) { setMesajValidare('Completează numele medicului.'); return }
+    if (!specialitateFinal) { setMesajValidare('Completează specialitatea.'); return }
+    if (!unitate) { setMesajValidare('Completează clinica sau spitalul.'); return }
+    if (!diagnostic) { setMesajValidare('Completează diagnosticul.'); return }
     setSalvare(true)
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
@@ -93,27 +83,26 @@ export default function Raport() {
 
     const { error } = await supabase.from('rapoarte').insert({
       user_id: session.user.id,
-      apartinator_id: JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? JSON.parse(localStorage.getItem('profilActiv') || '{}')?.id : null,
+      apartinator_id: typeof window !== 'undefined' ? (JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? JSON.parse(localStorage.getItem('profilActiv') || '{}')?.id : null) : null,
       categorie,
       data_raport: dataRaport || null,
       medic: medic || null,
-      specialitate: specialitate || null,
+      specialitate: specialitateFinal || null,
       unitate: unitate || null,
       diagnostic: diagnostic || null,
       pdf_url: pdfUrl,
       pdf_nume: pdfNume,
     })
 
-    if (error) { setMesaj('Eroare: ' + error.message); setSalvare(false); return }
+    if (error) { setMesajValidare('Eroare: ' + error.message); setSalvare(false); return }
     router.push('/dosar')
   }
 
   if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh' }}><p>Se încarcă...</p></div>
 
   const username = profil?.prenume || user?.email?.split('@')[0]
-  const navStyle: React.CSSProperties = { padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }
   const inp: React.CSSProperties = { width:'100%', padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', outline:'none', fontFamily:'system-ui', boxSizing:'border-box' as const }
-  const inpDinamic = (val: string): React.CSSProperties => ({ ...inp, fontWeight: val ? 600 : 400, color: '#111' })
+  const inpDinamic = (val: string): React.CSSProperties => ({ ...inp, fontWeight: val ? 600 : 400 })
   const lbl: React.CSSProperties = { display:'block', fontSize:'12px', fontWeight:500, color:'#555', marginBottom:'5px' }
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
@@ -126,17 +115,13 @@ export default function Raport() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
-      <style>{`select option:checked { background: #16705a; color: white; } select:focus { outline: 2px solid #16705a; outline-offset: -1px; border-color: #16705a; }`}</style>
-      <Topbar username={username} activePage={undefined} onLogout={handleLogout} />
+      <Topbar username={username} onLogout={handleLogout} />
 
       <div style={{ maxWidth:'680px', margin:'0 auto', padding:'32px 24px' }}>
 
-        <div style={{ display:'flex', alignItems:'center', gap:'12px', marginBottom:'24px' }}>
-          
-          <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Adaugă raport medical</div>
-        </div>
+        <div style={{ fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'24px' }}>Adaugă raport medical</div>
 
-        {mesaj && !mesaj.includes('Completează') && (
+        {mesaj && (
           <div style={{ padding:'12px 16px', borderRadius:'8px', marginBottom:'16px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'13px' }}>
             {mesaj}
           </div>
@@ -151,8 +136,47 @@ export default function Raport() {
           <div style={{ padding:'20px' }}>
             <div onClick={() => document.getElementById('pdf-raport')?.click()}
               style={{ border:'1.5px dashed #e5e7eb', borderRadius:'10px', padding:'24px', textAlign:'center', cursor:'pointer', background:'#f8f9fa' }}>
-              <input id="pdf-raport" type="file" accept=".pdf" style={{ display:'none' }} onChange={async e => { const f = e.target.files?.[0]; if (f) { setFisier(f); setExtragere(true); setMesaj('Se extrag datele din PDF...'); try { const base64 = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve((reader.result as string).split(',')[1]); reader.onerror = reject; reader.readAsDataURL(f) }); const response = await fetch('/api/extrage-raport', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ pdf: base64 }) }); const result = await response.json(); if (result.medic) setMedic(result.medic); if (result.specialitate) setSpecialitate(result.specialitate); if (result.unitate) setUnitate(result.unitate); if (result.diagnostic) setDiagnostic(result.diagnostic); if (result.data_raport) setDataRaport(result.data_raport); setMesaj('Date extrase cu succes. Verifică și completează.'); } catch { setMesaj('Extragerea a eșuat — completează manual.'); } setExtragere(false); } }} />
-              {fisier ? (
+              <input id="pdf-raport" type="file" accept=".pdf" style={{ display:'none' }} onChange={async e => {
+                const f = e.target.files?.[0]
+                if (f) {
+                  setFisier(f)
+                  setExtragere(true)
+                  setMesaj('Se extrag datele din PDF...')
+                  try {
+                    const base64 = await new Promise<string>((resolve, reject) => {
+                      const reader = new FileReader()
+                      reader.onload = () => resolve((reader.result as string).split(',')[1])
+                      reader.onerror = reject
+                      reader.readAsDataURL(f)
+                    })
+                    const response = await fetch('/api/extrage-raport', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ pdf: base64 })
+                    })
+                    const result = await response.json()
+                    if (result.medic) setMedic(result.medic)
+                    if (result.specialitate) {
+                      if (SPECIALITATI.includes(result.specialitate)) {
+                        setSpecialitate(result.specialitate)
+                      } else {
+                        setSpecialitate('Altă specialitate')
+                        setAltaSpecialitate(result.specialitate)
+                      }
+                    }
+                    if (result.unitate) setUnitate(result.unitate)
+                    if (result.diagnostic) setDiagnostic(result.diagnostic)
+                    if (result.data_raport) setDataRaport(result.data_raport)
+                    setMesaj('Date extrase cu succes. Verifică și completează.')
+                  } catch {
+                    setMesaj('Extragerea a eșuat — completează manual.')
+                  }
+                  setExtragere(false)
+                }
+              }} />
+              {extragere ? (
+                <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>⏳ Se extrag datele...</div>
+              ) : fisier ? (
                 <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>✓ {fisier.name}</div>
               ) : (
                 <>
@@ -182,7 +206,7 @@ export default function Raport() {
           </div>
         </div>
 
-        {/* Date raport - FĂRĂ PLACEHOLDER */}
+        {/* Date raport */}
         <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', overflow:'hidden', marginBottom:'14px' }}>
           <div style={{ background:'#16705a', padding:'14px 20px' }}>
             <div style={{ fontSize:'14px', fontWeight:500, color:'white' }}>3. Date raport</div>
@@ -192,109 +216,64 @@ export default function Raport() {
             <div style={g2}>
               <div>
                 <label style={lbl}>Data raportului</label>
-                <input 
-                  type="date" 
-                  value={dataRaport} 
-                  onChange={e => setDataRaport(e.target.value)} 
-                  style={inpDinamic(dataRaport)} 
-                />
+                <input type="date" value={dataRaport} onChange={e => setDataRaport(e.target.value)} style={inpDinamic(dataRaport)} />
               </div>
               <div>
                 <label style={lbl}>Medic</label>
-                <input 
-                  value={medic} 
-                  onChange={e => setMedic(e.target.value)} 
-                  style={inpDinamic(medic)} 
-                />
+                <input value={medic} onChange={e => setMedic(e.target.value)} style={inpDinamic(medic)} />
               </div>
             </div>
             <div style={g2}>
-              <div>
+              <div style={{ position:'relative' }}>
                 <label style={lbl}>Specialitate</label>
-                <select
-                  value={specialitate}
-                  onChange={e => setSpecialitate(e.target.value)}
-                  style={{ ...inpDinamic(specialitate), appearance:'none' as any, backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 12px center', paddingRight:'36px', accentColor:'#16705a' }}>
-                  <option value=""></option>
-                  <option>Alergologie și imunologie clinică</option>
-                  <option>Anatomie patologică</option>
-                  <option>Anestezie și terapie intensivă</option>
-                  <option>Cardiologie</option>
-                  <option>Chirurgie cardiovasculară</option>
-                  <option>Chirurgie generală</option>
-                  <option>Chirurgie orală și maxilo-facială</option>
-                  <option>Chirurgie pediatrică</option>
-                  <option>Chirurgie plastică, estetică și microchirurgie</option>
-                  <option>Chirurgie toracică</option>
-                  <option>Dermatologie și venerologie</option>
-                  <option>Diabet zaharat, nutriție și boli metabolice</option>
-                  <option>Endocrinologie</option>
-                  <option>Epidemiologie</option>
-                  <option>Gastroenterologie</option>
-                  <option>Genetică medicală</option>
-                  <option>Geriatrie și gerontologie</option>
-                  <option>Hematologie</option>
-                  <option>Hepatologie</option>
-                  <option>Igienă și sănătate publică</option>
-                  <option>Medicină de familie</option>
-                  <option>Medicină de urgență</option>
-                  <option>Medicină fizică și de reabilitare</option>
-                  <option>Medicină internă</option>
-                  <option>Medicină legală</option>
-                  <option>Medicină muncii</option>
-                  <option>Nefrologie</option>
-                  <option>Neonatologie</option>
-                  <option>Neurochirurgie</option>
-                  <option>Neurologie</option>
-                  <option>Neurologie pediatrică</option>
-                  <option>Oftalmologie</option>
-                  <option>Oncologie medicală</option>
-                  <option>Ortopedie și traumatologie</option>
-                  <option>Otorinolaringologie</option>
-                  <option>Pediatrie</option>
-                  <option>Pneumologie</option>
-                  <option>Psihiatrie</option>
-                  <option>Psihiatrie pediatrică</option>
-                  <option>Radiologie și imagistică medicală</option>
-                  <option>Radioterapie</option>
-                  <option>Reumatologie</option>
-                  <option>Urologie</option>
-                  <option value="alta">Altă specialitate</option>
-                </select>
-                {specialitate === 'alta' && (
+                <div onClick={() => setDropSpecialitate(!dropSpecialitate)}
+                  style={{ ...inpDinamic(specialitate), display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', userSelect:'none' as any }}>
+                  <span style={{ color: specialitate ? '#111' : '#aaa', fontWeight: specialitate ? 600 : 400 }}>
+                    {specialitate || 'Selectează specialitatea'}
+                  </span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="#111" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
+                {dropSpecialitate && (
+                  <div style={{ position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:50, maxHeight:'200px', overflowY:'auto', marginTop:'4px' }}>
+                    {SPECIALITATI.map(s => (
+                      <div key={s} onClick={() => { setSpecialitate(s); setDropSpecialitate(false) }}
+                        style={{ padding:'10px 14px', fontSize:'13px', cursor:'pointer', background: specialitate === s ? '#E1F5EE' : 'white', color: specialitate === s ? '#085041' : '#111', fontWeight: specialitate === s ? 600 : 400 }}
+                        onMouseEnter={e => e.currentTarget.style.background='#f8f9fa'}
+                        onMouseLeave={e => e.currentTarget.style.background= specialitate === s ? '#E1F5EE' : 'white'}>
+                        {s}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {specialitate === 'Altă specialitate' && (
                   <input
-                    value={''}
-                    onChange={e => setSpecialitate(e.target.value)}
-                    style={{ ...inpDinamic(''), marginTop:'8px' }}
+                    value={altaSpecialitate}
+                    onChange={e => setAltaSpecialitate(e.target.value)}
+                    style={{ ...inpDinamic(altaSpecialitate), marginTop:'8px' }}
                     autoFocus
                   />
                 )}
               </div>
               <div>
                 <label style={lbl}>Clinică / Spital</label>
-                <input 
-                  value={unitate} 
-                  onChange={e => setUnitate(e.target.value)} 
-                  style={inpDinamic(unitate)} 
-                />
+                <input value={unitate} onChange={e => setUnitate(e.target.value)} style={inpDinamic(unitate)} />
               </div>
             </div>
             <div>
               <label style={lbl}>Diagnostic</label>
-              <input 
-                value={diagnostic} 
-                onChange={e => setDiagnostic(e.target.value)} 
-                style={inpDinamic(diagnostic)} 
-              />
+              <input value={diagnostic} onChange={e => setDiagnostic(e.target.value)} style={inpDinamic(diagnostic)} />
             </div>
           </div>
         </div>
 
-        {mesaj && mesaj.includes('Completează') && (
+        {mesajValidare && (
           <div style={{ padding:'12px 16px', borderRadius:'8px', marginBottom:'12px', background:'#FCEBEB', color:'#A32D2D', fontSize:'13px' }}>
-            {mesaj}
+            {mesajValidare}
           </div>
         )}
+
         <div style={{ display:'flex', gap:'8px', justifyContent:'flex-end' }}>
           <Link href="/dosar" style={{ padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }}>Anulează</Link>
           <button onClick={handleSalvare} disabled={salvare}
