@@ -124,7 +124,7 @@ export default function Raport() {
       <div style={{ maxWidth:'680px', margin:'0 auto', padding:'32px 24px' }}>
 
         <div style={{ display:'flex', alignItems:'center', gap:'12px', marginBottom:'24px' }}>
-          <Link href="/dosar" style={{ fontSize:'13px', color:'#16705a', textDecoration:'none', fontWeight:500 }}>← Dosar</Link>
+          
           <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Adaugă raport medical</div>
         </div>
 
