@@ -135,7 +135,7 @@ export default function Raport() {
           <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Adaugă raport medical</div>
         </div>
 
-        {mesaj && (
+        {mesaj && !mesaj.includes('Completează') && (
           <div style={{ padding:'12px 16px', borderRadius:'8px', marginBottom:'16px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'13px' }}>
             {mesaj}
           </div>
@@ -213,7 +213,7 @@ export default function Raport() {
                 <select
                   value={specialitate}
                   onChange={e => setSpecialitate(e.target.value)}
-                  style={{ ...inpDinamic(specialitate), appearance:'none' as any, backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 12px center', paddingRight:'36px' }}>
+                  style={{ ...inpDinamic(specialitate), appearance:'none' as any, backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 12px center', paddingRight:'36px', accentColor:'#16705a' }}>
                   <option value=""></option>
                   <option>Alergologie și imunologie clinică</option>
                   <option>Anatomie patologică</option>
@@ -289,6 +289,11 @@ export default function Raport() {
           </div>
         </div>
 
+        {mesaj && mesaj.includes('Completează') && (
+          <div style={{ padding:'12px 16px', borderRadius:'8px', marginBottom:'12px', background:'#FCEBEB', color:'#A32D2D', fontSize:'13px' }}>
+            {mesaj}
+          </div>
+        )}
         <div style={{ display:'flex', gap:'8px', justifyContent:'flex-end' }}>
           <Link href="/dosar" style={{ padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }}>Anulează</Link>
           <button onClick={handleSalvare} disabled={salvare}
