@@ -258,7 +258,7 @@ export default function Raport() {
                     borderRadius: '8px',
                     boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
                     zIndex: 50,
-                    maxHeight: '200px',
+                    maxHeight: '600px',
                     overflowY: 'auto',
                     marginTop: '4px'
                   }}>
