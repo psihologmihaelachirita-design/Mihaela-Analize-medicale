@@ -58,7 +58,7 @@ export default function Dosar() {
   }
 
   const rapoarteFiltrate = rapoarte.filter(r => {
-    const matchCategorie = filtruCategorie === 'toate' || r.tip === filtruCategorie
+    const matchCategorie = filtruCategorie === 'toate' || r.categorie === filtruCategorie
     const matchCautare = cautare === '' ||
       r.medic.toLowerCase().includes(cautare.toLowerCase()) ||
       r.unitate.toLowerCase().includes(cautare.toLowerCase()) ||
@@ -69,7 +69,7 @@ export default function Dosar() {
 
   const counts = {
     familie: rapoarte.filter(r => r.tip === 'familie').length,
-    specialist: rapoarte.filter(r => r.tip === 'specialist').length,
+    specialist: rapoarte.filter(r => r.categorie === 'specialist').length,
     interventie: rapoarte.filter(r => r.tip === 'interventie').length,
     externare: rapoarte.filter(r => r.tip === 'externare').length,
   }
@@ -220,8 +220,8 @@ export default function Dosar() {
                     {new Date(r.data).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' })}
                   </td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
-                    <span style={{ padding:'5px 14px', borderRadius:'20px', fontSize:'13px', fontWeight:600, background:tipColor[r.tip]?.bg || '#f0f0f0', color:tipColor[r.tip]?.color || '#555' }}>
-                      {tipLabel[r.tip] || r.tip || '-'}
+                    <span style={{ padding:'5px 14px', borderRadius:'20px', fontSize:'13px', fontWeight:600, background:tipColor[r.categorie]?.bg || '#f0f0f0', color:tipColor[r.categorie]?.color || '#555' }}>
+                      {tipLabel[r.categorie] || r.categorie || '-'}
                     </span>
                   </td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', fontWeight:500 }}>{r.medic}</td>
