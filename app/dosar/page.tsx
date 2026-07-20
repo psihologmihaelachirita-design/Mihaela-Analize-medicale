@@ -29,7 +29,11 @@ export default function Dosar() {
       setUser(session.user)
       const { data } = await supabase.from('profiluri').select('prenume, nume').eq('id', session.user.id).single()
       setProfil(data)
-      const { data: rapoarteData } = await supabase.from('rapoarte').select('*').eq('user_id', session.user.id).order('data_raport', { ascending: false })
+      const profilActiv = JSON.parse(localStorage.getItem('profilActiv') || '{}')
+      const eApartinator = profilActiv?.tip === 'apartinator' && profilActiv?.id
+      const { data: rapoarteData } = eApartinator
+        ? await supabase.from('rapoarte').select('*').eq('apartinator_id', profilActiv.id).order('data_raport', { ascending: false })
+        : await supabase.from('rapoarte').select('*').eq('user_id', session.user.id).order('data_raport', { ascending: false })
       setRapoarte(rapoarteData || [])
       setLoading(false)
     })
