@@ -81,7 +81,7 @@ export default function Panoramic() {
       const { data } = await supabase
         .from('analize')
         .select('*')
-        .eq('user_id', session.user.id)
+        .eq(JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? 'apartinator_id' : 'user_id', JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? JSON.parse(localStorage.getItem('profilActiv') || '{}')?.id : session.user.id)
         .order('data_analiza', { ascending: true })
       setAnalize(data || [])
       setLoading(false)

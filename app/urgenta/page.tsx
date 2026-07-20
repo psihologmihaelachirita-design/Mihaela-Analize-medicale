@@ -154,7 +154,11 @@ export default function Urgenta() {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
       setUser(session.user)
-      const { data } = await supabase.from('profiluri').select('*').eq('id', session.user.id).single()
+      const profilActiv = JSON.parse(localStorage.getItem('profilActiv') || '{}')
+      const eApartinator = profilActiv?.tip === 'apartinator' && profilActiv?.id
+      const { data } = eApartinator
+        ? await supabase.from('profiluri_apartinatori').select('*').eq('apartinator_id', profilActiv.id).single()
+        : await supabase.from('profiluri').select('*').eq('id', session.user.id).single()
       if (data) {
         setProfil(data)
         setCnp(data.cnp || '')

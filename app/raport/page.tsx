@@ -88,6 +88,7 @@ export default function Raport() {
 
     const { error } = await supabase.from('rapoarte').insert({
       user_id: session.user.id,
+      apartinator_id: JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? JSON.parse(localStorage.getItem('profilActiv') || '{}')?.id : null,
       categorie,
       data_raport: dataRaport || null,
       medic: medic || null,

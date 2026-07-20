@@ -82,6 +82,7 @@ export default function Upload() {
 
       const inserts = rezultat.map(a => ({
         user_id: session.user.id,
+        apartinator_id: JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? JSON.parse(localStorage.getItem('profilActiv') || '{}')?.id : null,
         oras_laborator: orasLaborator || null,
         tara_laborator: taraLaborator || null,
         nume_analiza: a.nume,
@@ -97,7 +98,9 @@ export default function Upload() {
         pdf_nume: pdfNume
       }))
 
-      const { data: existente } = await supabase.from('analize').select('id').eq('user_id', session.user.id).eq('pdf_nume', fisier?.name || '').limit(1)
+      const _profilActiv = JSON.parse(localStorage.getItem('profilActiv') || '{}')
+      const _eApartinator = _profilActiv?.tip === 'apartinator' && _profilActiv?.id
+      const { data: existente } = await supabase.from('analize').select('id').eq(_eApartinator ? 'apartinator_id' : 'user_id', _eApartinator ? _profilActiv.id : session.user.id).eq('pdf_nume', fisier?.name || '').limit(1)
       if (existente && existente.length > 0) {
         setInsertsTemp(inserts)
         setDuplicat(true)
