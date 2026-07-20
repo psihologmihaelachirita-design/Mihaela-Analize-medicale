@@ -126,6 +126,7 @@ export default function Raport() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
+      <style>{`select option:checked { background: #16705a; color: white; } select:focus { outline: 2px solid #16705a; outline-offset: -1px; border-color: #16705a; }`}</style>
       <Topbar username={username} activePage={undefined} onLogout={handleLogout} />
 
       <div style={{ maxWidth:'680px', margin:'0 auto', padding:'32px 24px' }}>
