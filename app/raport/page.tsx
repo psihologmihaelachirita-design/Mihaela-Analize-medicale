@@ -108,6 +108,7 @@ export default function Raport() {
   const username = profil?.prenume || user?.email?.split('@')[0]
   const navStyle: React.CSSProperties = { padding:'6px 10px', borderRadius:'8px', fontSize:'13px', color:'#111', textDecoration:'none', fontWeight:500 }
   const inp: React.CSSProperties = { width:'100%', padding:'9px 13px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', background:'white', outline:'none', fontFamily:'system-ui', boxSizing:'border-box' as const }
+  const inpDinamic = (val: string): React.CSSProperties => ({ ...inp, fontWeight: val ? 600 : 400, color: val ? '#111' : '#aaa' })
   const lbl: React.CSSProperties = { display:'block', fontSize:'12px', fontWeight:500, color:'#555', marginBottom:'5px' }
   const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'14px' }
 
@@ -144,7 +145,7 @@ export default function Raport() {
           <div style={{ padding:'20px' }}>
             <div onClick={() => document.getElementById('pdf-raport')?.click()}
               style={{ border:'1.5px dashed #e5e7eb', borderRadius:'10px', padding:'24px', textAlign:'center', cursor:'pointer', background:'#f8f9fa' }}>
-              <input id="pdf-raport" type="file" accept=".pdf" style={{ display:'none' }} onChange={async e => { const f = e.target.files?.[0]; if (f) { setFisier(f); setExtragere(true); setMesaj("Se extrag datele din PDF..."); try { const base64 = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve((reader.result as string).split(",")[1]); reader.onerror = reject; reader.readAsDataURL(f) }); const response = await fetch("/api/extrage-raport", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ pdf: base64 }) }); const result = await response.json(); if (result.medic) setMedic(result.medic); if (result.specialitate) setSpecialitate(result.specialitate); if (result.unitate) setUnitate(result.unitate); if (result.diagnostic) setDiagnostic(result.diagnostic); if (result.data_raport) setDataRaport(result.data_raport); setMesaj("Date extrase cu succes."); } catch { setMesaj("Extragerea a esuat."); } setExtragere(false); } }} />
+              <input id="pdf-raport" type="file" accept=".pdf" style={{ display:'none' }} onChange={async e => { const f = e.target.files?.[0]; if (f) { setFisier(f); setExtragere(true); setMesaj('Se extrag datele din PDF...'); try { const base64 = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve((reader.result as string).split(',')[1]); reader.onerror = reject; reader.readAsDataURL(f) }); const response = await fetch('/api/extrage-raport', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ pdf: base64 }) }); const result = await response.json(); if (result.medic) setMedic(result.medic); if (result.specialitate) setSpecialitate(result.specialitate); if (result.unitate) setUnitate(result.unitate); if (result.diagnostic) setDiagnostic(result.diagnostic); if (result.data_raport) setDataRaport(result.data_raport); setMesaj('Date extrase cu succes. Verifică și completează.'); } catch { setMesaj('Extragerea a eșuat — completează manual.'); } setExtragere(false); } }} />
               {fisier ? (
                 <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>✓ {fisier.name}</div>
               ) : (
@@ -183,12 +184,12 @@ export default function Raport() {
           </div>
           <div style={{ padding:'20px' }}>
             <div style={g2}>
-              <div><label style={lbl}>Data raportului</label><input type="date" value={dataRaport} onChange={e => setDataRaport(e.target.value)} style={inp} /></div>
-              <div><label style={lbl}>Medic</label><input value={medic} onChange={e => setMedic(e.target.value)} placeholder="ex: Dr. Ionescu Maria" style={inp} /></div>
+              <div><label style={lbl}>Data raportului</label><input type="date" value={dataRaport} onChange={e => setDataRaport(e.target.value)} style={inpDinamic(dataRaport)} /></div>
+              <div><label style={lbl}>Medic</label><input value={medic} onChange={e => setMedic(e.target.value)} placeholder="ex: Dr. Ionescu Maria" style={inpDinamic(medic)} /></div>
             </div>
             <div style={g2}>
-              <div><label style={lbl}>Specialitate</label><input value={specialitate} onChange={e => setSpecialitate(e.target.value)} placeholder="ex: Endocrinologie" style={inp} /></div>
-              <div><label style={lbl}>Clinică / Spital</label><input value={unitate} onChange={e => setUnitate(e.target.value)} placeholder="ex: Medicover București" style={inp} /></div>
+              <div><label style={lbl}>Specialitate</label><input value={specialitate} onChange={e => setSpecialitate(e.target.value)} placeholder="ex: Endocrinologie" style={inpDinamic(specialitate)} /></div>
+              <div><label style={lbl}>Clinică / Spital</label><input value={unitate} onChange={e => setUnitate(e.target.value)} placeholder="ex: Medicover București" style={inpDinamic(unitate)} /></div>
             </div>
             <div><label style={lbl}>Diagnostic</label><input value={diagnostic} onChange={e => setDiagnostic(e.target.value)} placeholder="ex: Hipotiroidism" style={inp} /></div>
           </div>
