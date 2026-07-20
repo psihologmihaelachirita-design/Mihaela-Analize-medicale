@@ -210,11 +210,64 @@ export default function Raport() {
             <div style={g2}>
               <div>
                 <label style={lbl}>Specialitate</label>
-                <input 
-                  value={specialitate} 
-                  onChange={e => setSpecialitate(e.target.value)} 
-                  style={inpDinamic(specialitate)} 
-                />
+                <select
+                  value={specialitate}
+                  onChange={e => setSpecialitate(e.target.value)}
+                  style={{ ...inpDinamic(specialitate), appearance:'none' as any }}>
+                  <option value=""></option>
+                  <option>Alergologie și imunologie clinică</option>
+                  <option>Anatomie patologică</option>
+                  <option>Anestezie și terapie intensivă</option>
+                  <option>Cardiologie</option>
+                  <option>Chirurgie cardiovasculară</option>
+                  <option>Chirurgie generală</option>
+                  <option>Chirurgie orală și maxilo-facială</option>
+                  <option>Chirurgie pediatrică</option>
+                  <option>Chirurgie plastică, estetică și microchirurgie</option>
+                  <option>Chirurgie toracică</option>
+                  <option>Dermatologie și venerologie</option>
+                  <option>Diabet zaharat, nutriție și boli metabolice</option>
+                  <option>Endocrinologie</option>
+                  <option>Epidemiologie</option>
+                  <option>Gastroenterologie</option>
+                  <option>Genetică medicală</option>
+                  <option>Geriatrie și gerontologie</option>
+                  <option>Hematologie</option>
+                  <option>Hepatologie</option>
+                  <option>Igienă și sănătate publică</option>
+                  <option>Medicină de familie</option>
+                  <option>Medicină de urgență</option>
+                  <option>Medicină fizică și de reabilitare</option>
+                  <option>Medicină internă</option>
+                  <option>Medicină legală</option>
+                  <option>Medicină muncii</option>
+                  <option>Nefrologie</option>
+                  <option>Neonatologie</option>
+                  <option>Neurochirurgie</option>
+                  <option>Neurologie</option>
+                  <option>Neurologie pediatrică</option>
+                  <option>Oftalmologie</option>
+                  <option>Oncologie medicală</option>
+                  <option>Ortopedie și traumatologie</option>
+                  <option>Otorinolaringologie</option>
+                  <option>Pediatrie</option>
+                  <option>Pneumologie</option>
+                  <option>Psihiatrie</option>
+                  <option>Psihiatrie pediatrică</option>
+                  <option>Radiologie și imagistică medicală</option>
+                  <option>Radioterapie</option>
+                  <option>Reumatologie</option>
+                  <option>Urologie</option>
+                  <option value="alta">Altă specialitate</option>
+                </select>
+                {specialitate === 'alta' && (
+                  <input
+                    value={''}
+                    onChange={e => setSpecialitate(e.target.value)}
+                    style={{ ...inpDinamic(''), marginTop:'8px' }}
+                    autoFocus
+                  />
+                )}
               </div>
               <div>
                 <label style={lbl}>Clinică / Spital</label>
