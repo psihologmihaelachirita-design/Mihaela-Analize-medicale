@@ -501,7 +501,7 @@ export default function Profil() {
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div>
                     <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Plan curent</div>
-                    <div style={{ fontSize:'14px', color:'#555', marginTop:'3px' }}>MedFile Basic</div>
+                    <div style={{ fontSize:'14px', color:'#555', marginTop:'3px' }}>Panoramic MedLog Basic</div>
                   </div>
                   <Link href="/pricing" style={{ padding:'10px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer', textDecoration:'none', display:'inline-block' }}>Upgrade</Link>
                 </div>
@@ -511,7 +511,7 @@ export default function Profil() {
 
           {/* SECȚIUNEA 4: EXPORT DATE */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
-            <Banner icon={IconDownload} title="Export date" sub="Descarcă toate datele tale din MedFile" skey="export" />
+            <Banner icon={IconDownload} title="Export date" sub="Descarcă toate datele tale din Panoramic MedLog" skey="export" />
             {sectiuni.export && (
               <div style={{ padding:'22px 24px' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>

@@ -45,7 +45,7 @@ export default function Register() {
         <Link href="/" style={{textDecoration:'none', display:'flex', flexDirection:'column'}}>
           <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
             <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#16705a', fontSize:'14px', fontWeight:500}}>✚</div>
-            <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
+            <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>Panoramic MedLog</span>
           </div>
           <span style={{fontSize:'11px', color:'#888', marginLeft:'34px', marginTop:'1px'}}>Dosar medical agregat</span>
         </Link>

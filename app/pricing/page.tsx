@@ -91,7 +91,7 @@ export default function Pricing() {
         <Link href="/" style={{textDecoration:'none', display:'flex', flexDirection:'column'}}>
           <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
             <div style={{width:'28px', height:'28px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#16705a', fontSize:'15px', fontWeight:500}}>✚</div>
-            <span style={{fontSize:'16px', fontWeight:500, color:'#111'}}>MediPanel</span>
+            <span style={{fontSize:'16px', fontWeight:500, color:'#111'}}>Panoramic MedLog</span>
           </div>
           <span style={{fontSize:'10px', color:'#888', marginLeft:'36px'}}>Dosar medical agregat</span>
         </Link>
@@ -201,7 +201,7 @@ export default function Pricing() {
       </div>
 
       <div style={{borderTop:'0.5px solid #e5e7eb', padding:'1.5rem 2rem', display:'flex', justifyContent:'space-between', alignItems:'center', background:'white'}}>
-        <span style={{fontSize:'13px', color:'#888'}}>© 2026 MediPanel</span>
+        <span style={{fontSize:'13px', color:'#888'}}>© 2026 Panoramic MedLog</span>
         <span style={{fontSize:'13px', color:'#888'}}>GDPR compliant · Date stocate în Europa</span>
       </div>
     </main>

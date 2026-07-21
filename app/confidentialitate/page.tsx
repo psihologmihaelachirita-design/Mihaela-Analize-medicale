@@ -9,7 +9,7 @@ export default function Confidentialitate() {
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
           <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
+          <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>Panoramic MedLog</span>
         </Link>
       </div>
 
@@ -22,7 +22,7 @@ export default function Confidentialitate() {
         <div id="politica" style={{ marginBottom:'48px' }}>
           <h2 style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'16px', paddingTop:'16px', borderTop:'0.5px solid #e5e7eb' }}>Politica de confidențialitate</h2>
           <p style={{ fontSize:'14px', color:'#333', lineHeight:1.8, marginBottom:'16px' }}>
-            MedFile este un agregator independent de date medicale personale. Datele tale sunt stocate securizat și nu sunt partajate cu terți fără consimțământul tău explicit.
+            Panoramic MedLog este un agregator independent de date medicale personale. Datele tale sunt stocate securizat și nu sunt partajate cu terți fără consimțământul tău explicit.
           </p>
           <p style={{ fontSize:'14px', color:'#333', lineHeight:1.8, marginBottom:'16px' }}>
             Colectăm următoarele date: adresa de email pentru autentificare, datele medicale pe care le introduci sau le uploadezi (analize, diagnostice, date de urgență). Aceste date sunt necesare pentru funcționarea platformei.
@@ -36,10 +36,10 @@ export default function Confidentialitate() {
         <div id="termeni" style={{ marginBottom:'48px' }}>
           <h2 style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'16px', paddingTop:'16px', borderTop:'0.5px solid #e5e7eb' }}>Termeni și condiții</h2>
           <p style={{ fontSize:'14px', color:'#333', lineHeight:1.8, marginBottom:'16px' }}>
-            Prin utilizarea MedFile, ești de acord cu acești termeni. MedFile este un instrument de organizare personală a datelor medicale — nu oferă consultanță medicală și nu înlocuiește medicul curant.
+            Prin utilizarea Panoramic MedLog, ești de acord cu acești termeni. Panoramic MedLog este un instrument de organizare personală a datelor medicale — nu oferă consultanță medicală și nu înlocuiește medicul curant.
           </p>
           <p style={{ fontSize:'14px', color:'#333', lineHeight:1.8, marginBottom:'16px' }}>
-            Datele introduse în platformă sunt în răspunderea exclusivă a utilizatorului. MedFile nu verifică, nu validează și nu certifică nicio informație medicală.
+            Datele introduse în platformă sunt în răspunderea exclusivă a utilizatorului. Panoramic MedLog nu verifică, nu validează și nu certifică nicio informație medicală.
           </p>
           <p style={{ fontSize:'14px', color:'#333', lineHeight:1.8 }}>
             Ne rezervăm dreptul de a modifica termenii și condițiile cu notificare prealabilă prin email.

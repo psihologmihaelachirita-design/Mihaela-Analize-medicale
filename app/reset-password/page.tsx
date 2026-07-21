@@ -29,7 +29,7 @@ export default function ResetPassword() {
       <div style={{background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'52px', display:'flex', alignItems:'center'}}>
         <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
           <div style={{width:'26px', height:'26px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'14px', fontWeight:500}}>✚</div>
-          <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>MedFile</span>
+          <span style={{fontSize:'18px', fontWeight:500, color:'#111'}}>Panoramic MedLog</span>
         </div>
       </div>
 

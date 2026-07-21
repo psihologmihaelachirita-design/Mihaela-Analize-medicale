@@ -248,7 +248,7 @@ export default function Urgenta() {
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'28px 0', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 20px 24px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'20px', display:'flex', alignItems:'center', gap:'10px' }}>
             <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-            <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>MedFile</span>
+            <span style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Panoramic MedLog</span>
           </div>
           <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 20px', textAlign:'center' as const }}>{profil?.prenume} {profil?.nume}</div>
           {sidebarItems.map(item => (
@@ -263,7 +263,7 @@ export default function Urgenta() {
 
           <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'24px', position:'sticky', top:0, background:'#f8f9fa', zIndex:9, paddingTop:'12px', paddingBottom:'12px' }}>
             <div>
-              <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Card de urgență MedFile</div>
+              <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Card de urgență Panoramic MedLog</div>
               <div style={{ fontSize:'13px', color:'#111', marginTop:'4px' }}>Date extrase automat sau declarate de titular</div>
             </div>
             <div style={{ display:'flex', gap:'8px' }}>
@@ -644,7 +644,7 @@ export default function Urgenta() {
               <div style={{ fontSize:'14px', fontWeight:600, color:'#111' }}>Responsabilitatea datelor</div>
             </div>
             <div style={{ fontSize:'13px', color:'#111', lineHeight:1.8 }}>
-              Datele din acest card sunt declarate de titular sau extrase din documente medicale atașate de titular. MedFile nu verifică, nu validează și nu certifică nicio informație medicală. Orice decizie clinică aparține exclusiv medicului curant, care are obligația să verifice datele înainte de orice intervenție.
+              Datele din acest card sunt declarate de titular sau extrase din documente medicale atașate de titular. Panoramic MedLog nu verifică, nu validează și nu certifică nicio informație medicală. Orice decizie clinică aparține exclusiv medicului curant, care are obligația să verifice datele înainte de orice intervenție.
             </div>
           </div>
 

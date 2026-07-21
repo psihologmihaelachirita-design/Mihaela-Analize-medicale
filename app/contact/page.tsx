@@ -96,7 +96,7 @@ export default function Contact() {
       <div style={{ background:'white', borderBottom:'0.5px solid #e5e7eb', padding:'0 24px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none' }}>
           <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>MedFile</span>
+          <span style={{ fontSize:'18px', fontWeight:600, color:'#111' }}>Panoramic MedLog</span>
         </Link>
       </div>
 
@@ -113,10 +113,10 @@ export default function Contact() {
         <div id="faq" style={{ marginBottom:'48px' }}>
           <h2 style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'16px', paddingTop:'16px', borderTop:'0.5px solid #e5e7eb' }}>Întrebări frecvente</h2>
           {[
-            { q:'Ce este MedFile?', r:'MedFile este un agregator independent de date medicale personale. Poți uploada buletine de analize, vizualiza evoluția lor în timp și crea un card de urgență medical.' },
+            { q:'Ce este Panoramic MedLog?', r:'Panoramic MedLog este un agregator independent de date medicale personale. Poți uploada buletine de analize, vizualiza evoluția lor în timp și crea un card de urgență medical.' },
             { q:'Datele mele sunt în siguranță?', r:'Da. Datele sunt stocate securizat pe servere în UE, cu autentificare și RLS activat. Nu vindem și nu partajăm datele tale cu terți.' },
             { q:'Pot exporta datele mele?', r:'Da, din pagina Profil → Export date poți descărca un PDF complet cu dosarul tău medical.' },
-            { q:'MedFile înlocuiește medicul?', r:'Nu. MedFile este un instrument de organizare personală. Orice decizie medicală aparține exclusiv medicului curant.' },
+            { q:'Panoramic MedLog înlocuiește medicul?', r:'Nu. Panoramic MedLog este un instrument de organizare personală. Orice decizie medicală aparține exclusiv medicului curant.' },
             { q:'Cum șterg contul?', r:'Din pagina Profil → Confidențialitate → Ștergere cont. Toate datele tale vor fi șterse permanent.' },
           ].map((item, i) => (
             <div key={i} style={{ marginBottom:'20px' }}>
