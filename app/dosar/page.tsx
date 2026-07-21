@@ -281,6 +281,7 @@ export default function Dosar() {
                   startY: 47,
                   head: [['Camp', 'Valoare']],
                   body: [
+                    ['Nume', `${profil?.prenume || ''} ${profil?.nume || ''}`],
                     ['Grup sanguin', profil?.grup_sanguin || '-'],
                     ['Alergii medicamente', profil?.alergii_medicamente || '-'],
                     ['Alergii alimentare', profil?.alergii_alimentare || '-'],
