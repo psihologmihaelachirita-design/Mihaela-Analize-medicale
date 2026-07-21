@@ -92,7 +92,7 @@ export default function Dosar() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
       <Topbar username={username} activePage="dosar" onLogout={handleLogout} />
-      <div style={{ maxWidth:'1200px', margin:'0 auto', padding:'36px 28px' }}>
+      <div style={{ maxWidth:'100%', margin:'0 auto', padding:'36px 40px' }}>
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'6px' }}>
           <div style={{ fontSize:'28px', fontWeight:600, color:'#0f172a' }}>Dosarul meu medical</div>
