@@ -244,14 +244,14 @@ export default function Dosar() {
                         if (!confirm('Ștergi acest raport?')) return
                         await supabase.from('rapoarte').delete().eq('id', r.id)
                         setRapoarte(prev => prev.filter(x => x.id !== r.id))
-                      }} style={{ padding:'4px 8px', background:'transparent', border:'none', cursor:'pointer', lineHeight:1, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                      }} style={{ padding:'4px 8px', background:'transparent', border:'none', cursor:'pointer', lineHeight:1, display:'flex', alignItems:'center', justifyContent:'center', width:'fit-content', margin:'0 auto' }}>
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="#000" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                       </button>
                       {r.pdf_url ? (
                         <span onClick={async () => {
                           const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
                           if (data?.signedUrl) window.open(data.signedUrl, '_blank')
-                        }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'flex', alignItems:'center', justifyContent:'center', width:'fit-content', margin:'0 auto' }}>
                           📄 PDF
                         </span>
                       ) : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>}
