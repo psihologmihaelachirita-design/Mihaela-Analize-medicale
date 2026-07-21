@@ -291,10 +291,12 @@ export default function Dosar() {
                 })
                 let y = (doc as any).lastAutoTable.finalY + 15
                 if (exportAnalize && analize && analize.length > 0) {
-                  doc.setFontSize(13)
-                  doc.setTextColor(0)
+                  const yAnalize = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 15 : 80
+                  doc.setFontSize(14)
+                  doc.setTextColor(22, 112, 90)
+                  doc.text('Analize medicale', 14, yAnalize)
                   autoTable(doc, {
-                    startY: (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 15 : 80,
+                    startY: yAnalize + 6,
                     head: [['Analiza', 'Valoare', 'Unitate', 'Data']],
                     body: analize.map((a: any) => [a.nume_analiza || '-', a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare?.toString() || '-', a.unitate || '-', a.data_analiza || '-']),
                     styles: { fontSize: 9 },
@@ -302,8 +304,12 @@ export default function Dosar() {
                   })
                 }
                 if (exportRapoarte && rapoarte.length > 0) {
+                  const yRapoarte = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 15 : 80
+                  doc.setFontSize(14)
+                  doc.setTextColor(22, 112, 90)
+                  doc.text('Rapoarte medicale', 14, yRapoarte)
                   autoTable(doc, {
-                    startY: y,
+                    startY: yRapoarte + 6,
                     head: [['Data', 'Tip', 'Medic', 'Specialitate', 'Unitate', 'Diagnostic']],
                     body: rapoarte.map((r: any) => [r.data_raport || '-', r.categorie || '-', r.medic || '-', r.specialitate || '-', r.unitate || '-', r.diagnostic || '-']),
                     styles: { fontSize: 9 },
