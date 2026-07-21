@@ -24,13 +24,14 @@ export default function Dosar() {
   const [exportPerioadaRapoarte, setExportPerioadaRapoarte] = useState('toate')
   const [filtruPerioda, setFiltruPerioda] = useState('30')
   const [rapoarte, setRapoarte] = useState<any[]>([])
+  const [analize, setAnalize] = useState<any[]>([])
   const router = useRouter()
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return }
       setUser(session.user)
-      const { data } = await supabase.from('profiluri').select('prenume, nume').eq('id', session.user.id).single()
+      const { data } = await supabase.from('profiluri').select('prenume, nume, grup_sanguin, alergii_medicamente, alergii_alimentare, boli_cronice, fumator, greutate, inaltime').eq('id', session.user.id).single()
       setProfil(data)
       const profilActiv = JSON.parse(localStorage.getItem('profilActiv') || '{}')
       const eApartinator = profilActiv?.tip === 'apartinator' && profilActiv?.id
@@ -38,6 +39,8 @@ export default function Dosar() {
         ? await supabase.from('rapoarte').select('*').eq('apartinator_id', profilActiv.id).order('data_raport', { ascending: false })
         : await supabase.from('rapoarte').select('*').eq('user_id', session.user.id).order('data_raport', { ascending: false })
       setRapoarte(rapoarteData || [])
+      const { data: analizeData } = await supabase.from('analize').select('*').eq('user_id', session.user.id).order('data_analiza', { ascending: false })
+      setAnalize(analizeData || [])
       setLoading(false)
     })
   }, [])
@@ -271,9 +274,25 @@ export default function Dosar() {
                 doc.setFontSize(11)
                 doc.setTextColor(100)
                 doc.text('Generat: ' + new Date().toLocaleDateString('ro-RO'), 14, 30)
+                doc.setFontSize(14)
+                doc.setTextColor(0)
+                doc.text('Date de urgenta', 14, 42)
+                autoTable(doc, {
+                  startY: 47,
+                  head: [['Camp', 'Valoare']],
+                  body: [
+                    ['Grup sanguin', profil?.grup_sanguin || '-'],
+                    ['Alergii medicamente', profil?.alergii_medicamente || '-'],
+                    ['Alergii alimentare', profil?.alergii_alimentare || '-'],
+                    ['Boli cronice', profil?.boli_cronice || '-'],
+                  ],
+                  styles: { fontSize: 10 },
+                  headStyles: { fillColor: [22, 112, 90] },
+                })
+                let y = (doc as any).lastAutoTable.finalY + 15
                 if (exportRapoarte && rapoarte.length > 0) {
                   autoTable(doc, {
-                    startY: 45,
+                    startY: y,
                     head: [['Data', 'Tip', 'Medic', 'Specialitate', 'Unitate', 'Diagnostic']],
                     body: rapoarte.map((r: any) => [r.data_raport || '-', r.categorie || '-', r.medic || '-', r.specialitate || '-', r.unitate || '-', r.diagnostic || '-']),
                     styles: { fontSize: 9 },
