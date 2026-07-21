@@ -316,7 +316,8 @@ export default function Dosar() {
                     headStyles: { fillColor: [22, 112, 90] },
                   })
                 }
-                doc.save('dosar-medical.pdf')
+                const numeFisier = `Dosar Medical ${profil?.prenume || ''} ${profil?.nume || ''} ${new Date().toLocaleDateString('ro-RO').replace(/\//g, '-')}.pdf`
+                doc.save(numeFisier)
                 setModalExport(false)
               }} style={{ padding:'9px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:600, cursor:'pointer' }}>
                 📄 Exportă PDF
