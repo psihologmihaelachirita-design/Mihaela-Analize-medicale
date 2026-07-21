@@ -211,7 +211,7 @@ export default function Dosar() {
             <div style={{ marginBottom:'16px' }}>
               <div style={{ fontSize:'11px', fontWeight:600, color:'#888', textTransform:'uppercase' as const, letterSpacing:'0.5px', marginBottom:'8px' }}>1. Profil medical</div>
               <div style={{ padding:'10px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', background:'#f8f9fa', fontSize:'13px', color:'#555' }}>
-                Inclus mereu — grup sanguin, alergii, diagnostice, medic familie
+                Grup sanguin, alergii, diagnostice, medic familie
               </div>
             </div>
 
