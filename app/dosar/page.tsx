@@ -217,7 +217,7 @@ export default function Dosar() {
                   onMouseEnter={e => (e.currentTarget.style.background = '#f8fafc')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'white')}>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', fontWeight:500 }}>
-                    {new Date(r.data).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' })}
+                    {r.data_raport ? new Date(r.data_raport).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' }) : '—'}
                   </td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
                     <span style={{ padding:'5px 14px', borderRadius:'20px', fontSize:'13px', fontWeight:600, background:tipColor[r.categorie]?.bg || '#f0f0f0', color:tipColor[r.categorie]?.color || '#555' }}>
@@ -229,21 +229,23 @@ export default function Dosar() {
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>{r.unitate}</td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', color:'#475569' }}>{r.diagnostic}</td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
-                    <span onClick={async () => {
-                      if (!confirm('Ștergi acest raport?')) return
-                      await supabase.from('rapoarte').delete().eq('id', r.id)
-                      setRapoarte(prev => prev.filter(x => x.id !== r.id))
-                    }} style={{ fontSize:'13px', color:'#E24B4A', cursor:'pointer', padding:'4px 8px', borderRadius:'6px', marginRight:'6px' }}>
-                      🗑
-                    </span>
-                    {r.pdf_url ? (
-                      <span onClick={async () => {
-                        const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
-                        if (data?.signedUrl) window.open(data.signedUrl, '_blank')
-                      }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'inline-block' }}>
-                        📄 PDF
-                      </span>
-                    ) : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>}
+                    <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+                      <button onClick={async () => {
+                        if (!confirm('Ștergi acest raport?')) return
+                        await supabase.from('rapoarte').delete().eq('id', r.id)
+                        setRapoarte(prev => prev.filter(x => x.id !== r.id))
+                      }} style={{ padding:'5px 10px', background:'#111', color:'white', border:'none', borderRadius:'6px', fontSize:'12px', fontWeight:600, cursor:'pointer' }}>
+                        🗑 Șterge
+                      </button>
+                      {r.pdf_url ? (
+                        <button onClick={async () => {
+                          const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
+                          if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+                        }} style={{ padding:'5px 10px', background:'#E1F5EE', color:'#16705a', border:'none', borderRadius:'6px', fontSize:'12px', fontWeight:600, cursor:'pointer' }}>
+                          📄 PDF
+                        </button>
+                      ) : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>}
+                    </div>
                   </td>
                 </tr>
               ))}
