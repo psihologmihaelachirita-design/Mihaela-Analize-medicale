@@ -15,7 +15,6 @@ export default function Dosar() {
   const [user, setUser] = useState<any>(null)
   const [profil, setProfil] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [dropdown, setDropdown] = useState(false)
   const [cautare, setCautare] = useState('')
   const [filtruCategorie, setFiltruCategorie] = useState('toate')
   const [modalExport, setModalExport] = useState(false)
@@ -24,9 +23,8 @@ export default function Dosar() {
   const [exportPerioadaAnalize, setExportPerioadaAnalize] = useState('toate')
   const [exportPerioadaRapoarte, setExportPerioadaRapoarte] = useState('toate')
   const [filtruPerioda, setFiltruPerioda] = useState('30')
-  const router = useRouter()
-
   const [rapoarte, setRapoarte] = useState<any[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -52,7 +50,6 @@ export default function Dosar() {
   if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh' }}><p style={{ color:'#111', fontSize:'18px' }}>Se încarcă...</p></div>
 
   const username = profil?.prenume || user?.email?.split('@')[0]
-  const navStyle: React.CSSProperties = { padding:'8px 14px', borderRadius:'8px', fontSize:'15px', color:'#111', textDecoration:'none', fontWeight:500 }
 
   const tipLabel: Record<string, string> = { familie:'Familie', specialist:'Specialist', interventie:'Intervenție', externare:'Externare' }
   const tipColor: Record<string, { bg: string, color: string }> = {
@@ -65,21 +62,20 @@ export default function Dosar() {
   const rapoarteFiltrate = rapoarte.filter(r => {
     const matchCategorie = filtruCategorie === 'toate' || r.categorie === filtruCategorie
     const matchCautare = cautare === '' ||
-      r.medic.toLowerCase().includes(cautare.toLowerCase()) ||
-      r.unitate.toLowerCase().includes(cautare.toLowerCase()) ||
-      r.diagnostic.toLowerCase().includes(cautare.toLowerCase()) ||
-      r.specialitate.toLowerCase().includes(cautare.toLowerCase())
+      (r.medic || '').toLowerCase().includes(cautare.toLowerCase()) ||
+      (r.unitate || '').toLowerCase().includes(cautare.toLowerCase()) ||
+      (r.diagnostic || '').toLowerCase().includes(cautare.toLowerCase()) ||
+      (r.specialitate || '').toLowerCase().includes(cautare.toLowerCase())
     return matchCategorie && matchCautare
   })
 
   const counts = {
-    familie: rapoarte.filter(r => r.tip === 'familie').length,
+    familie: rapoarte.filter(r => r.categorie === 'familie').length,
     specialist: rapoarte.filter(r => r.categorie === 'specialist').length,
-    interventie: rapoarte.filter(r => r.tip === 'interventie').length,
-    externare: rapoarte.filter(r => r.tip === 'externare').length,
+    interventie: rapoarte.filter(r => r.categorie === 'interventie').length,
+    externare: rapoarte.filter(r => r.categorie === 'externare').length,
   }
 
-  // ICONIȚE ALBE PE FUNDAL VERDE
   const casete = [
     { key:'familie', label:'Medic de familie', sub:'Consultații, rețete și trimiteri', icon: IconUserHeart, bg:'#E1F5EE' },
     { key:'specialist', label:'Medic specialist', sub:'Consultații și rapoarte specialiști', icon: IconStethoscope, bg:'#EEF2FF' },
@@ -87,85 +83,34 @@ export default function Dosar() {
     { key:'externare', label:'Scrisoare de externare', sub:'Scrisori cu analize, concluzii și investigații', icon: IconFileText, bg:'#FCE7F3' },
   ]
 
-  // Stiluri îmbunătățite
-  const thStyle: React.CSSProperties = { 
-    padding:'14px 18px', 
-    textAlign:'left' as const, 
-    fontSize:'13px', 
-    fontWeight:600, 
-    color:'#475569', 
-    textTransform:'uppercase' as const, 
-    letterSpacing:'0.5px', 
-    borderBottom:'1px solid #e5e7eb', 
-    background:'#f8fafc', 
-    cursor:'pointer', 
-    whiteSpace:'nowrap' as const 
-  }
-  
-  const tdStyle: React.CSSProperties = { 
-    padding:'16px 18px', 
-    fontSize:'14px', 
-    color:'#1e293b', 
-    borderBottom:'1px solid #f0f0f0', 
-    verticalAlign:'middle' as const,
-    textAlign:'center' as const,
-    lineHeight: '1.5'
-  }
+  const thStyle: React.CSSProperties = { padding:'14px 18px', textAlign:'left' as const, fontSize:'13px', fontWeight:600, color:'#475569', textTransform:'uppercase' as const, letterSpacing:'0.5px', borderBottom:'1px solid #e5e7eb', background:'#f8fafc', whiteSpace:'nowrap' as const }
+  const tdStyle: React.CSSProperties = { padding:'16px 18px', fontSize:'14px', color:'#1e293b', borderBottom:'1px solid #f0f0f0', verticalAlign:'middle' as const, textAlign:'center' as const }
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
-
       <Topbar username={username} activePage="dosar" onLogout={handleLogout} />
-
       <div style={{ maxWidth:'1200px', margin:'0 auto', padding:'36px 28px' }}>
 
-        {/* Header */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'6px' }}>
           <div style={{ fontSize:'28px', fontWeight:600, color:'#0f172a' }}>Dosarul meu medical</div>
           <button onClick={() => setModalExport(true)} style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>
-            📄 Exportă PDF
+            📄 Exportă dosar medical
           </button>
         </div>
         <div style={{ fontSize:'16px', color:'#64748b', marginBottom:'32px' }}>Toate rapoartele, consultațiile și documentele tale medicale.</div>
 
-        {/* 4 CASETE - ICONIȚE ALBE PE FUNDAL VERDE */}
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'36px' }}>
           {casete.map(c => {
             const isActive = filtruCategorie === c.key
             const IconComponent = c.icon
             return (
-              <div 
-                key={c.key} 
-                onClick={() => setFiltruCategorie(c.key === filtruCategorie ? 'toate' : c.key)}
-                style={{ 
-                  background:'white', 
-                  border: isActive ? '2px solid #16705a' : '1px solid #e5e7eb', 
-                  borderRadius:'16px', 
-                  padding:'24px 22px', 
-                  cursor:'pointer', 
-                  display:'flex', 
-                  flexDirection:'column', 
-                  alignItems:'center',
-                  textAlign:'center',
-                  gap:'8px',
-                  transition: 'all 0.15s ease',
-                  boxShadow: isActive ? '0 4px 16px rgba(22, 112, 90, 0.12)' : '0 2px 8px rgba(0,0,0,0.04)',
-                }}
-              >
-                <div style={{ 
-                  width:'52px', 
-                  height:'52px', 
-                  background:'#16705a', 
-                  borderRadius:'14px', 
-                  display:'flex', 
-                  alignItems:'center', 
-                  justifyContent:'center',
-                  color:'white'
-                }}>
+              <div key={c.key} onClick={() => setFiltruCategorie(c.key === filtruCategorie ? 'toate' : c.key)}
+                style={{ background:'white', border: isActive ? '2px solid #16705a' : '1px solid #e5e7eb', borderRadius:'16px', padding:'24px 22px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', gap:'8px', boxShadow: isActive ? '0 4px 16px rgba(22, 112, 90, 0.12)' : '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <div style={{ width:'52px', height:'52px', background:'#16705a', borderRadius:'14px', display:'flex', alignItems:'center', justifyContent:'center' }}>
                   <IconComponent size={24} stroke={1.5} color="white" />
                 </div>
                 <div style={{ fontSize:'18px', fontWeight:700, color:'#0f172a', marginTop:'4px' }}>{c.label}</div>
-                <div style={{ fontSize:'14px', color:'#64748b', lineHeight:1.5, maxWidth:'280px' }}>{c.sub}</div>
+                <div style={{ fontSize:'14px', color:'#64748b', lineHeight:1.5 }}>{c.sub}</div>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', marginTop:'6px' }}>
                   <span style={{ display:'inline-flex', padding:'4px 14px', background:'#E1F5EE', color:'#085041', borderRadius:'20px', fontSize:'13px', fontWeight:600 }}>{counts[c.key as keyof typeof counts]} rapoarte</span>
                   <span style={{ fontSize:'14px', color:'#16705a', fontWeight:600 }}>Vezi toate →</span>
@@ -175,18 +120,11 @@ export default function Dosar() {
           })}
         </div>
 
-        {/* FILTRE */}
         <div style={{ fontSize:'18px', fontWeight:600, color:'#0f172a', marginBottom:'16px' }}>Rapoarte recente</div>
         <div style={{ display:'flex', gap:'12px', flexWrap:'wrap', alignItems:'center', marginBottom:'16px' }}>
-          <input 
-            value={cautare} 
-            onChange={e => setCautare(e.target.value)} 
-            placeholder="🔍 Caută medic, clinică, diagnostic..."
-            style={{ padding:'12px 16px', border:'1px solid #e5e7eb', borderRadius:'10px', fontSize:'15px', background:'white', color:'#111', width:'280px', outline:'none', flex: '1 1 200px' }} 
-          />
-          <select 
-            value={filtruCategorie} 
-            onChange={e => setFiltruCategorie(e.target.value)}
+          <input value={cautare} onChange={e => setCautare(e.target.value)} placeholder="🔍 Caută medic, clinică, diagnostic..."
+            style={{ padding:'12px 16px', border:'1px solid #e5e7eb', borderRadius:'10px', fontSize:'15px', background:'white', color:'#111', width:'280px', outline:'none', flex:'1 1 200px' }} />
+          <select value={filtruCategorie} onChange={e => setFiltruCategorie(e.target.value)}
             style={{ padding:'12px 16px', border:'1px solid #e5e7eb', borderRadius:'10px', fontSize:'15px', background:'white', color:'#111', cursor:'pointer' }}>
             <option value="toate">Toate categoriile</option>
             <option value="familie">Medic familie</option>
@@ -194,9 +132,7 @@ export default function Dosar() {
             <option value="interventie">Intervenție</option>
             <option value="externare">Externare</option>
           </select>
-          <select 
-            value={filtruPerioda} 
-            onChange={e => setFiltruPerioda(e.target.value)}
+          <select value={filtruPerioda} onChange={e => setFiltruPerioda(e.target.value)}
             style={{ padding:'12px 16px', border:'1px solid #e5e7eb', borderRadius:'10px', fontSize:'15px', background:'white', color:'#111', cursor:'pointer' }}>
             <option value="30">Ultimele 30 zile</option>
             <option value="90">Ultimele 3 luni</option>
@@ -205,16 +141,15 @@ export default function Dosar() {
           </select>
         </div>
 
-        {/* TABEL - ÎMBUNĂTĂȚIT */}
         <div style={{ background:'white', border:'1px solid #e5e7eb', borderRadius:'16px', overflow:'hidden', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
           <table style={{ width:'100%', borderCollapse:'collapse' }}>
             <thead>
               <tr>
-                <th style={thStyle}>Data ↕</th>
+                <th style={thStyle}>Data</th>
                 <th style={thStyle}>Tip</th>
-                <th style={thStyle}>Medic ↕</th>
-                <th style={thStyle}>Specialitate ↕</th>
-                <th style={thStyle}>Unitate medicală ↕</th>
+                <th style={thStyle}>Medic</th>
+                <th style={thStyle}>Specialitate</th>
+                <th style={thStyle}>Unitate medicală</th>
                 <th style={thStyle}>Diagnostic</th>
                 <th style={thStyle}></th>
               </tr>
@@ -223,8 +158,7 @@ export default function Dosar() {
               {rapoarteFiltrate.length === 0 ? (
                 <tr><td colSpan={7} style={{ textAlign:'center', padding:'48px 20px', color:'#94a3b8', fontSize:'15px' }}>Niciun raport găsit.</td></tr>
               ) : rapoarteFiltrate.map((r, i) => (
-                <tr key={r.id}
-                  style={{ background:'white' }}
+                <tr key={r.id} style={{ background:'white' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#f8fafc')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'white')}>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', fontWeight:500 }}>
@@ -240,22 +174,23 @@ export default function Dosar() {
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>{r.unitate}</td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', color:'#475569' }}>{r.diagnostic}</td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
-                    <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+                    <div style={{ display:'flex', flexDirection:'column', gap:'4px', alignItems:'center' }}>
                       <button onClick={async () => {
                         if (!confirm('Ștergi acest raport?')) return
                         await supabase.from('rapoarte').delete().eq('id', r.id)
-                        setRapoarte(prev => prev.filter(x => x.id !== r.id))
-                      }} style={{ padding:'4px 8px', background:'transparent', border:'none', cursor:'pointer', lineHeight:1, display:'flex', alignItems:'center', justifyContent:'center', width:'fit-content', margin:'0 auto' }}>
+                        setRapoarte(prev => prev.filter((x: any) => x.id !== r.id))
+                      }} style={{ padding:'4px 8px', background:'transparent', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="#000" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                       </button>
-                      {r.pdf_url ? (
-                        <span onClick={async () => {
-                          const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
-                          if (data?.signedUrl) window.open(data.signedUrl, '_blank')
-                        }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'flex', alignItems:'center', justifyContent:'center', width:'fit-content', margin:'0 auto' }}>
-                          📄 PDF
-                        </span>
-                      ) : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>}
+                      {r.pdf_url
+                        ? <span onClick={async () => {
+                            const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
+                            if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+                          }} style={{ fontSize:'12px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'4px 10px', borderRadius:'6px', background:'#E1F5EE', whiteSpace:'nowrap' as const }}>
+                            📄 PDF
+                          </span>
+                        : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>
+                      }
                     </div>
                   </td>
                 </tr>
@@ -263,16 +198,74 @@ export default function Dosar() {
             </tbody>
           </table>
         </div>
-
       </div>
 
+      {/* Modal Export Dosar Medical */}
       {modalExport && (
-        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }} onClick={e => { if (e.target === e.currentTarget) setModalExport(false) }}>
-          <div style={{ background:"white", borderRadius:"16px", padding:"28px", width:"520px", maxWidth:"90vw" }}>
-            <div style={{ fontSize:"18px", fontWeight:600, color:"#111", marginBottom:"24px", textAlign:"center" }}>Exporta dosar</div>
-            <div style={{ display:"flex", gap:"8px", justifyContent:"flex-end" }}>
-              <button onClick={() => setModalExport(false)} style={{ padding:"9px 18px", background:"white", border:"0.5px solid #e5e7eb", borderRadius:"8px", fontSize:"13px", color:"#111", cursor:"pointer" }}>Anuleaza</button>
-              <button onClick={() => { setModalExport(false); router.push("/export") }} style={{ padding:"9px 20px", background:"#16705a", color:"white", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>Exporta PDF</button>
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:200 }}
+          onClick={e => { if (e.target === e.currentTarget) setModalExport(false) }}>
+          <div style={{ background:'white', borderRadius:'16px', padding:'28px', width:'520px', maxWidth:'90vw', boxShadow:'0 4px 24px rgba(0,0,0,0.12)' }}>
+            <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'4px', textAlign:'center' }}>Exportă dosar medical</div>
+            <div style={{ fontSize:'13px', color:'#555', marginBottom:'24px', textAlign:'center' }}>Alege ce vrei să incluzi în documentul PDF</div>
+
+            <div style={{ marginBottom:'16px' }}>
+              <div style={{ fontSize:'11px', fontWeight:600, color:'#888', textTransform:'uppercase' as const, letterSpacing:'0.5px', marginBottom:'8px' }}>1. Profil medical</div>
+              <div style={{ padding:'10px 12px', border:'0.5px solid #e5e7eb', borderRadius:'8px', background:'#f8f9fa', fontSize:'13px', color:'#555' }}>
+                Inclus mereu — grup sanguin, alergii, diagnostice, medic familie
+              </div>
+            </div>
+
+            <div style={{ marginBottom:'16px' }}>
+              <div style={{ fontSize:'11px', fontWeight:600, color:'#888', textTransform:'uppercase' as const, letterSpacing:'0.5px', marginBottom:'8px' }}>2. Analize medicale</div>
+              <div onClick={() => setExportAnalize(!exportAnalize)}
+                style={{ padding:'10px 12px', border: exportAnalize ? '1.5px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'8px', background: exportAnalize ? '#E1F5EE' : 'white', cursor:'pointer', display:'flex', alignItems:'center', gap:'10px', marginBottom:'8px' }}>
+                <div style={{ width:'18px', height:'18px', border:'1.5px solid #16705a', borderRadius:'4px', background: exportAnalize ? '#16705a' : 'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  {exportAnalize && <svg viewBox="0 0 24 24" width="12" height="12" stroke="white" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                </div>
+                <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Include analize</div>
+              </div>
+              {exportAnalize && (
+                <div style={{ display:'flex', gap:'6px' }}>
+                  {['toate', '6luni', '1an'].map(p => (
+                    <div key={p} onClick={() => setExportPerioadaAnalize(p)}
+                      style={{ padding:'6px 12px', border: exportPerioadaAnalize === p ? '1.5px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'6px', fontSize:'12px', cursor:'pointer', color: exportPerioadaAnalize === p ? '#085041' : '#111', background: exportPerioadaAnalize === p ? '#E1F5EE' : 'white', fontWeight: exportPerioadaAnalize === p ? 600 : 400 }}>
+                      {p === 'toate' ? 'Toate' : p === '6luni' ? 'Ultimele 6 luni' : 'Ultimul an'}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginBottom:'16px' }}>
+              <div style={{ fontSize:'11px', fontWeight:600, color:'#888', textTransform:'uppercase' as const, letterSpacing:'0.5px', marginBottom:'8px' }}>3. Rapoarte medicale</div>
+              <div onClick={() => setExportRapoarte(!exportRapoarte)}
+                style={{ padding:'10px 12px', border: exportRapoarte ? '1.5px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'8px', background: exportRapoarte ? '#E1F5EE' : 'white', cursor:'pointer', display:'flex', alignItems:'center', gap:'10px', marginBottom:'8px' }}>
+                <div style={{ width:'18px', height:'18px', border:'1.5px solid #16705a', borderRadius:'4px', background: exportRapoarte ? '#16705a' : 'white', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  {exportRapoarte && <svg viewBox="0 0 24 24" width="12" height="12" stroke="white" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                </div>
+                <div style={{ fontSize:'13px', fontWeight:500, color:'#111' }}>Include rapoarte</div>
+              </div>
+              {exportRapoarte && (
+                <div style={{ display:'flex', gap:'6px' }}>
+                  {['toate', '6luni', '1an'].map(p => (
+                    <div key={p} onClick={() => setExportPerioadaRapoarte(p)}
+                      style={{ padding:'6px 12px', border: exportPerioadaRapoarte === p ? '1.5px solid #16705a' : '0.5px solid #e5e7eb', borderRadius:'6px', fontSize:'12px', cursor:'pointer', color: exportPerioadaRapoarte === p ? '#085041' : '#111', background: exportPerioadaRapoarte === p ? '#E1F5EE' : 'white', fontWeight: exportPerioadaRapoarte === p ? 600 : 400 }}>
+                      {p === 'toate' ? 'Toate' : p === '6luni' ? 'Ultimele 6 luni' : 'Ultimul an'}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={{ display:'flex', gap:'8px', justifyContent:'flex-end', marginTop:'24px', paddingTop:'20px', borderTop:'0.5px solid #e5e7eb' }}>
+              <button onClick={() => setModalExport(false)}
+                style={{ padding:'9px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>
+                Anulează
+              </button>
+              <button onClick={() => setModalExport(false)}
+                style={{ padding:'9px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:600, cursor:'pointer' }}>
+                📄 Exportă PDF
+              </button>
             </div>
           </div>
         </div>
