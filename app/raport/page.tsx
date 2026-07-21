@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -44,6 +44,8 @@ export default function Raport() {
   const [diagnostic, setDiagnostic] = useState('')
   const [extragere, setExtragere] = useState(false)
   const [dropSpecialitate, setDropSpecialitate] = useState(false)
+  const [dropPos, setDropPos] = useState({ top: 0, left: 0, width: 0 })
+  const triggerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -54,6 +56,14 @@ export default function Raport() {
       setLoading(false)
     })
   }, [])
+
+  function toggleDrop() {
+    if (!dropSpecialitate && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      setDropPos({ top: rect.bottom + window.scrollY + 4, left: rect.left + window.scrollX, width: rect.width })
+    }
+    setDropSpecialitate(!dropSpecialitate)
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -73,8 +83,7 @@ export default function Raport() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { setSalvare(false); return }
 
-    let pdfUrl = null
-    let pdfNume = null
+    let pdfUrl = null, pdfNume = null
     if (fisier) {
       const cale = `${session.user.id}/rapoarte/${Date.now()}_${fisier.name}`
       const { data: uploadData, error: uploadError } = await supabase.storage.from('documente').upload(cale, fisier, { contentType: 'application/pdf' })
@@ -84,14 +93,9 @@ export default function Raport() {
     const { error } = await supabase.from('rapoarte').insert({
       user_id: session.user.id,
       apartinator_id: typeof window !== 'undefined' ? (JSON.parse(localStorage.getItem('profilActiv') || '{}')?.tip === 'apartinator' ? JSON.parse(localStorage.getItem('profilActiv') || '{}')?.id : null) : null,
-      categorie,
-      data_raport: dataRaport || null,
-      medic: medic || null,
-      specialitate: specialitateFinal || null,
-      unitate: unitate || null,
-      diagnostic: diagnostic || null,
-      pdf_url: pdfUrl,
-      pdf_nume: pdfNume,
+      categorie, data_raport: dataRaport || null, medic: medic || null,
+      specialitate: specialitateFinal || null, unitate: unitate || null,
+      diagnostic: diagnostic || null, pdf_url: pdfUrl, pdf_nume: pdfNume,
     })
 
     if (error) { setMesajValidare('Eroare: ' + error.message); setSalvare(false); return }
@@ -114,11 +118,11 @@ export default function Raport() {
   ]
 
   return (
-    <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
+    <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}
+      onClick={e => { if (dropSpecialitate && !(e.target as HTMLElement).closest('.drop-spec')) setDropSpecialitate(false) }}>
       <Topbar username={username} onLogout={handleLogout} />
 
       <div style={{ maxWidth:'680px', margin:'0 auto', padding:'32px 24px' }}>
-
         <div style={{ fontSize:'20px', fontWeight:500, color:'#111', marginBottom:'24px' }}>Adaugă raport medical</div>
 
         {mesaj && (
@@ -139,9 +143,7 @@ export default function Raport() {
               <input id="pdf-raport" type="file" accept=".pdf" style={{ display:'none' }} onChange={async e => {
                 const f = e.target.files?.[0]
                 if (f) {
-                  setFisier(f)
-                  setExtragere(true)
-                  setMesaj('Se extrag datele din PDF...')
+                  setFisier(f); setExtragere(true); setMesaj('Se extrag datele din PDF...')
                   try {
                     const base64 = await new Promise<string>((resolve, reject) => {
                       const reader = new FileReader()
@@ -149,45 +151,28 @@ export default function Raport() {
                       reader.onerror = reject
                       reader.readAsDataURL(f)
                     })
-                    const response = await fetch('/api/extrage-raport', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ pdf: base64 })
-                    })
+                    const response = await fetch('/api/extrage-raport', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ pdf: base64 }) })
                     const result = await response.json()
                     if (result.medic) setMedic(result.medic)
                     if (result.specialitate) {
-                      const match = SPECIALITATI.find(s =>
-                        s.toLowerCase().includes(result.specialitate.toLowerCase()) ||
-                        result.specialitate.toLowerCase().includes(s.toLowerCase().split(' ')[0])
-                      )
-                      if (match) {
-                        setSpecialitate(match)
-                      } else {
-                        setSpecialitate('Altă specialitate')
-                        setAltaSpecialitate(result.specialitate)
-                      }
+                      const match = SPECIALITATI.find(s => s.toLowerCase().includes(result.specialitate.toLowerCase()) || result.specialitate.toLowerCase().includes(s.toLowerCase().split(' ')[0]))
+                      if (match) setSpecialitate(match)
+                      else { setSpecialitate('Altă specialitate'); setAltaSpecialitate(result.specialitate) }
                     }
                     if (result.unitate) setUnitate(result.unitate)
                     if (result.diagnostic) setDiagnostic(result.diagnostic)
                     if (result.data_raport) setDataRaport(result.data_raport)
                     setMesaj('Date extrase cu succes. Verifică și completează.')
-                  } catch {
-                    setMesaj('Extragerea a eșuat — completează manual.')
-                  }
+                  } catch { setMesaj('Extragerea a eșuat — completează manual.') }
                   setExtragere(false)
                 }
               }} />
-              {extragere ? (
-                <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>⏳ Se extrag datele...</div>
-              ) : fisier ? (
-                <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>✓ {fisier.name}</div>
-              ) : (
-                <>
-                  <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Trage PDF-ul aici sau apasă pentru a selecta</div>
-                  <div style={{ fontSize:'12px', color:'#888' }}>PDF, max 10 MB</div>
-                </>
-              )}
+              {extragere ? <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>⏳ Se extrag datele...</div>
+              : fisier ? <div style={{ fontSize:'13px', color:'#16705a', fontWeight:500 }}>✓ {fisier.name}</div>
+              : <>
+                <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Trage PDF-ul aici sau apasă pentru a selecta</div>
+                <div style={{ fontSize:'12px', color:'#888' }}>PDF, max 10 MB</div>
+              </>}
             </div>
           </div>
         </div>
@@ -228,34 +213,20 @@ export default function Raport() {
               </div>
             </div>
             <div style={g2}>
-              <div style={{ position:'relative' }}>
+              <div className="drop-spec">
                 <label style={lbl}>Specialitate</label>
-                <div onClick={() => setDropSpecialitate(!dropSpecialitate)}
+                <div ref={triggerRef} onClick={toggleDrop}
                   style={{ ...inpDinamic(specialitate), display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', userSelect:'none' as any }}>
                   <span style={{ color: specialitate ? '#111' : '#aaa', fontWeight: specialitate ? 600 : 400 }}>
                     {specialitate || 'Selectează specialitatea'}
                   </span>
-                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="#111" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="#111" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points={dropSpecialitate ? '18 15 12 9 6 15' : '6 9 12 15 18 9'}/>
+                  </svg>
                 </div>
-                {dropSpecialitate && <div style={{ position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100, maxHeight:'600px', overflowY:'auto', marginTop:'4px' }}>
-                  {SPECIALITATI.map(s => {
-                    const isSelected = specialitate === s
-                    return (
-                      <div key={s}
-                        onClick={() => { setSpecialitate(s); setDropSpecialitate(false); if (s !== 'Altă specialitate') setAltaSpecialitate('') }}
-                        style={{ padding:'8px 14px', fontSize:'13px', cursor:'pointer', backgroundColor: isSelected ? '#E1F5EE' : 'white', color: isSelected ? '#085041' : '#111', fontWeight: isSelected ? 600 : 400, borderBottom:'0.5px solid #f0f0f0' }}
-                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.backgroundColor = '#f8f9fa' }}
-                        onMouseLeave={e => { if (!isSelected) e.currentTarget.style.backgroundColor = 'white' }}>
-                        {s}
-                      </div>
-                    )
-                  })}
-                </div>}
                 {specialitate === 'Altă specialitate' && (
                   <input value={altaSpecialitate} onChange={e => setAltaSpecialitate(e.target.value)}
-                    placeholder="Introdu specialitatea"
-                    style={{ ...inpDinamic(altaSpecialitate), marginTop:'8px' }}
-                    autoFocus />
+                    placeholder="Introdu specialitatea" style={{ ...inpDinamic(altaSpecialitate), marginTop:'8px' }} autoFocus />
                 )}
               </div>
               <div>
@@ -283,8 +254,24 @@ export default function Raport() {
             {salvare ? 'Se salvează...' : 'Salvează raport'}
           </button>
         </div>
-
       </div>
+
+      {/* Dropdown fixed peste tot */}
+      {dropSpecialitate && (
+        <div className="drop-spec" style={{ position:'absolute', top: dropPos.top, left: dropPos.left, width: dropPos.width, background:'white', border:'1px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 8px 24px rgba(0,0,0,0.12)', zIndex:1000, maxHeight:'400px', overflowY:'auto' }}>
+          {SPECIALITATI.map(s => {
+            const isSelected = specialitate === s
+            return (
+              <div key={s} onClick={() => { setSpecialitate(s); setDropSpecialitate(false); if (s !== 'Altă specialitate') setAltaSpecialitate('') }}
+                style={{ padding:'10px 14px', fontSize:'13px', cursor:'pointer', background: isSelected ? '#E1F5EE' : 'white', color: isSelected ? '#085041' : '#111', fontWeight: isSelected ? 600 : 400, borderBottom:'0.5px solid #f0f0f0' }}
+                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = '#f8f9fa' }}
+                onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = 'white' }}>
+                {s}
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
