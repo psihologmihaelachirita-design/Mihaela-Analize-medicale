@@ -249,8 +249,7 @@ export default function Raport() {
                       </div>
                     )
                   })}
-                </div>
-                </div>
+                </div>}
                 {specialitate === 'Altă specialitate' && (
                   <input value={altaSpecialitate} onChange={e => setAltaSpecialitate(e.target.value)}
                     placeholder="Introdu specialitatea"
