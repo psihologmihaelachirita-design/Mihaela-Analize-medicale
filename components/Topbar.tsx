@@ -124,7 +124,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
       <div style={{ background:'white', borderBottom:'1px solid #e5e7eb', padding:'0 32px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
         <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'12px', textDecoration:'none' }}>
           <div style={{ width:'38px', height:'38px', background:'#E1F5EE', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
-          <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>MediPanel</span>
+          <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>Panoramic MedLog</span>
         </Link>
 
         <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
@@ -281,7 +281,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
                 <div style={{ width:'18px', height:'18px', border:'1.5px solid #16705a', borderRadius:'4px', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', marginTop:'1px', background: acord ? '#16705a' : 'white' }}>
                   {acord && <svg viewBox="0 0 24 24" width="12" height="12" stroke="white" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
                 </div>
-                <div style={{ fontSize:'12px', color:'#555', lineHeight:1.5 }}>Declar că am obținut acordul explicit al acestei persoane pentru prelucrarea datelor sale medicale în platforma MediPanel și că am dreptul legal de a gestiona dosarul său medical.</div>
+                <div style={{ fontSize:'12px', color:'#555', lineHeight:1.5 }}>Declar că am obținut acordul explicit al acestei persoane pentru prelucrarea datelor sale medicale în platforma Panoramic MedLog și că am dreptul legal de a gestiona dosarul său medical.</div>
               </div>
             </div>
 
