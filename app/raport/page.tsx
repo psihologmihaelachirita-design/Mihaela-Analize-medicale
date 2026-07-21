@@ -43,6 +43,7 @@ export default function Raport() {
   const [unitate, setUnitate] = useState('')
   const [diagnostic, setDiagnostic] = useState('')
   const [extragere, setExtragere] = useState(false)
+  const [dropSpecialitate, setDropSpecialitate] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
