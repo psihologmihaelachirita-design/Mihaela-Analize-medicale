@@ -234,8 +234,8 @@ export default function Dosar() {
                         if (!confirm('Ștergi acest raport?')) return
                         await supabase.from('rapoarte').delete().eq('id', r.id)
                         setRapoarte(prev => prev.filter(x => x.id !== r.id))
-                      }} style={{ padding:'4px 8px', background:'transparent', color:'#000', border:'none', fontSize:'18px', cursor:'pointer', lineHeight:1 }}>
-                        🗑
+                      }} style={{ padding:'4px 8px', background:'transparent', border:'none', cursor:'pointer', lineHeight:1, display:'flex', alignItems:'center' }}>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#000" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                       </button>
                       {r.pdf_url ? (
                         <span onClick={async () => {
