@@ -60,7 +60,7 @@ export default function Confidentialitate() {
             <li><strong>Dreptul de opoziție</strong> — poți opune procesării datelor tale</li>
           </ul>
           <p style={{ fontSize:'14px', color:'#333', lineHeight:1.8 }}>
-            Pentru orice solicitare legată de datele tale, ne poți contacta la <a href="mailto:contact@medfile.ro" style={{ color:'#16705a' }}>contact@medfile.ro</a>.
+            Pentru orice solicitare legată de datele tale, ne poți contacta la <a href="mailto:contact@panoramic-medlog.ro" style={{ color:'#16705a' }}>contact@panoramic-medlog.ro</a>.
           </p>
         </div>
 

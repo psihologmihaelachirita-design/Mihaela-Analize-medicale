@@ -60,10 +60,10 @@ Conținutul acestei note de informare este pur informativ și nu afectează drep
             continut: `Panoramic MedLog este o platformă digitală de stocare și organizare a datelor medicale personale, operată de Chirita Mihaela Cabinet Individual de Psihologie.
 
 Datele de contact:
-Email: contact@medipanel.ro
+Email: contact@panoramic-medlog.ro
 
 Datele de contact ale responsabilului cu protecția datelor:
-Email: dpo@medipanel.ro`
+Email: dpo@panoramic-medlog.ro`
           },
           {
             titlu: '3. Categorii de date prelucrate',
@@ -119,7 +119,7 @@ Am implementat următoarele măsuri tehnice și organizatorice:
 (vi) Dreptul de a vă opune prelucrării.
 (vii) Dreptul de a depune o plângere în fața Autorității Naționale de Supraveghere a Prelucrării Datelor cu Caracter Personal: www.dataprotection.ro
 
-Pentru exercitarea acestor drepturi, vă rugăm să ne contactați la: dpo@medipanel.ro`
+Pentru exercitarea acestor drepturi, vă rugăm să ne contactați la: dpo@panoramic-medlog.ro`
           },
         ].map((sectiune, i) => (
           <div key={i} style={{ marginBottom:'28px' }}>
@@ -129,7 +129,7 @@ Pentru exercitarea acestor drepturi, vă rugăm să ne contactați la: dpo@medip
         ))}
 
         <div style={{ borderTop:'1px solid #e5e7eb', paddingTop:'24px', marginTop:'16px' }}>
-          <p style={{ fontSize:'13px', color:'#888' }}>Ultima actualizare: Iulie 2026 · Panoramic MedLog · contact@medipanel.ro</p>
+          <p style={{ fontSize:'13px', color:'#888' }}>Ultima actualizare: Iulie 2026 · Panoramic MedLog · contact@panoramic-medlog.ro</p>
         </div>
       </div>
     </div>
