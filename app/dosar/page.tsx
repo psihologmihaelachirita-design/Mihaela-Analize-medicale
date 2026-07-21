@@ -18,6 +18,11 @@ export default function Dosar() {
   const [dropdown, setDropdown] = useState(false)
   const [cautare, setCautare] = useState('')
   const [filtruCategorie, setFiltruCategorie] = useState('toate')
+  const [modalExport, setModalExport] = useState(false)
+  const [exportAnalize, setExportAnalize] = useState(true)
+  const [exportRapoarte, setExportRapoarte] = useState(true)
+  const [exportPerioadaAnalize, setExportPerioadaAnalize] = useState('toate')
+  const [exportPerioadaRapoarte, setExportPerioadaRapoarte] = useState('toate')
   const [filtruPerioda, setFiltruPerioda] = useState('30')
   const router = useRouter()
 
@@ -114,7 +119,12 @@ export default function Dosar() {
       <div style={{ maxWidth:'1200px', margin:'0 auto', padding:'36px 28px' }}>
 
         {/* Header */}
-        <div style={{ fontSize:'28px', fontWeight:600, color:'#0f172a', marginBottom:'6px' }}>Dosarul meu medical</div>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'6px' }}>
+          <div style={{ fontSize:'28px', fontWeight:600, color:'#0f172a' }}>Dosarul meu medical</div>
+          <button onClick={() => setModalExport(true)} style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>
+            📄 Exportă PDF
+          </button>
+        </div>
         <div style={{ fontSize:'16px', color:'#64748b', marginBottom:'32px' }}>Toate rapoartele, consultațiile și documentele tale medicale.</div>
 
         {/* 4 CASETE - ICONIȚE ALBE PE FUNDAL VERDE */}
@@ -241,7 +251,7 @@ export default function Dosar() {
                         <span onClick={async () => {
                           const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
                           if (data?.signedUrl) window.open(data.signedUrl, '_blank')
-                        }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'inline-block' }}>
+                        }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'flex', alignItems:'center', justifyContent:'center' }}>
                           📄 PDF
                         </span>
                       ) : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>}
