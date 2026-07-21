@@ -266,5 +266,17 @@ export default function Dosar() {
 
       </div>
     </div>
+
+      {modalExport && (
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }} onClick={e => { if (e.target === e.currentTarget) setModalExport(false) }}>
+          <div style={{ background:"white", borderRadius:"16px", padding:"28px", width:"520px", maxWidth:"90vw" }}>
+            <div style={{ fontSize:"18px", fontWeight:600, color:"#111", marginBottom:"24px", textAlign:"center" }}>Exporta dosar</div>
+            <div style={{ display:"flex", gap:"8px", justifyContent:"flex-end" }}>
+              <button onClick={() => setModalExport(false)} style={{ padding:"9px 18px", background:"white", border:"0.5px solid #e5e7eb", borderRadius:"8px", fontSize:"13px", color:"#111", cursor:"pointer" }}>Anuleaza</button>
+              <button onClick={() => { setModalExport(false); router.push("/export") }} style={{ padding:"9px 20px", background:"#16705a", color:"white", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>Exporta PDF</button>
+            </div>
+          </div>
+        </div>
+      )}
   )
 }
