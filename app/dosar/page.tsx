@@ -290,6 +290,17 @@ export default function Dosar() {
                   headStyles: { fillColor: [22, 112, 90] },
                 })
                 let y = (doc as any).lastAutoTable.finalY + 15
+                if (exportAnalize && analize && analize.length > 0) {
+                  doc.setFontSize(13)
+                  doc.setTextColor(0)
+                  autoTable(doc, {
+                    startY: (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 15 : 80,
+                    head: [['Analiza', 'Valoare', 'Unitate', 'Data']],
+                    body: analize.map((a: any) => [a.nume_analiza || '-', a.tip_rezultat === 'calitativ' ? a.rezultat_text : a.valoare?.toString() || '-', a.unitate || '-', a.data_analiza || '-']),
+                    styles: { fontSize: 9 },
+                    headStyles: { fillColor: [22, 112, 90] },
+                  })
+                }
                 if (exportRapoarte && rapoarte.length > 0) {
                   autoTable(doc, {
                     startY: y,
