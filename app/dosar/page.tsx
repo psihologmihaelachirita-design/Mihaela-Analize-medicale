@@ -87,7 +87,7 @@ export default function Dosar() {
   ]
 
   const thStyle: React.CSSProperties = { padding:'14px 18px', textAlign:'left' as const, fontSize:'13px', fontWeight:600, color:'#475569', textTransform:'uppercase' as const, letterSpacing:'0.5px', borderBottom:'1px solid #e5e7eb', background:'#f8fafc', whiteSpace:'nowrap' as const }
-  const tdStyle: React.CSSProperties = { padding:'12px 14px', fontSize:'13px', color:'#1e293b', borderBottom:'1px solid #f0f0f0', verticalAlign:'middle' as const, textAlign:'center' as const, whiteSpace:'nowrap' as const }
+  const tdStyle: React.CSSProperties = { padding:'12px 14px', fontSize:'13px', color:'#1e293b', borderBottom:'1px solid #f0f0f0', verticalAlign:'middle' as const, textAlign:'center' as const }
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
@@ -164,7 +164,7 @@ export default function Dosar() {
                 <tr key={r.id} style={{ background:'white' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#f8fafc')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'white')}>
-                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', fontWeight:500 }}>
+                  <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', fontWeight:500, whiteSpace:'nowrap' as const }}>
                     {r.data_raport ? new Date(r.data_raport).toLocaleDateString('ro-RO', { day:'numeric', month:'short', year:'numeric' }) : '—'}
                   </td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
