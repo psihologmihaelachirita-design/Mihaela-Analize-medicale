@@ -108,6 +108,7 @@ export default function Dosar() {
     color:'#1e293b', 
     borderBottom:'1px solid #f0f0f0', 
     verticalAlign:'middle' as const,
+    textAlign:'center' as const,
     lineHeight: '1.5'
   }
 
