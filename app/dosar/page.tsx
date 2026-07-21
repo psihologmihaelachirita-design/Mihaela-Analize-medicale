@@ -262,8 +262,27 @@ export default function Dosar() {
                 style={{ padding:'9px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>
                 Anulează
               </button>
-              <button onClick={() => setModalExport(false)}
-                style={{ padding:'9px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:600, cursor:'pointer' }}>
+              <button onClick={async () => {
+                const { jsPDF } = await import('jspdf')
+                const autoTable = (await import('jspdf-autotable')).default
+                const doc = new jsPDF()
+                doc.setFontSize(18)
+                doc.text('Dosar Medical Personal', 14, 20)
+                doc.setFontSize(11)
+                doc.setTextColor(100)
+                doc.text('Generat: ' + new Date().toLocaleDateString('ro-RO'), 14, 30)
+                if (exportRapoarte && rapoarte.length > 0) {
+                  autoTable(doc, {
+                    startY: 45,
+                    head: [['Data', 'Tip', 'Medic', 'Specialitate', 'Unitate', 'Diagnostic']],
+                    body: rapoarte.map((r: any) => [r.data_raport || '-', r.categorie || '-', r.medic || '-', r.specialitate || '-', r.unitate || '-', r.diagnostic || '-']),
+                    styles: { fontSize: 9 },
+                    headStyles: { fillColor: [22, 112, 90] },
+                  })
+                }
+                doc.save('dosar-medical.pdf')
+                setModalExport(false)
+              }} style={{ padding:'9px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:600, cursor:'pointer' }}>
                 📄 Exportă PDF
               </button>
             </div>
