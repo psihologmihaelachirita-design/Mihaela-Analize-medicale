@@ -237,7 +237,7 @@ export default function Raport() {
                   </span>
                   <svg viewBox="0 0 24 24" width="16" height="16" stroke="#111" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
-                {dropSpecialitate && <div style={{ position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100, maxHeight:'300px', overflowY:'auto', marginTop:'4px' }}>
+                {dropSpecialitate && <div style={{ position:'absolute', top:'100%', left:0, right:0, background:'white', border:'1px solid #e5e7eb', borderRadius:'8px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)', zIndex:100, maxHeight:'600px', overflowY:'auto', marginTop:'4px' }}>
                   {SPECIALITATI.map(s => {
                     const isSelected = specialitate === s
                     return (
