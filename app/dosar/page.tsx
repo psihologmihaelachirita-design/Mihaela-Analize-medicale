@@ -234,7 +234,7 @@ export default function Dosar() {
                         if (!confirm('Ștergi acest raport?')) return
                         await supabase.from('rapoarte').delete().eq('id', r.id)
                         setRapoarte(prev => prev.filter(x => x.id !== r.id))
-                      }} style={{ padding:'4px 8px', background:'transparent', color:'#111', border:'none', fontSize:'16px', cursor:'pointer' }}>
+                      }} style={{ padding:'4px 8px', background:'transparent', color:'#000', border:'none', fontSize:'16px', cursor:'pointer', filter:'brightness(0)' }}>
                         🗑
                       </button>
                       {r.pdf_url ? (
