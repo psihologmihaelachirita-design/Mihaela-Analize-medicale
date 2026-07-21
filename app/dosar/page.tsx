@@ -229,9 +229,21 @@ export default function Dosar() {
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>{r.unitate}</td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none', color:'#475569' }}>{r.diagnostic}</td>
                   <td style={{ ...tdStyle, borderBottom: i < rapoarteFiltrate.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
-                    <span style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'inline-block' }}>
-                      📄 PDF
+                    <span onClick={async () => {
+                      if (!confirm('Ștergi acest raport?')) return
+                      await supabase.from('rapoarte').delete().eq('id', r.id)
+                      setRapoarte(prev => prev.filter(x => x.id !== r.id))
+                    }} style={{ fontSize:'13px', color:'#E24B4A', cursor:'pointer', padding:'4px 8px', borderRadius:'6px', marginRight:'6px' }}>
+                      🗑
                     </span>
+                    {r.pdf_url ? (
+                      <span onClick={async () => {
+                        const { data } = await supabase.storage.from('documente').createSignedUrl(r.pdf_url, 60)
+                        if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+                      }} style={{ fontSize:'14px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'6px 12px', borderRadius:'8px', background:'#f1f5f9', display:'inline-block' }}>
+                        📄 PDF
+                      </span>
+                    ) : <span style={{ fontSize:'13px', color:'#aaa' }}>—</span>}
                   </td>
                 </tr>
               ))}
