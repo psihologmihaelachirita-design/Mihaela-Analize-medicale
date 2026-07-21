@@ -265,7 +265,6 @@ export default function Dosar() {
         </div>
 
       </div>
-    </div>
 
       {modalExport && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }} onClick={e => { if (e.target === e.currentTarget) setModalExport(false) }}>
@@ -278,5 +277,6 @@ export default function Dosar() {
           </div>
         </div>
       )}
+    </div>
   )
 }
