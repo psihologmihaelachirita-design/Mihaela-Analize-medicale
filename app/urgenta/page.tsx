@@ -246,10 +246,6 @@ export default function Urgenta() {
       <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'calc(100vh - 56px)' }}>
 
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'28px 0', display:'flex', flexDirection:'column' }}>
-          <div style={{ padding:'0 20px 24px', borderBottom:'0.5px solid #e5e7eb', marginBottom:'20px', display:'flex', alignItems:'center', gap:'10px' }}>
-            <div style={{ width:'32px', height:'32px', background:'#E1F5EE', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'16px', fontWeight:600 }}>✚</div>
-            
-          </div>
           <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 20px', textAlign:'center' as const }}>{profil?.prenume} {profil?.nume}</div>
           {sidebarItems.map(item => (
             <div key={item.key} onClick={() => toggleSectiune(item.key)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'2px' }}>
