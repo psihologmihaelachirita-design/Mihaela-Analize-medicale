@@ -113,7 +113,12 @@ export default function Profil() {
       console.log('Tesseract text:', text)
       const cnpMatch = text.match(/\b([1-9]\d{12})\b/)
       if (cnpMatch) {
-        const cnpExtras = cnpMatch[1]
+        const primele12 = cnpMatch[1].slice(0, 12)
+        const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9]
+        const digits = primele12.split('').map(Number)
+        const sum = weights.reduce((acc: number, w: number, i: number) => acc + w * digits[i], 0)
+        const control = sum % 11 === 10 ? 1 : sum % 11
+        const cnpExtras = primele12 + control.toString()
         if (!validCNP(cnpExtras)) {
           setMesaj('CNP-ul extras nu e valid. Completează manual.')
           setIdentitateVerificata(false)
@@ -125,6 +130,7 @@ export default function Profil() {
         if (sexExtras) setSex(sexExtras)
         const dataExtrasa = extrageDataNasteriiDinCNP(cnpExtras)
         if (dataExtrasa) setDataNasterii(dataExtrasa)
+        setMesaj(`CNP extras: ${cnpExtras} — verifică că e corect înainte de salvare.`)
       }
 
       // Extrage nume și prenume — linii cu majuscule
