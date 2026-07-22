@@ -443,7 +443,7 @@ export default function Profil() {
                           setEroareCNP('')
                         }
                       }} 
-                      placeholder="2780315••••••" 
+                       
                       style={inp} 
                       disabled={!modManual && identitateVerificata}
                     />
