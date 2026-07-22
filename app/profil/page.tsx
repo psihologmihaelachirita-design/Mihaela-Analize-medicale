@@ -476,7 +476,7 @@ export default function Profil() {
                     <input 
                       value={dataNasterii} 
                       onChange={e => setDataNasterii(e.target.value)} 
-                      placeholder="15.03.1978" 
+                       
                       style={inp} 
                       disabled={!modManual && identitateVerificata}
                     />
