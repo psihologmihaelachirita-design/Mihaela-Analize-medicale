@@ -81,8 +81,33 @@ export default function Profil() {
   async function handleUploadCI(fisier: File) {
     setMesaj('Se procesează CI-ul...')
     try {
+      // Pre-procesare imagine — alb-negru + contrast ridicat
+      const imagineProcessata = await new Promise<Blob>((resolve) => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          canvas.width = img.width * 2
+          canvas.height = img.height * 2
+          const ctx = canvas.getContext('2d')!
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const data = imageData.data
+          for (let i = 0; i < data.length; i += 4) {
+            const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]
+            const val = gray > 128 ? 255 : 0
+            data[i] = data[i+1] = data[i+2] = val
+          }
+          ctx.putImageData(imageData, 0, 0)
+          canvas.toBlob(blob => resolve(blob!), 'image/png')
+        }
+        img.src = URL.createObjectURL(fisier)
+      })
+
       const Tesseract = await import('tesseract.js')
-      const { data: { text } } = await Tesseract.recognize(fisier, 'ron+eng')
+      const { data: { text } } = await Tesseract.recognize(imagineProcessata, 'ron+eng', {
+        logger: () => {}
+      })
+      console.log('Tesseract text:', text)
       
       // Extrage CNP — 13 cifre consecutive
       console.log('Tesseract text:', text)
