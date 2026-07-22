@@ -114,6 +114,12 @@ export default function Profil() {
       const cnpMatch = text.match(/\b([1-9]\d{12})\b/)
       if (cnpMatch) {
         const cnpExtras = cnpMatch[1]
+        if (!validCNP(cnpExtras)) {
+          setMesaj('CNP-ul extras nu e valid. Completează manual.')
+          setIdentitateVerificata(false)
+          setSalvare(false)
+          return
+        }
         setCnp(cnpExtras)
         const sexExtras = extrageSexDinCNP(cnpExtras)
         if (sexExtras) setSex(sexExtras)
