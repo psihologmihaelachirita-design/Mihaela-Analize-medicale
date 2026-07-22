@@ -249,7 +249,7 @@ export default function Profil() {
                 </div>
                 <div style={g2}>
                   <div><label style={lbl}>Parolă</label><input value="********" disabled style={{ ...inp, background:'#f8f9fa' }} /></div>
-                  <div><label style={lbl}>Ultima modificare</label><input value="—" disabled style={{ ...inp, background:'#f8f9fa' }} /></div>
+                  
                 </div>
                 <button onClick={handleSchimbaParola} style={{ padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', cursor:'pointer', fontWeight:500, marginBottom:'18px' }}>Schimbă parola</button>
                 <div style={{ height:'0.5px', background:'#e5e7eb', margin:'18px 0' }}></div>
