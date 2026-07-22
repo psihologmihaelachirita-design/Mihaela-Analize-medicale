@@ -616,11 +616,10 @@ export default function Profil() {
               </div>
             )}
           </div>
-
-        </div>
-      </div>
-    </div>
+</div>
   )
+
+     
 
       {modalConfirmareCNP && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }} onClick={e => { if (e.target === e.currentTarget) setModalConfirmareCNP(false) }}>
@@ -637,6 +636,9 @@ export default function Profil() {
               <button onClick={() => { setCnp(cnpExtrasTemp); setIdentitateVerificata(true); setModalConfirmareCNP(false); setMesaj("CNP confirmat."); setTimeout(() => setMesaj(""), 4000) }} style={{ padding:"9px 20px", background:"#16705a", color:"white", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>Confirm</button>
             </div>
           </div>
+        </div>
+      </div>
+    
         </div>
       )}
   )
