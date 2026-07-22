@@ -85,6 +85,7 @@ export default function Profil() {
       const { data: { text } } = await Tesseract.recognize(fisier, 'ron+eng')
       
       // Extrage CNP — 13 cifre consecutive
+      console.log('Tesseract text:', text)
       const cnpMatch = text.match(/\b([1-9]\d{12})\b/)
       if (cnpMatch) {
         const cnpExtras = cnpMatch[1]
@@ -105,8 +106,12 @@ export default function Profil() {
         setNume(liniiMajuscule[0].trim())
       }
 
-      setIdentitateVerificata(true)
-      setMesaj('CI procesată cu succes! Verifică datele extrase.')
+      if (cnpMatch) {
+        setIdentitateVerificata(true)
+        setMesaj('CI procesată cu succes! Verifică datele extrase.')
+      } else {
+        setMesaj('Nu s-a putut extrage CNP-ul. Completează manual sau încearcă o poză mai clară.')
+      }
     } catch (e) {
       setMesaj('Eroare la procesarea CI. Completează manual.')
     }
