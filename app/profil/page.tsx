@@ -39,6 +39,8 @@ export default function Profil() {
   const [judet, setJudet] = useState('')
   const [identitateVerificata, setIdentitateVerificata] = useState(false)
   const [modManual, setModManual] = useState(false)
+  const [modalConfirmareCNP, setModalConfirmareCNP] = useState(false)
+  const [cnpExtrasTemp, setCnpExtrasTemp] = useState('')
 
   function toggleSectiune(key: keyof typeof sectiuni) {
     setSectiuni(prev => ({ ...prev, [key]: !prev[key] }))
@@ -130,7 +132,8 @@ export default function Profil() {
         if (sexExtras) setSex(sexExtras)
         const dataExtrasa = extrageDataNasteriiDinCNP(cnpExtras)
         if (dataExtrasa) setDataNasterii(dataExtrasa)
-        setMesaj(`CNP extras: ${cnpExtras} — verifică că e corect înainte de salvare.`)
+        setCnpExtrasTemp(cnpExtras)
+        setModalConfirmareCNP(true)
       }
 
       // Extrage nume și prenume — linii cu majuscule
@@ -617,5 +620,24 @@ export default function Profil() {
         </div>
       </div>
     </div>
+  )
+
+      {modalConfirmareCNP && (
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }} onClick={e => { if (e.target === e.currentTarget) setModalConfirmareCNP(false) }}>
+          <div style={{ background:"white", borderRadius:"16px", padding:"28px", width:"480px", maxWidth:"90vw", boxShadow:"0 4px 24px rgba(0,0,0,0.12)" }}>
+            <div style={{ fontSize:"18px", fontWeight:600, color:"#111", marginBottom:"4px", textAlign:"center" }}>Verifica datele extrase</div>
+            <div style={{ fontSize:"13px", color:"#555", marginBottom:"24px", textAlign:"center" }}>Datele au fost extrase automat din CI. Verifica ca sunt corecte.</div>
+            <div style={{ background:"#f8f9fa", borderRadius:"10px", padding:"16px", marginBottom:"20px" }}>
+              <div style={{ fontSize:"13px", color:"#555", marginBottom:"4px" }}>CNP extras</div>
+              <div style={{ fontSize:"22px", fontWeight:700, color:"#111", letterSpacing:"2px" }}>{cnpExtrasTemp}</div>
+            </div>
+            <div style={{ fontSize:"13px", color:"#8A6D00", background:"#FFF8E6", borderRadius:"8px", padding:"12px 14px", marginBottom:"24px" }}>Daca CNP-ul nu e corect, apasa Anuleaza si completeaza manual.</div>
+            <div style={{ display:"flex", gap:"8px", justifyContent:"flex-end" }}>
+              <button onClick={() => { setModalConfirmareCNP(false); setCnpExtrasTemp("") }} style={{ padding:"9px 18px", background:"white", border:"0.5px solid #e5e7eb", borderRadius:"8px", fontSize:"13px", color:"#111", cursor:"pointer", fontWeight:500 }}>Anuleaza</button>
+              <button onClick={() => { setCnp(cnpExtrasTemp); setIdentitateVerificata(true); setModalConfirmareCNP(false); setMesaj("CNP confirmat."); setTimeout(() => setMesaj(""), 4000) }} style={{ padding:"9px 20px", background:"#16705a", color:"white", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
   )
 }
