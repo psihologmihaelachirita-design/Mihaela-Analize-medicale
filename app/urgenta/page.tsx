@@ -261,6 +261,7 @@ export default function Urgenta() {
             <div>
               <div style={{ fontSize:'20px', fontWeight:500, color:'#111' }}>Card de urgență Panoramic MedLog</div>
               <div style={{ fontSize:'13px', color:'#111', marginTop:'4px' }}>Date extrase automat sau declarate de titular</div>
+              <div style={{ fontSize:'12px', color:'#16705a', marginTop:'4px' }}>Datele de identitate (nume, CNP) se completează în <a href="/profil" style={{ color:'#16705a', fontWeight:600 }}>Profil</a></div>
             </div>
             <div style={{ display:'flex', gap:'8px' }}>
               {!editMode ? (
