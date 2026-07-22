@@ -78,17 +78,39 @@ export default function Profil() {
     return `${zi.toString().padStart(2, '0')}.${luna.toString().padStart(2, '0')}.${anComplet}`
   }
 
-  function handleUploadCI() {
-    setIdentitateVerificata(true)
-    setMesaj('CI uploadată cu succes! Datele au fost extrase automat.')
-    setTimeout(() => setMesaj(''), 4000)
-    
-    if (cnp && cnp.length >= 13) {
-      const sexExtras = extrageSexDinCNP(cnp)
-      if (sexExtras) setSex(sexExtras)
-      const dataExtrasa = extrageDataNasteriiDinCNP(cnp)
-      if (dataExtrasa) setDataNasterii(dataExtrasa)
+  async function handleUploadCI(fisier: File) {
+    setMesaj('Se procesează CI-ul...')
+    try {
+      const Tesseract = await import('tesseract.js')
+      const { data: { text } } = await Tesseract.recognize(fisier, 'ron+eng')
+      
+      // Extrage CNP — 13 cifre consecutive
+      const cnpMatch = text.match(/\b([1-9]\d{12})\b/)
+      if (cnpMatch) {
+        const cnpExtras = cnpMatch[1]
+        setCnp(cnpExtras)
+        const sexExtras = extrageSexDinCNP(cnpExtras)
+        if (sexExtras) setSex(sexExtras)
+        const dataExtrasa = extrageDataNasteriiDinCNP(cnpExtras)
+        if (dataExtrasa) setDataNasterii(dataExtrasa)
+      }
+
+      // Extrage nume și prenume — linii cu majuscule
+      const linii = text.split('\n').map(l => l.trim()).filter(Boolean)
+      const liniiMajuscule = linii.filter(l => /^[A-ZĂÎȘȚÂ\s\-]+$/.test(l) && l.length > 2 && l.length < 40)
+      if (liniiMajuscule.length >= 2) {
+        setNume(liniiMajuscule[0].trim())
+        setPrenume(liniiMajuscule[1].trim())
+      } else if (liniiMajuscule.length === 1) {
+        setNume(liniiMajuscule[0].trim())
+      }
+
+      setIdentitateVerificata(true)
+      setMesaj('CI procesată cu succes! Verifică datele extrase.')
+    } catch (e) {
+      setMesaj('Eroare la procesarea CI. Completează manual.')
     }
+    setTimeout(() => setMesaj(''), 5000)
   }
 
   function handleReincarcaCI() {
@@ -351,9 +373,10 @@ export default function Profil() {
                 <div style={{ fontSize:'14px', color:'#555', marginBottom:'18px' }}>Uploadează o fotografie a actului tău de identitate. Imaginea nu va fi stocată.</div>
                 
                 <div style={{ display:'flex', gap:'14px', marginBottom:'18px', flexWrap:'wrap', alignItems:'center' }}>
-                  <button onClick={handleUploadCI} style={{ padding:'12px 24px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer' }}>
+                  <label style={{ padding:'12px 24px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer', display:'inline-block' }}>
                     📷 Uploadează CI
-                  </button>
+                    <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) handleUploadCI(f) }} />
+                  </label>
                   {identitateVerificata && (
                     <>
                       <span style={{ padding:'10px 18px', background:'#E1F5EE', color:'#0F6E56', borderRadius:'8px', fontSize:'14px', fontWeight:500 }}>
