@@ -17,14 +17,7 @@ export default function Profil() {
   const [salvare, setSalvare] = useState(false)
   const [mesaj, setMesaj] = useState('')
   const [eroareCNP, setEroareCNP] = useState('')
-  const [dropdown, setDropdown] = useState(false)
-  const [sectiuni, setSectiuni] = useState({ 
-    cont: true, 
-    identitate: true, 
-    abonament: true, 
-    export: true, 
-    confidentialitate: true 
-  })
+  const [sectiuni, setSectiuni] = useState({ cont: true, identitate: true, abonament: true, export: true, confidentialitate: true })
   const router = useRouter()
 
   const [nume, setNume] = useState('')
@@ -59,8 +52,8 @@ export default function Profil() {
   function extrageSexDinCNP(cnp: string) {
     if (!cnp || cnp.length < 1) return ''
     const sexCifra = parseInt(cnp.charAt(0))
-    if (sexCifra === 1 || sexCifra === 3 || sexCifra === 5 || sexCifra === 7) return 'M'
-    if (sexCifra === 2 || sexCifra === 4 || sexCifra === 6 || sexCifra === 8) return 'F'
+    if ([1,3,5,7].includes(sexCifra)) return 'M'
+    if ([2,4,6,8].includes(sexCifra)) return 'F'
     return ''
   }
 
@@ -70,20 +63,15 @@ export default function Profil() {
     const luna = parseInt(cnp.substring(3, 5))
     const zi = parseInt(cnp.substring(5, 7))
     const secol = parseInt(cnp.charAt(0))
-    
-    let anComplet
-    if (secol === 1 || secol === 2) anComplet = 1900 + an
-    else if (secol === 3 || secol === 4) anComplet = 1800 + an
+    let anComplet = 1900 + an
+    if (secol === 3 || secol === 4) anComplet = 1800 + an
     else if (secol === 5 || secol === 6) anComplet = 2000 + an
-    else anComplet = 1900 + an
-    
     return `${zi.toString().padStart(2, '0')}.${luna.toString().padStart(2, '0')}.${anComplet}`
   }
 
   async function handleUploadCI(fisier: File) {
     setMesaj('Se procesează CI-ul...')
     try {
-      // Pre-procesare imagine — alb-negru + contrast ridicat
       const imagineProcessata = await new Promise<Blob>((resolve) => {
         const img = new Image()
         img.onload = () => {
@@ -104,15 +92,8 @@ export default function Profil() {
         }
         img.src = URL.createObjectURL(fisier)
       })
-
       const Tesseract = await import('tesseract.js')
-      const { data: { text } } = await Tesseract.recognize(imagineProcessata, 'ron+eng', {
-        logger: () => {}
-      })
-      console.log('Tesseract text:', text)
-      
-      // Extrage CNP — 13 cifre consecutive
-      console.log('Tesseract text:', text)
+      const { data: { text } } = await Tesseract.recognize(imagineProcessata, 'ron+eng', { logger: () => {} })
       const cnpMatch = text.match(/\b([1-9]\d{12})\b/)
       if (cnpMatch) {
         const primele12 = cnpMatch[1].slice(0, 12)
@@ -121,41 +102,22 @@ export default function Profil() {
         const sum = weights.reduce((acc: number, w: number, i: number) => acc + w * digits[i], 0)
         const control = sum % 11 === 10 ? 1 : sum % 11
         const cnpExtras = primele12 + control.toString()
-        if (!validCNP(cnpExtras)) {
-          setMesaj('CNP-ul extras nu e valid. Completează manual.')
-          setIdentitateVerificata(false)
-          setSalvare(false)
-          return
-        }
-        setCnp(cnpExtras)
+        setCnpExtrasTemp(cnpExtras)
+        setModalConfirmareCNP(true)
         const sexExtras = extrageSexDinCNP(cnpExtras)
         if (sexExtras) setSex(sexExtras)
         const dataExtrasa = extrageDataNasteriiDinCNP(cnpExtras)
         if (dataExtrasa) setDataNasterii(dataExtrasa)
-        setCnpExtrasTemp(cnpExtras)
-        setModalConfirmareCNP(true)
-      }
-
-      // Extrage nume și prenume — linii cu majuscule
-      const linii = text.split('\n').map(l => l.trim()).filter(Boolean)
-      const liniiMajuscule = linii.filter(l => /^[A-ZĂÎȘȚÂ\s\-]+$/.test(l) && l.length > 2 && l.length < 40)
-      if (liniiMajuscule.length >= 2) {
-        setNume(liniiMajuscule[0].trim())
-        setPrenume(liniiMajuscule[1].trim())
-      } else if (liniiMajuscule.length === 1) {
-        setNume(liniiMajuscule[0].trim())
-      }
-
-      if (cnpMatch) {
-        setIdentitateVerificata(true)
-        setMesaj('CI procesată cu succes! Verifică datele extrase.')
       } else {
-        setMesaj('Nu s-a putut extrage CNP-ul. Completează manual sau încearcă o poză mai clară.')
+        setMesaj('Nu s-a putut extrage CNP-ul. Completează manual.')
       }
-    } catch (e) {
+      const linii = text.split('\n').map((l: string) => l.trim()).filter(Boolean)
+      const liniiMajuscule = linii.filter((l: string) => /^[A-ZĂÎȘȚÂ\s\-]+$/.test(l) && l.length > 2 && l.length < 40)
+      if (liniiMajuscule.length >= 2) { setNume(liniiMajuscule[0].trim()); setPrenume(liniiMajuscule[1].trim()) }
+      else if (liniiMajuscule.length === 1) { setNume(liniiMajuscule[0].trim()) }
+    } catch {
       setMesaj('Eroare la procesarea CI. Completează manual.')
     }
-    setTimeout(() => setMesaj(''), 5000)
   }
 
   function handleReincarcaCI() {
@@ -189,63 +151,32 @@ export default function Profil() {
   async function handleSalvare() {
     setEroareCNP('')
     setMesaj('')
-    
-    if (cnp && cnp.length > 0 && cnp.length !== 13) {
-      setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
-      return
-    }
-    if (cnp && cnp.length === 13 && !validCNP(cnp)) {
-      setEroareCNP('CNP invalid — verifică numărul introdus.')
-      return
-    }
-    
+    if (cnp && cnp.length > 0 && cnp.length !== 13) { setEroareCNP('CNP-ul trebuie să aibă 13 cifre.'); return }
+    if (cnp && cnp.length === 13 && !validCNP(cnp)) { setEroareCNP('CNP invalid — verifică numărul introdus.'); return }
     setSalvare(true)
-    
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      setMesaj('Eroare: Nu ești autentificat!')
-      setSalvare(false)
-      return
-    }
-    
+    if (!session) { setMesaj('Eroare: Nu ești autentificat!'); setSalvare(false); return }
     const { error } = await supabase.from('profiluri').upsert({
-      id: session.user.id,
-      nume: nume,
-      prenume: prenume,
-      sex: sex || null,
-      cetatenie: cetatenie || null,
-      telefon: telefon || null,
-      cnp: cnp || null,
-      data_nasterii: dataNasterii || null,
-      adresa: adresa || null,
-      judet: judet || null,
-      identitate_verificata: identitateVerificata,
+      id: session.user.id, nume, prenume, sex: sex || null, cetatenie: cetatenie || null,
+      telefon: telefon || null, cnp: cnp || null, data_nasterii: dataNasterii || null,
+      adresa: adresa || null, judet: judet || null, identitate_verificata: identitateVerificata,
     })
-    
-    if (error) {
-      setMesaj('Eroare: ' + error.message)
-    } else {
-      setMesaj('Date salvate cu succes!')
-    }
+    if (error) setMesaj('Eroare: ' + error.message)
+    else setMesaj('Date salvate cu succes!')
     setSalvare(false)
     setTimeout(() => setMesaj(''), 3000)
   }
 
-  async function handleLogout() {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
-
+  async function handleLogout() { await supabase.auth.signOut(); router.push('/') }
   async function handleSchimbaParola() {
     const { error } = await supabase.auth.resetPasswordForEmail(email)
     if (error) setMesaj('Eroare: ' + error.message)
     else setMesaj('Email de resetare trimis!')
     setTimeout(() => setMesaj(''), 4000)
   }
-
   async function handleStergeContConfirm() {
-    const confirm = window.confirm('Ești sigură? Toate datele tale vor fi șterse permanent.')
-    if (!confirm) return
+    const ok = window.confirm('Ești sigură? Toate datele tale vor fi șterse permanent.')
+    if (!ok) return
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
     await supabase.from('analize').delete().eq('user_id', session.user.id)
@@ -254,45 +185,12 @@ export default function Profil() {
     router.push('/')
   }
 
-  function handleVeziPolitica() {
-    window.open('/politica-confidentialitate', '_blank')
-  }
-
   if (loading) return <p style={{ fontFamily:'system-ui', padding:'2rem', color:'#888' }}>Se încarcă...</p>
 
   const username = prenume || user?.email?.split('@')[0]
-  const inp: React.CSSProperties = { 
-    width:'100%', 
-    padding:'11px 15px', 
-    border:'0.5px solid #e5e7eb', 
-    borderRadius:'8px', 
-    fontSize:'15px', 
-    outline:'none', 
-    background:'white', 
-    color:'#111', 
-    fontFamily:'system-ui' 
-  }
-  const lbl: React.CSSProperties = { 
-    display:'block', 
-    fontSize:'14px', 
-    fontWeight:500, 
-    color:'#555', 
-    marginBottom:'6px' 
-  }
-  const g2: React.CSSProperties = { 
-    display:'grid', 
-    gridTemplateColumns:'1fr 1fr', 
-    gap:'16px', 
-    marginBottom:'16px' 
-  }
-  const navStyle: React.CSSProperties = { 
-    padding:'6px 10px', 
-    borderRadius:'8px', 
-    fontSize:'14px', 
-    color:'#111', 
-    textDecoration:'none', 
-    fontWeight:500 
-  }
+  const inp: React.CSSProperties = { width:'100%', padding:'11px 15px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', outline:'none', background:'white', color:'#111', fontFamily:'system-ui' }
+  const lbl: React.CSSProperties = { display:'block', fontSize:'14px', fontWeight:500, color:'#555', marginBottom:'6px' }
+  const g2: React.CSSProperties = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'16px', marginBottom:'16px' }
 
   const navItems = [
     { key:'cont' as keyof typeof sectiuni, Icon: IconUser, label:'Contul meu' },
@@ -321,10 +219,8 @@ export default function Profil() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
-
       <Topbar username={username} activePage="profil" onLogout={handleLogout} />
       <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
-
         <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 16px', flex:1 }}>
             <div style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 8px', textAlign:'center' as const }}>{prenume} {nume}</div>
@@ -339,164 +235,85 @@ export default function Profil() {
         </div>
 
         <div style={{ padding:'32px', overflowY:'auto' }}>
+          {mesaj && <div style={{ padding:'14px 18px', borderRadius:'8px', marginBottom:'18px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'14px' }}>{mesaj}</div>}
+          {eroareCNP && <div style={{ padding:'14px 18px', borderRadius:'8px', marginBottom:'18px', background:'#FCEBEB', color:'#A32D2D', fontSize:'14px' }}>{eroareCNP}</div>}
 
-          {mesaj && (
-            <div style={{ padding:'14px 18px', borderRadius:'8px', marginBottom:'18px', background: mesaj.includes('Eroare') ? '#FCEBEB' : '#E1F5EE', color: mesaj.includes('Eroare') ? '#A32D2D' : '#0F6E56', fontSize:'14px' }}>
-              {mesaj}
-            </div>
-          )}
-          {eroareCNP && (
-            <div style={{ padding:'14px 18px', borderRadius:'8px', marginBottom:'18px', background:'#FCEBEB', color:'#A32D2D', fontSize:'14px' }}>
-              {eroareCNP}
-            </div>
-          )}
-
-          {/* SECȚIUNEA 1: CONTUL MEU */}
+          {/* CONTUL MEU */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconUser} title="Contul meu" sub="Email, telefon, parolă și securitate" skey="cont" />
             {sectiuni.cont && (
               <div style={{ padding:'22px 24px' }}>
                 <div style={g2}>
-                  <div>
-                    <label style={lbl}>Email</label>
-                    <input value={email} onChange={e => setEmail(e.target.value)} style={inp} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Telefon</label>
-                    <input value={telefon} onChange={e => setTelefon(e.target.value)} placeholder="ex: 0721 000 000" style={inp} />
-                  </div>
+                  <div><label style={lbl}>Email</label><input value={email} onChange={e => setEmail(e.target.value)} style={inp} /></div>
+                  <div><label style={lbl}>Telefon</label><input value={telefon} onChange={e => setTelefon(e.target.value)} placeholder="ex: 0721 000 000" style={inp} /></div>
                 </div>
                 <div style={g2}>
-                  <div>
-                    <label style={lbl}>Parolă</label>
-                    <input value="********" disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Ultima modificare</label>
-                    <input value="15 Ian 2025" disabled style={{ ...inp, background:'#f8f9fa', color:'#111' }} />
-                  </div>
+                  <div><label style={lbl}>Parolă</label><input value="********" disabled style={{ ...inp, background:'#f8f9fa' }} /></div>
+                  <div><label style={lbl}>Ultima modificare</label><input value="15 Ian 2025" disabled style={{ ...inp, background:'#f8f9fa' }} /></div>
                 </div>
                 <button onClick={handleSchimbaParola} style={{ padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', cursor:'pointer', fontWeight:500, marginBottom:'18px' }}>Schimbă parola</button>
-
                 <div style={{ height:'0.5px', background:'#e5e7eb', margin:'18px 0' }}></div>
-                
                 <div style={{ fontSize:'16px', fontWeight:600, color:'#111', marginBottom:'12px' }}>Autentificare în 2 pași</div>
-                <div style={{ fontSize:'14px', color:'#555', marginBottom:'18px' }}>Activează una sau ambele metode pentru securitate sporită</div>
-                
                 <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', background:'#f8f9fa', borderRadius:'8px' }}>
-                    <div>
-                      <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>SMS</div>
-                      <div style={{ fontSize:'13px', color:'#555' }}>Cod trimis pe numărul de telefon înregistrat</div>
+                  {['SMS', 'Google Authenticator'].map(m => (
+                    <div key={m} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', background:'#f8f9fa', borderRadius:'8px' }}>
+                      <div><div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>{m}</div></div>
+                      <button style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'13px', cursor:'pointer' }}>Activează</button>
                     </div>
-                    <button style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'13px', cursor:'pointer' }}>Activează</button>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', background:'#f8f9fa', borderRadius:'8px' }}>
-                    <div>
-                      <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Google Authenticator</div>
-                      <div style={{ fontSize:'13px', color:'#555' }}>Cod generat de aplicația Google Authenticator</div>
-                    </div>
-                    <button style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'13px', cursor:'pointer' }}>Activează</button>
-                  </div>
+                  ))}
                 </div>
-
                 <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'22px' }}>
-                  <button onClick={handleSalvare} disabled={salvare} style={{ padding:'12px 30px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', fontWeight:600, cursor:'pointer' }}>
-                    {salvare ? 'Se salvează...' : 'Salvează'}
-                  </button>
+                  <button onClick={handleSalvare} disabled={salvare} style={{ padding:'12px 30px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', fontWeight:600, cursor:'pointer' }}>{salvare ? 'Se salvează...' : 'Salvează'}</button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* SECȚIUNEA 2: IDENTITATE */}
+          {/* IDENTITATE */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconId} title="Identitate" sub="Date extrase din actul de identitate" skey="identitate" />
             {sectiuni.identitate && (
               <div style={{ padding:'22px 24px' }}>
                 <div style={{ fontSize:'16px', fontWeight:600, color:'#111', marginBottom:'12px' }}>Verifică-ți identitatea</div>
                 <div style={{ fontSize:'14px', color:'#555', marginBottom:'18px' }}>Uploadează o fotografie a actului tău de identitate. Imaginea nu va fi stocată.</div>
-                
                 <div style={{ display:'flex', gap:'14px', marginBottom:'18px', flexWrap:'wrap', alignItems:'center' }}>
-                  <label style={{ padding:'12px 24px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer', display:'inline-block' }}>
+                  <label style={{ padding:'12px 24px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'15px', fontWeight:500, cursor:'pointer', display:'inline-block' }}>
                     📷 Uploadează CI
                     <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) handleUploadCI(f) }} />
                   </label>
                   {identitateVerificata && (
                     <>
-                      <span style={{ padding:'10px 18px', background:'#E1F5EE', color:'#0F6E56', borderRadius:'8px', fontSize:'14px', fontWeight:500 }}>
-                        ✔ Identitate verificată
-                      </span>
-                      <button onClick={handleReincarcaCI} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer' }}>
-                        Reîncarcă CI
-                      </button>
+                      <span style={{ padding:'10px 18px', background:'#E1F5EE', color:'#0F6E56', borderRadius:'8px', fontSize:'14px', fontWeight:500 }}>✔ Identitate verificată</span>
+                      <button onClick={handleReincarcaCI} style={{ padding:'8px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer' }}>Reîncarcă CI</button>
                     </>
                   )}
                 </div>
-
                 <div style={{ display:'flex', alignItems:'center', gap:'14px', marginBottom:'18px', padding:'12px 16px', background:'#f8f9fa', borderRadius:'8px' }}>
                   <label style={{ fontSize:'14px', color:'#555', display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={modManual} 
-                      onChange={() => setModManual(!modManual)} 
-                      style={{ width:'18px', height:'18px', cursor:'pointer' }}
-                    />
+                    <input type="checkbox" checked={modManual} onChange={() => setModManual(!modManual)} style={{ width:'18px', height:'18px', cursor:'pointer' }} />
                     Introducere manuală (nu am CI disponibil)
                   </label>
                 </div>
-
                 <div style={{ padding:'14px 18px', background:'#FFF8E6', borderRadius:'8px', marginBottom:'18px', fontSize:'13px', color:'#8A6D00' }}>
                   ⚠️ Prin uploadarea actului de identitate confirmi că datele sunt ale tale și sunt corecte. Imaginea CI nu va fi stocată — doar datele extrase.
-                  {modManual && (
-                    <div style={{ marginTop:'8px' }}>
-                      ⚠️ Ai ales introducerea manuală. Te rugăm să completezi toate datele corect.
-                    </div>
-                  )}
+                  {modManual && <div style={{ marginTop:'8px' }}>⚠️ Ai ales introducerea manuală. Te rugăm să completezi toate datele corect.</div>}
                 </div>
-
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'16px' }}>
-                  <div>
-                    <label style={lbl}>Nume</label>
-                    <input value={nume} onChange={e => setNume(e.target.value)} style={inp} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Prenume</label>
-                    <input value={prenume} onChange={e => setPrenume(e.target.value)} style={inp} />
-                  </div>
+                  <div><label style={lbl}>Nume</label><input value={nume} onChange={e => setNume(e.target.value)} style={inp} /></div>
+                  <div><label style={lbl}>Prenume</label><input value={prenume} onChange={e => setPrenume(e.target.value)} style={inp} /></div>
                   <div>
                     <label style={lbl}>CNP</label>
-                    <input 
-                      value={cnp} 
-                      onChange={e => {
-                        const val = e.target.value
-                        if (!/^\d*$/.test(val)) return
-                        setCnp(val)
-                        if (val.length === 13) {
-                          if (validCNP(val)) {
-                            const sexExtras = extrageSexDinCNP(val)
-                            if (sexExtras) setSex(sexExtras)
-                            const dataExtrasa = extrageDataNasteriiDinCNP(val)
-                            if (dataExtrasa) setDataNasterii(dataExtrasa)
-                            setEroareCNP('')
-                          } else {
-                            setEroareCNP('CNP invalid — verifică numărul introdus.')
-                          }
-                        } else if (val.length > 0 && val.length < 13) {
-                          setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
-                        } else {
-                          setEroareCNP('')
-                        }
-                      }} 
-                       
-                      style={inp} 
-                      disabled={!modManual && identitateVerificata}
-                    />
-                    {!modManual && identitateVerificata && (
-                      <div style={{ fontSize:'12px', color:'#16705a', marginTop:'4px' }}>
-                        CNP extras automat din CI
-                      </div>
-                    )}
+                    <input value={cnp} onChange={e => {
+                      const val = e.target.value
+                      if (!/^\d*$/.test(val)) return
+                      setCnp(val)
+                      if (val.length === 13) {
+                        if (validCNP(val)) { setEroareCNP(''); setSex(extrageSexDinCNP(val)); setDataNasterii(extrageDataNasteriiDinCNP(val)) }
+                        else setEroareCNP('CNP invalid — verifică numărul introdus.')
+                      } else if (val.length > 0) setEroareCNP('CNP-ul trebuie să aibă 13 cifre.')
+                      else setEroareCNP('')
+                    }} style={inp} disabled={!modManual && identitateVerificata} />
+                    {!modManual && identitateVerificata && <div style={{ fontSize:'12px', color:'#16705a', marginTop:'4px' }}>CNP extras automat din CI</div>}
                   </div>
                   <div>
                     <label style={lbl}>Sex</label>
@@ -510,58 +327,29 @@ export default function Profil() {
                         </label>
                       ))}
                     </div>
-                    {!modManual && identitateVerificata && (
-                      <div style={{ fontSize:'12px', color:'#16705a', marginTop:'4px' }}>
-                        Sex extras automat din CI
-                      </div>
-                    )}
                   </div>
                   <div>
                     <label style={lbl}>Data nașterii</label>
-                    <input 
-                      value={dataNasterii} 
-                      onChange={e => setDataNasterii(e.target.value)} 
-                       
-                      style={inp} 
-                      disabled={!modManual && identitateVerificata}
-                    />
-                    {!modManual && identitateVerificata && (
-                      <div style={{ fontSize:'12px', color:'#16705a', marginTop:'4px' }}>
-                        Data extrasă automat din CI
-                      </div>
-                    )}
+                    <input value={dataNasterii} onChange={e => setDataNasterii(e.target.value)} style={inp} disabled={!modManual && identitateVerificata} />
+                    {!modManual && identitateVerificata && <div style={{ fontSize:'12px', color:'#16705a', marginTop:'4px' }}>Data extrasă automat din CI</div>}
                   </div>
                   <div>
                     <label style={lbl}>Cetățenie</label>
                     <select value={cetatenie} onChange={e => setCetatenie(e.target.value)} style={{ ...inp, cursor:'pointer' }}>
-                      <option>Română</option>
-                      <option>Alta</option>
+                      <option>Română</option><option>Alta</option>
                     </select>
                   </div>
-                  <div>
-                    <label style={lbl}>Adresă</label>
-                    <input value={adresa} onChange={e => setAdresa(e.target.value)} placeholder="Completează manual" style={inp} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Județ</label>
-                    <input value={judet} onChange={e => setJudet(e.target.value)} placeholder="București" style={inp} />
-                  </div>
+                  <div><label style={lbl}>Adresă</label><input value={adresa} onChange={e => setAdresa(e.target.value)} placeholder="Completează manual" style={inp} /></div>
+                  <div><label style={lbl}>Județ</label><input value={judet} onChange={e => setJudet(e.target.value)} placeholder="București" style={inp} /></div>
                 </div>
-
-                <div style={{ padding:'14px 18px', background:'#FFF8E6', borderRadius:'8px', marginTop:'18px', fontSize:'13px', color:'#8A6D00' }}>
-                  ⚠️ Nu am putut extrage adresa din CI. Te rugăm să o completezi manual.
-                </div>
-
                 <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'22px' }}>
-                  <button onClick={handleSalvare} disabled={salvare} style={{ padding:'12px 30px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', fontWeight:600, cursor:'pointer' }}>
-                    {salvare ? 'Se salvează...' : 'Salvează'}
-                  </button>
+                  <button onClick={handleSalvare} disabled={salvare} style={{ padding:'12px 30px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', fontWeight:600, cursor:'pointer' }}>{salvare ? 'Se salvează...' : 'Salvează'}</button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* SECȚIUNEA 3: ABONAMENT */}
+          {/* ABONAMENT */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconCreditCard} title="Abonament" sub="Planul tău curent" skey="abonament" />
             {sectiuni.abonament && (
@@ -571,13 +359,13 @@ export default function Profil() {
                     <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Plan curent</div>
                     <div style={{ fontSize:'14px', color:'#555', marginTop:'3px' }}>Panoramic MedLog Basic</div>
                   </div>
-                  <Link href="/pricing" style={{ padding:'10px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer', textDecoration:'none', display:'inline-block' }}>Upgrade</Link>
+                  <Link href="/pricing" style={{ padding:'10px 20px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'14px', fontWeight:500, textDecoration:'none', display:'inline-block' }}>Upgrade</Link>
                 </div>
               </div>
             )}
           </div>
 
-          {/* SECȚIUNEA 4: EXPORT DATE */}
+          {/* EXPORT DATE */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconDownload} title="Export date" sub="Descarcă toate datele tale din Panoramic MedLog" skey="export" />
             {sectiuni.export && (
@@ -593,7 +381,7 @@ export default function Profil() {
             )}
           </div>
 
-          {/* SECȚIUNEA 5: CONFIDENTIALITATE */}
+          {/* CONFIDENTIALITATE */}
           <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'12px', marginBottom:'16px', overflow:'hidden' }}>
             <Banner icon={IconLock} title="Confidențialitate" sub="Drepturile tale conform GDPR" skey="confidentialitate" />
             {sectiuni.confidentialitate && (
@@ -603,7 +391,7 @@ export default function Profil() {
                     <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Politica de confidențialitate</div>
                     <div style={{ fontSize:'14px', color:'#555', marginTop:'3px' }}>Vezi cum procesăm datele tale</div>
                   </div>
-                  <button onClick={handleVeziPolitica} style={{ padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', cursor:'pointer', fontWeight:500 }}>Vezi →</button>
+                  <button onClick={() => window.open('/politica-confidentialitate', '_blank')} style={{ padding:'10px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111', cursor:'pointer', fontWeight:500 }}>Vezi →</button>
                 </div>
                 <div style={{ height:'0.5px', background:'#e5e7eb', margin:'16px 0' }}></div>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -616,30 +404,36 @@ export default function Profil() {
               </div>
             )}
           </div>
-</div>
-  )
+        </div>
+      </div>
 
-     
-
+      {/* Modal Confirmare CNP */}
       {modalConfirmareCNP && (
-        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }} onClick={e => { if (e.target === e.currentTarget) setModalConfirmareCNP(false) }}>
-          <div style={{ background:"white", borderRadius:"16px", padding:"28px", width:"480px", maxWidth:"90vw", boxShadow:"0 4px 24px rgba(0,0,0,0.12)" }}>
-            <div style={{ fontSize:"18px", fontWeight:600, color:"#111", marginBottom:"4px", textAlign:"center" }}>Verifica datele extrase</div>
-            <div style={{ fontSize:"13px", color:"#555", marginBottom:"24px", textAlign:"center" }}>Datele au fost extrase automat din CI. Verifica ca sunt corecte.</div>
-            <div style={{ background:"#f8f9fa", borderRadius:"10px", padding:"16px", marginBottom:"20px" }}>
-              <div style={{ fontSize:"13px", color:"#555", marginBottom:"4px" }}>CNP extras</div>
-              <div style={{ fontSize:"22px", fontWeight:700, color:"#111", letterSpacing:"2px" }}>{cnpExtrasTemp}</div>
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:200 }}
+          onClick={e => { if (e.target === e.currentTarget) setModalConfirmareCNP(false) }}>
+          <div style={{ background:'white', borderRadius:'16px', padding:'28px', width:'480px', maxWidth:'90vw', boxShadow:'0 4px 24px rgba(0,0,0,0.12)' }}>
+            <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'4px', textAlign:'center' }}>Verifică datele extrase</div>
+            <div style={{ fontSize:'13px', color:'#555', marginBottom:'24px', textAlign:'center' }}>Datele au fost extrase automat din CI. Verifică că sunt corecte.</div>
+            <div style={{ background:'#f8f9fa', borderRadius:'10px', padding:'16px', marginBottom:'20px' }}>
+              <div style={{ fontSize:'13px', color:'#555', marginBottom:'4px' }}>CNP extras</div>
+              <div style={{ fontSize:'22px', fontWeight:700, color:'#111', letterSpacing:'2px' }}>{cnpExtrasTemp}</div>
             </div>
-            <div style={{ fontSize:"13px", color:"#8A6D00", background:"#FFF8E6", borderRadius:"8px", padding:"12px 14px", marginBottom:"24px" }}>Daca CNP-ul nu e corect, apasa Anuleaza si completeaza manual.</div>
-            <div style={{ display:"flex", gap:"8px", justifyContent:"flex-end" }}>
-              <button onClick={() => { setModalConfirmareCNP(false); setCnpExtrasTemp("") }} style={{ padding:"9px 18px", background:"white", border:"0.5px solid #e5e7eb", borderRadius:"8px", fontSize:"13px", color:"#111", cursor:"pointer", fontWeight:500 }}>Anuleaza</button>
-              <button onClick={() => { setCnp(cnpExtrasTemp); setIdentitateVerificata(true); setModalConfirmareCNP(false); setMesaj("CNP confirmat."); setTimeout(() => setMesaj(""), 4000) }} style={{ padding:"9px 20px", background:"#16705a", color:"white", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>Confirm</button>
+            <div style={{ fontSize:'13px', color:'#8A6D00', background:'#FFF8E6', borderRadius:'8px', padding:'12px 14px', marginBottom:'24px' }}>
+              ⚠️ Dacă CNP-ul nu e corect, apasă Anulează și completează manual.
+            </div>
+            <div style={{ display:'flex', gap:'8px', justifyContent:'flex-end' }}>
+              <button onClick={() => { setModalConfirmareCNP(false); setCnpExtrasTemp('') }}
+                style={{ padding:'9px 18px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>
+                Anulează
+              </button>
+              <button onClick={() => { setCnp(cnpExtrasTemp); setIdentitateVerificata(true); setModalConfirmareCNP(false); setMesaj('CNP confirmat. Verifică și celelalte date extrase.'); setTimeout(() => setMesaj(''), 4000) }}
+                style={{ padding:'9px 20px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:600, cursor:'pointer' }}>
+                Confirm — e corect
+              </button>
             </div>
           </div>
         </div>
-      </div>
-    
-        </div>
       )}
+    </div>
   )
 }
