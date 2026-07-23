@@ -241,11 +241,12 @@ export default function Urgenta() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
+      <style>{`@media (max-width: 768px) { .urgenta-grid { grid-template-columns: 1fr !important; } .urgenta-sidebar { display: none !important; } }`}</style>
       <Topbar username={username} activePage="urgenta" onLogout={handleLogout} />
 
-      <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'calc(100vh - 56px)' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'calc(100vh - 56px)' }} className="urgenta-grid">
 
-        <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'28px 0', display:'flex', flexDirection:'column' }}>
+        <div className="urgenta-sidebar" style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'28px 0', display:'flex', flexDirection:'column' }}>
           <div style={{ fontSize:'18px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 20px', textAlign:'center' as const }}>{profil?.prenume} {profil?.nume}</div>
           {sidebarItems.map(item => (
             <div key={item.key} onClick={() => toggleSectiune(item.key)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 20px', fontSize:'13px', color: sectiuni[item.key] ? '#085041' : '#555', background: sectiuni[item.key] ? '#E1F5EE' : 'transparent', cursor:'pointer', marginBottom:'2px' }}>
