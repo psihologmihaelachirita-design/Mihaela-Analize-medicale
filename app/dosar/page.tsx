@@ -92,7 +92,7 @@ export default function Dosar() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
       <Topbar username={username} activePage="dosar" onLogout={handleLogout} />
-      <style>{`@media (max-width: 768px) { .dosar-container { padding: 16px !important; } .dosar-grid { grid-template-columns: 1fr !important; } .dosar-table-wrap { overflow-x: auto !important; } }`}</style>
+      <style>{`@media (max-width: 768px) { .dosar-container { padding: 16px !important; }  .dosar-table-wrap { overflow-x: auto !important; } }`}</style>
       <div className="dosar-container" style={{ maxWidth:'100%', margin:'0 auto', padding:'36px 56px' }}>
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'6px' }}>
