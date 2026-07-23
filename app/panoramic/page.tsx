@@ -189,10 +189,10 @@ export default function Panoramic() {
       </div>
 
       {/* Continut */}
-      <div style={{flex:1, display:'flex', overflow:'auto'}}>
+      <div style={{flex:1, display:'flex', overflow:'hidden'}}>
 
         {/* Tabel */}
-        <div style={{flex:1, overflow:'auto'}}>
+        <div style={{flex:1, overflowX:'auto', overflowY:'auto'}}>
           <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
             <colgroup>
               <col style={{width:LABEL_WIDTH}} />
