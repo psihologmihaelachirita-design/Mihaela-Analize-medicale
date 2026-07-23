@@ -32,6 +32,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
   const [salvare, setSalvare] = useState(false)
   const [eroare, setEroare] = useState('')
   const [profilActiv, setProfilActiv] = useState<{ tip: 'eu' | 'apartinator', id: string | null, prenume: string, nume: string }>({ tip: 'eu', id: null, prenume: '', nume: '' })
+  const [menuMobile, setMenuMobile] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -121,13 +122,25 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
 
   return (
     <>
+      <style>{`
+        @media (max-width: 768px) {
+          .topbar-nav-desktop { display: none !important; }
+          .topbar-hamburger { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .topbar-hamburger { display: none !important; }
+          .topbar-menu-mobile { display: none !important; }
+        }
+      `}</style>
+
       <div style={{ background:'white', borderBottom:'1px solid #e5e7eb', padding:'0 32px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
         <Link href="/dashboard" style={{ display:'flex', alignItems:'center', gap:'12px', textDecoration:'none' }}>
           <div style={{ width:'38px', height:'38px', background:'#E1F5EE', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'18px', fontWeight:600 }}>✚</div>
           <span style={{ fontSize:'20px', fontWeight:600, color:'#111' }}>Panoramic MedLog</span>
         </Link>
 
-        <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+        {/* Nav desktop */}
+        <div className="topbar-nav-desktop" style={{ display:'flex', alignItems:'center', gap:'6px' }}>
           <Link href="/dashboard" style={linkStyle('home')}>Home</Link>
           <Link href="/panoramic" style={linkStyle('panoramic')}>Panoramic</Link>
           <Link href="/urgenta" style={linkStyle('urgenta')}>Urgență</Link>
@@ -172,7 +185,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
           <div style={{ position:'relative', marginLeft:'12px' }}>
             <button onClick={() => { setDropdown(!dropdown); setDropdownAdd(false) }}
               style={{ padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', color:'#111', background:'white', cursor:'pointer', fontWeight:500 }}>
-              {profilActiv.tip === 'apartinator' && profilActiv.prenume ? `${profilActiv.prenume} ${profilActiv.nume}` : username} ▾
+              {profilActiv.tip === 'apartinator' ? `${profilActiv.prenume} ${profilActiv.nume}` : username} ▾
             </button>
             {dropdown && (
               <div style={{ position:'absolute', right:0, top:'42px', background:'white', border:'1px solid #e5e7eb', borderRadius:'12px', padding:'6px', minWidth:'220px', boxShadow:'0 8px 24px rgba(0,0,0,0.08)', zIndex:100 }}>
@@ -197,7 +210,6 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
                     <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
                   </>
                 )}
-
                 <div onClick={() => { setDropdown(false); setModalApartinator(true) }}
                   style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', borderRadius:'8px', cursor:'pointer', color:'#16705a', fontWeight:500, fontSize:'14px' }}
                   onMouseEnter={e => e.currentTarget.style.background='#E1F5EE'}
@@ -205,7 +217,6 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
                   <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:'#16705a', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:'16px', flexShrink:0 }}>+</div>
                   Asociază aparținător
                 </div>
-
                 <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
                 <Link href="/profil" onClick={() => setDropdown(false)}
                   style={{ display:'block', padding:'10px 14px', fontSize:'14px', color:'#111', textDecoration:'none', borderRadius:'6px' }}
@@ -223,7 +234,31 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
             )}
           </div>
         </div>
+
+        {/* Hamburger mobile */}
+        <button className="topbar-hamburger" onClick={() => setMenuMobile(!menuMobile)}
+          style={{ display:'none', background:'transparent', border:'none', cursor:'pointer', padding:'8px', flexDirection:'column', gap:'5px', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:'22px', height:'2px', background:'#111', borderRadius:'2px' }}></div>
+          <div style={{ width:'22px', height:'2px', background:'#111', borderRadius:'2px' }}></div>
+          <div style={{ width:'22px', height:'2px', background:'#111', borderRadius:'2px' }}></div>
+        </button>
       </div>
+
+      {/* Meniu mobile */}
+      {menuMobile && (
+        <div className="topbar-menu-mobile" style={{ background:'white', borderBottom:'1px solid #e5e7eb', padding:'12px 16px', display:'flex', flexDirection:'column', gap:'4px', position:'sticky', top:'64px', zIndex:9 }}>
+          <Link href="/dashboard" onClick={() => setMenuMobile(false)} style={{ ...linkStyle('home'), display:'block', padding:'12px 14px' }}>Home</Link>
+          <Link href="/panoramic" onClick={() => setMenuMobile(false)} style={{ ...linkStyle('panoramic'), display:'block', padding:'12px 14px' }}>Panoramic</Link>
+          <Link href="/urgenta" onClick={() => setMenuMobile(false)} style={{ ...linkStyle('urgenta'), display:'block', padding:'12px 14px' }}>Urgență</Link>
+          <Link href="/dosar" onClick={() => setMenuMobile(false)} style={{ ...linkStyle('dosar'), display:'block', padding:'12px 14px' }}>Dosar</Link>
+          <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
+          <Link href="/upload" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'15px', fontWeight:500, textDecoration:'none', textAlign:'center' as const }}>+ Adaugă buletin</Link>
+          <Link href="/raport" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', background:'#085041', color:'white', borderRadius:'8px', fontSize:'15px', fontWeight:500, textDecoration:'none', textAlign:'center' as const, marginTop:'4px' }}>+ Adaugă raport</Link>
+          <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
+          <Link href="/profil" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', fontSize:'15px', color:'#111', textDecoration:'none' }}>Profil</Link>
+          <div onClick={() => { setMenuMobile(false); onLogout() }} style={{ padding:'12px 14px', fontSize:'15px', color:'#E24B4A', cursor:'pointer' }}>Ieșire</div>
+        </div>
+      )}
 
       {/* Banner apartinator activ */}
       {profilActiv.tip === 'apartinator' && (
