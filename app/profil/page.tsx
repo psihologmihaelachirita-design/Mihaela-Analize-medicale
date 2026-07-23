@@ -220,8 +220,9 @@ export default function Profil() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
       <Topbar username={username} activePage="profil" onLogout={handleLogout} />
-      <div style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
-        <div style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
+      <style>{`@media (max-width: 768px) { .profil-grid { grid-template-columns: 1fr !important; } .profil-sidebar { display: none !important; } }`}</style>
+      <div className="profil-grid" style={{ display:'grid', gridTemplateColumns:'230px 1fr', flex:1 }}>
+        <div className="profil-sidebar" style={{ background:'white', borderRight:'0.5px solid #e5e7eb', padding:'32px 0 24px', display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'0 16px', flex:1 }}>
             <div style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'32px', padding:'0 8px', textAlign:'center' as const }}>{prenume} {nume}</div>
             {navItems.map(item => (
