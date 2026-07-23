@@ -253,7 +253,7 @@ export default function Topbar({ username, activePage, onLogout }: TopbarProps) 
           <Link href="/dosar" onClick={() => setMenuMobile(false)} style={{ ...linkStyle('dosar'), display:'block', padding:'12px 14px' }}>Dosar</Link>
           <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
           <Link href="/upload" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'15px', fontWeight:500, textDecoration:'none', textAlign:'center' as const }}>+ Adaugă buletin</Link>
-          <Link href="/raport" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', background:'#085041', color:'white', borderRadius:'8px', fontSize:'15px', fontWeight:500, textDecoration:'none', textAlign:'center' as const, marginTop:'4px' }}>+ Adaugă raport</Link>
+          <Link href="/raport" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', background:'#16705a', color:'white', borderRadius:'8px', fontSize:'15px', fontWeight:500, textDecoration:'none', textAlign:'center' as const, marginTop:'4px' }}>+ Adaugă raport</Link>
           <div style={{ height:'0.5px', background:'#e5e7eb', margin:'4px 0' }}></div>
           <Link href="/profil" onClick={() => setMenuMobile(false)} style={{ display:'block', padding:'12px 14px', fontSize:'15px', color:'#111', textDecoration:'none' }}>Profil</Link>
           <div onClick={() => { setMenuMobile(false); onLogout() }} style={{ padding:'12px 14px', fontSize:'15px', color:'#E24B4A', cursor:'pointer' }}>Ieșire</div>
