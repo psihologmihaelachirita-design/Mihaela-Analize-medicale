@@ -189,7 +189,7 @@ export default function Panoramic() {
       </div>
 
       {/* Continut */}
-      <div style={{flex:1, display:'flex', overflow:'hidden'}}>
+      <div style={{flex:1, display:'flex', overflowX:'auto'}}>
 
         {/* Tabel */}
         <div style={{flex:1, overflow:'auto'}}>
