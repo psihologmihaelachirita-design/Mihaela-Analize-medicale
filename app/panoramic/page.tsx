@@ -192,7 +192,7 @@ export default function Panoramic() {
       <div style={{flex:1, display:'flex', overflow:'hidden'}}>
 
         {/* Tabel */}
-        <div style={{flex:1, overflowX:'auto', overflowY:'auto'}}>
+        <div style={{flex:1, overflowX:'scroll', overflowY:'auto', WebkitOverflowScrolling:'touch' as any}}>
           <table style={{borderCollapse:'collapse', tableLayout:'fixed'}}>
             <colgroup>
               <col style={{width:LABEL_WIDTH}} />
