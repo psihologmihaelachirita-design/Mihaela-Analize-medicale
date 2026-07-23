@@ -241,7 +241,15 @@ export default function Urgenta() {
 
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8f9fa', minHeight:'100vh' }}>
-      <style>{`@media (max-width: 768px) { .urgenta-grid { grid-template-columns: 1fr !important; } .urgenta-sidebar { display: none !important; } }`}</style>
+      <style>{`
+        @media (max-width: 768px) {
+          .urgenta-grid { grid-template-columns: 1fr !important; }
+          .urgenta-sidebar { display: none !important; }
+          .urgenta-g4 { grid-template-columns: 1fr 1fr !important; }
+          .urgenta-g3 { grid-template-columns: 1fr !important; }
+          .urgenta-g2 { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
       <Topbar username={username} activePage="urgenta" onLogout={handleLogout} />
 
       <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'calc(100vh - 56px)' }} className="urgenta-grid">
@@ -319,7 +327,7 @@ export default function Urgenta() {
                   </>
                 ) : (
                   <>
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
+                    <div className="urgenta-g4" style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'14px', marginBottom:'14px' }}>
                       <div><div style={lbl}>Nume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.nume || '—'}</div></div>
                       <div><div style={lbl}>Prenume</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>{profil?.prenume || '—'}</div></div>
                       <div><div style={lbl}>CNP</div><div style={{ fontSize:'14px', fontWeight:500, color:'#111', letterSpacing:'1px' }}>{cnp ? cnp[0] + '••••••••••••' : '—'}</div></div>
