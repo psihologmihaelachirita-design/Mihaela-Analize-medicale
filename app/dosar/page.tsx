@@ -92,7 +92,8 @@ export default function Dosar() {
   return (
     <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
       <Topbar username={username} activePage="dosar" onLogout={handleLogout} />
-      <div style={{ maxWidth:'100%', margin:'0 auto', padding:'36px 56px' }}>
+      <style>{`@media (max-width: 768px) { .dosar-container { padding: 16px !important; } .dosar-grid { grid-template-columns: 1fr !important; } .dosar-table-wrap { overflow-x: auto !important; } }`}</style>
+      <div className="dosar-container" style={{ maxWidth:'100%', margin:'0 auto', padding:'36px 56px' }}>
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'6px' }}>
           <div style={{ fontSize:'28px', fontWeight:600, color:'#0f172a' }}>Dosarul meu medical</div>
@@ -102,7 +103,7 @@ export default function Dosar() {
         </div>
         <div style={{ fontSize:'16px', color:'#64748b', marginBottom:'32px' }}>Toate rapoartele, consultațiile și documentele tale medicale.</div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'36px' }}>
+        <div className="dosar-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'36px' }}>
           {casete.map(c => {
             const isActive = filtruCategorie === c.key
             const IconComponent = c.icon
@@ -144,7 +145,7 @@ export default function Dosar() {
           </select>
         </div>
 
-        <div style={{ background:'white', border:'1px solid #e5e7eb', borderRadius:'16px', overflow:'hidden', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
+        <div className="dosar-table-wrap" style={{ background:'white', border:'1px solid #e5e7eb', borderRadius:'16px', overflow:'hidden', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
           <table style={{ width:'100%', borderCollapse:'collapse' }}>
             <thead>
               <tr>
