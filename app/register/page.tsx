@@ -16,7 +16,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [eroare, setEroare] = useState('')
   const [codInvitatie, setCodInvitatie] = useState('')
-  const [codInvitatie, setCodInvitatie] = useState('')
   const [mesaj, setMesaj] = useState('')
   const router = useRouter()
 
