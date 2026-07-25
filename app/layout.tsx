@@ -13,6 +13,26 @@ function CookieBanner() {
   if (!vizibil) return null
 
   return (
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000 }}>
+      <div style={{ background:'white', borderRadius:'16px', padding:'36px', width:'520px', maxWidth:'90vw', textAlign:'center' }}>
+        <div style={{ width:'48px', height:'48px', background:'#E1F5EE', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px', color:'#0F6E56', fontSize:'22px', fontWeight:600 }}>✚</div>
+        <div style={{ fontSize:'20px', fontWeight:600, color:'#111', marginBottom:'8px' }}>Panoramic MedLog</div>
+        <div style={{ fontSize:'14px', color:'#555', marginBottom:'24px', lineHeight:1.6 }}>
+          Această platformă folosește cookie-uri esențiale pentru funcționare. Nu folosim cookie-uri de tracking sau publicitate.
+        </div>
+        <div style={{ fontSize:'13px', color:'#888', marginBottom:'24px' }}>
+          Prin continuare confirmi că ai citit și ești de acord cu <a href="/confidentialitate" style={{ color:'#16705a', fontWeight:500 }}>Politica de confidențialitate</a>.
+        </div>
+        <button onClick={() => { localStorage.setItem('cookiesAcceptate', 'da'); setVizibil(false) }}
+          style={{ width:'100%', padding:'14px', background:'#16705a', color:'white', border:'none', borderRadius:'10px', fontSize:'15px', fontWeight:600, cursor:'pointer' }}>
+          Accept și continuă
+        </button>
+      </div>
+    </div>
+  )
+}
+
+  return (
     <div style={{ position:'fixed', bottom:0, left:0, right:0, background:'white', borderTop:'1px solid #e5e7eb', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between', zIndex:1000, boxShadow:'0 -4px 16px rgba(0,0,0,0.08)', flexWrap:'wrap', gap:'12px' }}>
       <div style={{ fontSize:'13px', color:'#555', maxWidth:'600px' }}>
         Folosim cookie-uri esențiale pentru funcționarea platformei. Nu folosim cookie-uri de tracking sau publicitate. <a href="/confidentialitate" style={{ color:'#16705a', fontWeight:500 }}>Politica de confidențialitate</a>
