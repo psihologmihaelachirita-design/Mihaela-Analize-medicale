@@ -22,10 +22,16 @@ function CookieBanner() {
         <div style={{ fontSize:'13px', color:'#888', marginBottom:'24px' }}>
           Prin continuare confirmi că ai citit și ești de acord cu <a href="/confidentialitate" style={{ color:'#16705a', fontWeight:500 }}>Politica de confidențialitate</a>.
         </div>
-        <button onClick={() => { localStorage.setItem('cookiesAcceptate', 'da'); setVizibil(false) }}
-          style={{ width:'100%', padding:'14px', background:'#16705a', color:'white', border:'none', borderRadius:'10px', fontSize:'15px', fontWeight:600, cursor:'pointer' }}>
-          Accept și continuă
-        </button>
+        <div style={{ display:'flex', gap:'10px', marginTop:'8px' }}>
+          <button onClick={() => { localStorage.setItem('cookiesAcceptate', 'nu'); setVizibil(false) }}
+            style={{ flex:1, padding:'14px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', fontSize:'15px', fontWeight:500, cursor:'pointer', color:'#111' }}>
+            Refuz
+          </button>
+          <button onClick={() => { localStorage.setItem('cookiesAcceptate', 'da'); setVizibil(false) }}
+            style={{ flex:1, padding:'14px', background:'#16705a', color:'white', border:'none', borderRadius:'10px', fontSize:'15px', fontWeight:600, cursor:'pointer' }}>
+            Accept
+          </button>
+        </div>
       </div>
     </div>
   )
