@@ -15,10 +15,18 @@ export default function Register() {
   const [nume, setNume] = useState('')
   const [loading, setLoading] = useState(false)
   const [eroare, setEroare] = useState('')
+  const [codInvitatie, setCodInvitatie] = useState('')
+  const [codInvitatie, setCodInvitatie] = useState('')
   const [mesaj, setMesaj] = useState('')
   const router = useRouter()
 
   async function handleRegister() {
+    if (!codInvitatie) { setEroare('Introduceți codul de invitație.'); return }
+    const { createClient } = await import('@supabase/supabase-js')
+    const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+    const { data: cod } = await sb.from('coduri_invitatie').select('id, folosit').eq('cod', codInvitatie.toUpperCase()).single()
+    if (!cod) { setEroare('Cod de invitație invalid.'); return }
+    if (cod.folosit) { setEroare('Codul a fost deja folosit.'); return }
     setLoading(true)
     setEroare('')
     setMesaj('')
@@ -76,6 +84,16 @@ export default function Register() {
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleRegister()}
               placeholder="email@exemplu.com"
+              style={{width:'100%', padding:'12px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', outline:'none', background:'#f8f9fa', color:'#111'}}
+            />
+          </div>
+          <div style={{marginBottom:'16px'}}>
+            <label style={{display:'block', marginBottom:'6px', fontSize:'15px', color:'#333', fontWeight:500}}>Cod de invitație</label>
+            <input
+              type="text"
+              value={codInvitatie}
+              onChange={e => setCodInvitatie(e.target.value)}
+              placeholder="ex: PRIETENI2026"
               style={{width:'100%', padding:'12px 14px', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'15px', outline:'none', background:'#f8f9fa', color:'#111'}}
             />
           </div>
