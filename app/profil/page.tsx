@@ -256,12 +256,25 @@ export default function Profil() {
                 <div style={{ height:'0.5px', background:'#e5e7eb', margin:'18px 0' }}></div>
                 <div style={{ fontSize:'16px', fontWeight:600, color:'#111', marginBottom:'12px' }}>Autentificare în 2 pași</div>
                 <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
-                  {['SMS', 'Google Authenticator'].map(m => (
-                    <div key={m} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', background:'#f8f9fa', borderRadius:'8px' }}>
-                      <div><div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>{m}</div></div>
-                      <button style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'13px', cursor:'pointer' }}>Activează</button>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', background:'#f8f9fa', borderRadius:'8px' }}>
+                    <div>
+                      <div style={{ fontSize:'15px', fontWeight:500, color:'#111' }}>Google Authenticator</div>
+                      <div style={{ fontSize:'13px', color:'#555' }}>Cod generat de aplicația Google Authenticator</div>
                     </div>
-                  ))}
+                    <button onClick={async () => {
+                      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Google Authenticator' })
+                      if (error) { setMesaj('Eroare: ' + error.message); return }
+                      if (data?.totp?.qr_code) {
+                        const img = document.createElement('img')
+                        img.src = data.totp.qr_code
+                        img.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:white;padding:20px;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.3)'
+                        document.body.appendChild(img)
+                        img.onclick = () => document.body.removeChild(img)
+                      }
+                    }} style={{ padding:'8px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'6px', fontSize:'13px', cursor:'pointer' }}>
+                      Activează
+                    </button>
+                  </div>
                 </div>
                 <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'22px' }}>
                   <button onClick={handleSalvare} disabled={salvare} style={{ padding:'12px 30px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'16px', fontWeight:600, cursor:'pointer' }}>{salvare ? 'Se salvează...' : 'Salvează'}</button>
