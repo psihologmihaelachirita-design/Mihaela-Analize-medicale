@@ -19,7 +19,7 @@ export default function Login() {
   async function handleLogin() {
     setLoading(true)
     setEroare('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       setEroare('Email sau parolă incorectă.')
     } else {
