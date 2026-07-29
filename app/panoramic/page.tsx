@@ -97,8 +97,9 @@ export default function Panoramic() {
 
   const grupate: Record<string, any[]> = {}
   analize.forEach(a => {
-    if (!grupate[a.nume_analiza]) grupate[a.nume_analiza] = []
-    grupate[a.nume_analiza].push(a)
+    const cheie = a.nume_standard || a.nume_analiza
+    if (!grupate[cheie]) grupate[cheie] = []
+    grupate[cheie].push(a)
   })
 
   const toateDatele = [...new Set(analize.map(a => a.data_analiza))].sort()
