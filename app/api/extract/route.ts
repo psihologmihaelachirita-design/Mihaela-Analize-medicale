@@ -489,6 +489,7 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
       return {
         ...a,
         original_name: a.nume,
+        nume_analiza: numeNormalizat,
         nume: numeNormalizat,
         status: statusStandard,
         referinta_min: parseFloat(a.referinta_min_lab) || ref_min,
