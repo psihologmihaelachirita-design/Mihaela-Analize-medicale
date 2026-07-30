@@ -498,7 +498,7 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
     })
 
     return NextResponse.json({
-      sed -n '470,510p' app/api/extract/route.ts
+      
       laborator: parsed.laborator,
       oras_laborator: parsed.oras_laborator,
       tara_laborator: parsed.tara_laborator,
