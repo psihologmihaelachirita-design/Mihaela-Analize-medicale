@@ -120,7 +120,7 @@ export default function Panoramic() {
 
   const numeAfisate = Object.keys(grupate).filter(nume => {
     const catOk = categoriiActive.length === 0 || categoriiActive.includes(getCategorieAnaliza(nume))
-    const searchOk = search === '' || nume.toLowerCase().includes(search.toLowerCase())
+    const searchOk = search === '' || nume.toLowerCase().includes(search.toLowerCase()) || (grupate[nume] && grupate[nume].some((a) => a.original_name && a.original_name.toLowerCase().includes(search.toLowerCase())))
     return catOk && searchOk
   })
 
