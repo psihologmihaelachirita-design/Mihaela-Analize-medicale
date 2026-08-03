@@ -97,7 +97,7 @@ export default function Panoramic() {
 
   const grupate: Record<string, any[]> = {}
   analize.forEach(a => {
-    const cheie = a.nume_standard || a.nume_analiza
+    const cheie = a.canonical_test_id || a.nome_standard || a.nume_analiza
     if (!grupate[cheie]) grupate[cheie] = []
     grupate[cheie].push(a)
   })
@@ -120,7 +120,7 @@ export default function Panoramic() {
 
   const numeAfisate = Object.keys(grupate).filter(nume => {
     const catOk = categoriiActive.length === 0 || categoriiActive.includes(getCategorieAnaliza(nume))
-    const searchOk = search === '' || nume.toLowerCase().includes(search.toLowerCase()) || (grupate[nume] && grupate[nume].some((a) => a.original_name && a.original_name.toLowerCase().includes(search.toLowerCase())))
+    const searchOk = search === '' || nume.toLowerCase().includes(search.toLowerCase()) || (grupate[nume] && grupate[nume].some((a: any) => a.original_name && a.original_name.toLowerCase().includes(search.toLowerCase()))) || (grupate[nume] && grupate[nume].some((a: any) => a.original_name && a.original_name.toLowerCase().includes(search.toLowerCase())))
     return catOk && searchOk
   })
 
