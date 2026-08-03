@@ -509,6 +509,7 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
 
     return NextResponse.json({
       
+      analize: analizeNormalizate,
       laborator: parsed.laborator,
       oras_laborator: parsed.oras_laborator,
       tara_laborator: parsed.tara_laborator,
