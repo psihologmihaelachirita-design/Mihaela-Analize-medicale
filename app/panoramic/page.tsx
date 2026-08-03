@@ -233,7 +233,7 @@ export default function Panoramic() {
                                      status === 'peste' || status === 'pozitiv' ? '#E24B4A' :
                                      status === 'sub' ? '#EF9F27' : '#888'
                       const afisaj = a.tip_rezultat === 'calitativ'
-                        ? (a.rezultat_text?.slice(0,3)?.toUpperCase() || '?')
+                        ? (a.rezultat_text?.toLowerCase().includes('nonreactiv') ? 'NEG' : a.rezultat_text?.toLowerCase().includes('negativ') ? 'NEG' : a.rezultat_text?.toLowerCase().includes('pozitiv') ? 'POZ' : a.rezultat_text?.slice(0,3)?.toUpperCase() || '?')
                         : a.valoare
 
                       return (
