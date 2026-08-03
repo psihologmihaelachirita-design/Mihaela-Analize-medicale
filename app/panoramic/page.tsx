@@ -97,7 +97,7 @@ export default function Panoramic() {
 
   const grupate: Record<string, any[]> = {}
   analize.forEach(a => {
-    const cheie = a.canonical_test_id || a.nome_standard || a.nume_analiza
+    const cheie = a.canonical_test_id || a.nume_standard || a.nume_analiza
     if (!grupate[cheie]) grupate[cheie] = []
     grupate[cheie].push(a)
   })
