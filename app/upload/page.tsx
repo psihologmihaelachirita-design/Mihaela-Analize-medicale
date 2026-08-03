@@ -97,7 +97,7 @@ export default function Upload() {
         pdf_url: pdfUrl,
         pdf_nume: pdfNume,
         original_name: a.original_name || a.nume || null,
-        nome_standard: a.nome_standard || null,
+        nume_standard: a.nume_standard || null,
         canonical_test_id: a.canonical_test_id || null
       }))
 
