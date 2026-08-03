@@ -41,8 +41,8 @@ function getCategorieAnaliza(nume: string): string {
 function getStatus(observatii: string, tip_rezultat?: string, rezultat_text?: string): string {
   if (tip_rezultat === 'calitativ') {
     const text = (rezultat_text || '').toLowerCase()
-    if (text.includes('negativ') || text.includes('absent') || text.includes('neractiv')) return 'negativ'
-    if (text.includes('pozitiv') || text.includes('prezent') || text.includes('reactiv')) return 'pozitiv'
+    if (text.includes('negativ') || text.includes('absent') || text.includes('neractiv') || text.includes('nonreactiv')) return 'negativ'
+    if (text.includes('pozitiv') || text.includes('prezent') || text.includes('reactiv') && !text.includes('nonreactiv')) return 'pozitiv'
     return 'calitativ'
   }
   if (observatii?.includes('peste')) return 'peste'
