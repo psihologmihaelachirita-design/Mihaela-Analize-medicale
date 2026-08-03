@@ -392,7 +392,9 @@ export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization')
     const token = authHeader?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Neautorizat.' }, { status: 401 })
+    if (!token) return NextResponse.json({
+      analize: analizeNormalizate,
+      ({ error: 'Neautorizat.' }, { status: 401 })
 
     const { createClient } = await import('@supabase/supabase-js')
     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
