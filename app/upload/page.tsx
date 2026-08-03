@@ -95,7 +95,10 @@ export default function Upload() {
         tip_rezultat: a.tip_rezultat || 'numeric',
         rezultat_text: a.rezultat_text || null,
         pdf_url: pdfUrl,
-        pdf_nume: pdfNume
+        pdf_nume: pdfNume,
+        original_name: a.original_name || a.nume || null,
+        nome_standard: a.nome_standard || null,
+        canonical_test_id: a.canonical_test_id || null
       }))
 
       const _profilActiv = JSON.parse(localStorage.getItem('profilActiv') || '{}')
