@@ -467,7 +467,7 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
 
     const parsed = JSON.parse(text)
 
-    const numeUnice=[...new Set((parsed.analize||[]).map((a)=>a.nume.toLowerCase().trim()))]
+    const numeUnice=[...new Set((parsed.analize||[]).map((a: any)=>a.nume.toLowerCase().trim()))]
     const {data:aliasuri}=await supabase.from("lab_test_alias").select("alias,test_standard_id,lab_test_standard(nume_standard)").in("alias",numeUnice)
     const aliasMap={}
     if(aliasuri)aliasuri.forEach((a)=>{aliasMap[a.alias]={id:a.test_standard_id,std:a.lab_test_standard?.nume_standard||""}})
