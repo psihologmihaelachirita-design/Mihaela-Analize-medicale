@@ -496,6 +496,8 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
       return {
         ...a,
         original_name: a.nume,
+        nome_standard: numeNormalizat,
+        canonical_test_id: canonical_test_id,
         nume_analiza: numeNormalizat,
         nume: numeNormalizat,
         status: statusStandard,
