@@ -43,34 +43,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ margin:0, padding:0, fontFamily:'system-ui, -apple-system, sans-serif', background:'#f8f9fa' }}>
         {children}
         <CookieBanner />
-        <footer style={{ background:'white', borderTop:'0.5px solid #e5e7eb', padding:'32px 24px 20px', marginTop:'auto' }}>
-          <div style={{ maxWidth:'900px', margin:'0 auto' }}>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'32px', marginBottom:'28px' }}>
+        <footer style={{ background:'#0a2a1f', padding:'48px 24px 24px', marginTop:'auto' }}>
+          <div style={{ maxWidth:'1200px', margin:'0 auto' }}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'32px', marginBottom:'40px' }}>
               <div>
-                <div style={{ fontSize:'11px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'12px' }}>Produs</div>
-                <a href="/" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Despre Panoramic MedLog</a>
-                <a href="/#functionalitati" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Funcționalități</a>
-                <a href="/pricing" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Prețuri</a>
+                <div style={{ fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'16px' }}>Produs</div>
+                <ul style={{ listStyle:'none', margin:0, padding:0 }}>
+                  <li style={{ marginBottom:'10px' }}><a href="/" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Despre Panoramic MedLog</a></li>
+                  <li style={{ marginBottom:'10px' }}><a href="/#functionalitati" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Funcționalități</a></li>
+                  <li style={{ marginBottom:'10px' }}><a href="/pricing" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Prețuri</a></li>
+                </ul>
               </div>
               <div>
-                <div style={{ fontSize:'11px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'12px' }}>Confidențialitate</div>
-                <a href="/confidentialitate#politica" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Politica de confidențialitate</a>
-                <a href="/confidentialitate#termeni" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Termeni și condiții</a>
-                <a href="/confidentialitate#gdpr" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>GDPR</a>
+                <div style={{ fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'16px' }}>Confidențialitate</div>
+                <ul style={{ listStyle:'none', margin:0, padding:0 }}>
+                  <li style={{ marginBottom:'10px' }}><a href="/confidentialitate#politica" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Politica de confidențialitate</a></li>
+                  <li style={{ marginBottom:'10px' }}><a href="/confidentialitate#termeni" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Termeni și condiții</a></li>
+                  <li style={{ marginBottom:'10px' }}><a href="/confidentialitate#gdpr" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>GDPR</a></li>
+                </ul>
               </div>
               <div>
-                <div style={{ fontSize:'11px', fontWeight:600, color:'#555', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:'12px' }}>Suport</div>
-                <a href="/contact" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Contact</a>
-                <a href="/faq" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>FAQ</a>
-                <a href="/contact" style={{ display:'block', fontSize:'13px', color:'#555', textDecoration:'none', marginBottom:'8px' }}>Raportează o problemă</a>
+                <div style={{ fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'16px' }}>Suport</div>
+                <ul style={{ listStyle:'none', margin:0, padding:0 }}>
+                  <li style={{ marginBottom:'10px' }}><a href="/contact" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Contact</a></li>
+                  <li style={{ marginBottom:'10px' }}><a href="/faq" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>FAQ</a></li>
+                  <li style={{ marginBottom:'10px' }}><a href="/contact" style={{ color:'rgba(255,255,255,0.85)', textDecoration:'none', fontSize:'14px' }}>Raportează o problemă</a></li>
+                </ul>
+              </div>
+              <div>
+                <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'12px' }}>
+                  <div style={{ width:'36px', height:'36px', background:'rgba(255,255,255,0.15)', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', color:'white', fontWeight:600 }}>✚</div>
+                  <span style={{ fontSize:'18px', fontWeight:600, color:'white' }}>Panoramic MedLog</span>
+                </div>
               </div>
             </div>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:'20px', borderTop:'0.5px solid #e5e7eb' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
-                <div style={{ width:'24px', height:'24px', background:'#E1F5EE', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', color:'#0F6E56', fontSize:'12px', fontWeight:600 }}>✚</div>
-                <span style={{ fontSize:'14px', fontWeight:600, color:'#111' }}>Panoramic MedLog</span>
-              </div>
-              <span style={{ fontSize:'12px', color:'#aaa' }}>© 2026 Panoramic MedLog. Toate drepturile rezervate.</span>
+            <div style={{ borderTop:'0.5px solid rgba(255,255,255,0.1)', paddingTop:'20px', fontSize:'13px', color:'rgba(255,255,255,0.5)' }}>
+              © 2026 Panoramic MedLog. Toate drepturile rezervate.
             </div>
           </div>
         </footer>
