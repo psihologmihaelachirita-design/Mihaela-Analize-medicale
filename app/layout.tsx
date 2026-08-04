@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ margin:0, padding:0, fontFamily:'system-ui, -apple-system, sans-serif', background:'#f8f9fa' }}>
         {children}
         <CookieBanner />
-        <footer style={{ background:'#0a2a1f', padding:'48px 24px 24px', marginTop:'auto' }}>
+        <footer style={{ background:'#16705a', padding:'48px 24px 24px', marginTop:'auto' }}>
           <div style={{ maxWidth:'1200px', margin:'0 auto' }}>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'32px', marginBottom:'40px' }}>
               <div>
