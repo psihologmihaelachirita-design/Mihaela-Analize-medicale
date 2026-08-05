@@ -218,7 +218,7 @@ export default function Panoramic() {
 
                 return (
                   <tr key={nume} style={{borderBottom:'0.5px solid #f0f0f0'}}>
-                    <td style={{width:LABEL_WIDTH, fontSize:'11px', color:'#222', textAlign:'left', paddingLeft:'10px', whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.4, maxWidth:'260px', verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'0.5px solid #e5e7eb'}} title={nume}>
+                    <td style={{width:LABEL_WIDTH, fontSize:'13px', color:'#222', textAlign:'left', paddingLeft:'10px', whiteSpace:'normal', wordWrap:'break-word', lineHeight:1.4, maxWidth:'260px', verticalAlign:'middle', position:'sticky', left:0, zIndex:1, background:'white', borderRight:'0.5px solid #e5e7eb'}} title={nume}>
                       {nume}
                     </td>
                     {toateDatele.map(data => {
