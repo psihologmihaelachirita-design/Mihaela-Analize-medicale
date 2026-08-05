@@ -472,6 +472,20 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
     const aliasMap: Record<string, any>={}
     if(aliasuri)aliasuri.forEach((a: any)=>{aliasMap[a.alias]={id:a.test_standard_id,std:a.lab_test_standard?.nume_standard||""}})
 
+    const nerecunoscute = numeUnice.filter(n => Object.keys(aliasMap).indexOf(n) < 0)
+    if (nerecunoscute.length > 0) {
+      const { data: toateStandard } = await supabase.from("lab_test_standard").select("id, nume_standard")
+      if (toateStandard) {
+        for (const numeLipsa of nerecunoscute) {
+          const match = toateStandard.find(s => numeLipsa.includes(s.nume_standard.toLowerCase()) || s.nume_standard.toLowerCase().includes(numeLipsa))
+          if (match) {
+            await supabase.from("lab_test_alias").insert({ test_standard_id: match.id, alias: numeLipsa, laborator: parsed.laborator || null })
+            aliasMap[numeLipsa] = { id: match.id, std: match.nume_standard }
+          }
+        }
+      }
+    }
+
     const analizeNormalizate = (parsed.analize || []).map((a: any) => {
       const found = aliasMap[a.nume.toLowerCase().trim()]
       const numeNormalizat = found?.std || normalizeazaNume(a.nume)
