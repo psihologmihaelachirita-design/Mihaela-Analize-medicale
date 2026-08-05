@@ -126,7 +126,7 @@ export default function Panoramic() {
 
   const COL_WIDTH = 85
   const ROW_HEIGHT = 23
-  const LABEL_WIDTH = 140
+  const LABEL_WIDTH = 240
 
   const selectedStatus = selected ? getStatus(selected.observatii, selected.tip_rezultat, selected.rezultat_text) : ''
   const selectedLab = selected ? getLaborator(selected.observatii) : ''
