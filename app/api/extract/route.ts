@@ -472,7 +472,7 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
     const aliasMap: Record<string, any>={}
     if(aliasuri)aliasuri.forEach((a: any)=>{aliasMap[a.alias]={id:a.test_standard_id,std:a.lab_test_standard?.nume_standard||""}})
 
-    const nerecunoscute = numeUnice.filter(n => Object.keys(aliasMap).indexOf(n) < 0)
+    const nerecunoscute = (numeUnice as string[]).filter((n: string) => Object.keys(aliasMap).indexOf(n) < 0)
     if (nerecunoscute.length > 0) {
       const { data: toateStandard } = await supabase.from("lab_test_standard").select("id, nume_standard")
       if (toateStandard) {
