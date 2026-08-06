@@ -38,12 +38,17 @@ function getCategorieAnaliza(nume: string): string {
   return 'Altele'
 }
 
-function getStatus(observatii: string, tip_rezultat?: string, rezultat_text?: string): string {
+function getStatus(observatii: string, tip_rezultat?: string, rezultat_text?: string, valoare?: number, referinta_min?: number, referinta_max?: number): string {
   if (tip_rezultat === 'calitativ') {
     const text = (rezultat_text || '').toLowerCase()
     if (text.includes('negativ') || text.includes('absent') || text.includes('neractiv') || text.includes('nonreactiv')) return 'negativ'
     if (text.includes('pozitiv') || text.includes('prezent') || text.includes('reactiv') && !text.includes('nonreactiv')) return 'pozitiv'
     return 'calitativ'
+  }
+  if (valoare !== undefined && valoare !== null) {
+    if (referinta_max !== undefined && referinta_max !== null && valoare > referinta_max) return 'peste'
+    if (referinta_min !== undefined && referinta_min !== null && valoare < referinta_min) return 'sub'
+    if (referinta_max !== undefined && referinta_max !== null && referinta_min !== undefined && referinta_min !== null) return 'normal'
   }
   if (observatii?.includes('peste')) return 'peste'
   if (observatii?.includes('sub')) return 'sub'
@@ -228,7 +233,7 @@ export default function Panoramic() {
                           <div style={{height:ROW_HEIGHT, background:'#f8f9fa', border:'0.5px dashed #e5e7eb', borderRadius:'4px'}}></div>
                         </td>
                       )
-                      const status = getStatus(a.observatii, a.tip_rezultat, a.rezultat_text)
+                      const status = getStatus(a.observatii, a.tip_rezultat, a.rezultat_text, a.valoare, a.referinta_min, a.referinta_max)
                       const culoare = status === 'normal' || status === 'negativ' ? '#1D9E75' :
                                      status === 'peste' || status === 'pozitiv' ? '#E24B4A' :
                                      status === 'sub' ? '#EF9F27' : '#888'
