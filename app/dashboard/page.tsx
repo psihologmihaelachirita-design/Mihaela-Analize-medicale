@@ -225,7 +225,7 @@ export default function Dashboard() {
               <div style={{ height:'8px' }}></div>
               <div style={{ fontSize:'12px', color:'white', lineHeight:1.4 }}>Datele tale critice disponibile instant oricui te tratează</div>
             </Link>
-            <Link href="/dosar" style={{ textDecoration:'none', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'12px' }}>
+            <Link href="/urgenta" style={{ textDecoration:'none', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', padding:'12px' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'6px' }}>
                 <span style={{ fontSize:'14px', fontWeight:500, color:'#111' }}>Dosar urgență</span>
                 <span style={{ fontSize:'14px', fontWeight:600, color:'#16705a' }}>{progres}%</span>
