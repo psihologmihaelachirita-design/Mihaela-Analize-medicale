@@ -126,6 +126,7 @@ export default function Urgenta() {
   const [dropdown, setDropdown] = useState(false)
   const [dropdownAdd, setDropdownAdd] = useState(false)
   const [sectiuni, setSectiuni] = useState<Record<SectiuneKey, boolean>>({ urgenta: true, diagnostice: true, implanturi: true, interventii: true, contact: true, qr: true })
+  const [qrUrl, setQrUrl] = useState("")
   const router = useRouter()
 
   function toggleSectiune(key: SectiuneKey) { setSectiuni(prev => ({ ...prev, [key]: !prev[key] })) }
@@ -632,11 +633,22 @@ export default function Urgenta() {
                   </div>
                   <div>
                     <div style={{ fontSize:'14px', fontWeight:500, color:'#111', marginBottom:'4px' }}>Scanează pentru acces instant</div>
-                    <div style={{ fontSize:'12px', color:'#111', lineHeight:1.6, marginBottom:'12px' }}>QR codul va conține datele tale critice de urgență. În curând disponibil.</div>
+                    <div style={{ fontSize:'12px', color:'#555', lineHeight:1.6, marginBottom:'12px' }}>QR-ul conține datele tale critice de urgență. Valabil 24 ore.</div>
                     <div style={{ display:'flex', gap:'8px' }}>
-                      <button style={{ padding:'7px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'12px', fontWeight:500, cursor:'pointer' }}>⬇ Descarcă QR</button>
-                      <button style={{ padding:'7px 14px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111', cursor:'pointer', fontWeight:500 }}>⎙ Printează card</button>
+                      <button onClick={async () => {
+                        const { data: { session } } = await supabase.auth.getSession()
+                        if (!session) return
+                        const resp = await fetch('/api/qr', { method:'POST', headers:{ Authorization:`Bearer ${session.access_token}` } })
+                        const json = await resp.json()
+                        if (json.url) setQrUrl(json.url)
+                      }} style={{ padding:'7px 14px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'12px', fontWeight:500, cursor:'pointer' }}>⬇ Generează QR</button>
                     </div>
+                    {qrUrl && (
+                      <div style={{ marginTop:'12px' }}>
+                        <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}`} alt="QR urgenta" style={{ width:'120px', height:'120px', borderRadius:'8px' }} />
+                        <div style={{ fontSize:'11px', color:'#888', marginTop:'4px' }}>Valabil 24 ore</div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
