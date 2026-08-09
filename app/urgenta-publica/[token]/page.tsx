@@ -27,7 +27,7 @@ export default function UrgentaPublica() {
 
       const { data } = await supabase
         .from('profiluri')
-        .select('prenume, nume, grup_sanguin, alergii_medicamente, alergii_alimentare, boli_cronice, contact_urgenta_nume, contact_urgenta_telefon, medic_familie_nume, medic_familie_telefon')
+        .select('prenume, nume, cnp, data_nasterii, sex, grup_sanguin, alergii_medicamente, alergii_alimentare, boli_cronice, fumator, greutate, inaltime, diagnostice_json, implanturi_json, interventii_json, contact_urgenta_nume, contact_urgenta_telefon, medic_familie_nume, medic_familie_telefon, asigurat_cnas')
         .eq('id', qr.user_id)
         .single()
 
