@@ -134,6 +134,7 @@ export default function Urgenta() {
   const [cnp, setCnp] = useState('')
   const [grupSanguin, setGrupSanguin] = useState('')
   const [grupSanguinAtestat, setGrupSanguinAtestat] = useState(false)
+  const [alergiiMedAtestat, setAlergiiMedAtestat] = useState(false)
   const [alergiiMed, setAlergiiMed] = useState<string[]>([''])
   const [alergiiAl, setAlergiiAl] = useState<string[]>([''])
   const [contactNume, setContactNume] = useState('')
