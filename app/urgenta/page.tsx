@@ -412,7 +412,7 @@ export default function Urgenta() {
                     <AlergiiInput key={i} value={a} onChange={v => updateAlergiiMed(i, v)} placeholder="ex: Penicilină..." style={inp} />
                   ))}
                   {alergiiMed.length < 5 && alergiiMed[alergiiMed.length - 1] !== '' && (
-                    <button onClick={() => setAlergiiMed(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button>
+                    <button onClick={() => setAlergiiMed(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button> <Checkbox checked={alergiiMedAtestat} onChange={() => setAlergiiMedAtestat(!alergiiMedAtestat)} label="Document care atestă" />
                   )}
                 </div>
               ) : (
