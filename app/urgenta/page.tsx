@@ -430,8 +430,7 @@ export default function Urgenta() {
                       }
                     }} />
                   </label>
-                  {false && (
-                  )}
+                  
                 </div>
               ) : (
                 <AlergiiView list={alergiiMed} />
