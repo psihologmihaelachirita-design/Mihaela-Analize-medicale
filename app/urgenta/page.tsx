@@ -135,6 +135,7 @@ export default function Urgenta() {
   const [grupSanguin, setGrupSanguin] = useState('')
   const [grupSanguinAtestat, setGrupSanguinAtestat] = useState(false)
   const [alergiiMedAtestat, setAlergiiMedAtestat] = useState(false)
+  const [alergiiAlAtestat, setAlergiiAlAtestat] = useState(false)
   const [alergiiMed, setAlergiiMed] = useState<string[]>([''])
   const [alergiiAl, setAlergiiAl] = useState<string[]>([''])
   const [contactNume, setContactNume] = useState('')
@@ -447,6 +448,22 @@ export default function Urgenta() {
                   {alergiiAl.length < 5 && alergiiAl[alergiiAl.length - 1] !== '' && (
                     <button onClick={() => setAlergiiAl(prev => [...prev, ''])} style={{ padding:'6px 12px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#16705a', fontWeight:500, cursor:'pointer', textAlign:'left' as const }}>+ Adaugă</button>
                   )}
+                  <Checkbox checked={alergiiAlAtestat} onChange={() => setAlergiiAlAtestat(!alergiiAlAtestat)} label="Document care atestă" />
+                  <label style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#16705a', cursor:'pointer', fontWeight:500 }}>
+                    📎 Atașează document
+                    <input type="file" accept=".pdf,image/*" style={{ display:'none' }} onChange={async e => {
+                      const f = e.target.files?.[0]
+                      if (!f) return
+                      const { data: { session } } = await supabase.auth.getSession()
+                      if (!session) return
+                      const cale = `${session.user.id}/alergii_al_${Date.now()}_${f.name}`
+                      const { error } = await supabase.storage.from('documente').upload(cale, f)
+                      if (!error) {
+                        await supabase.from('documente_medicale').upsert({ user_id: session.user.id, tip: 'alergii_alimentare', pdf_url: cale, pdf_nume: f.name })
+                        setAlergiiAlAtestat(true)
+                      }
+                    }} />
+                  </label>
                 </div>
               ) : (
                 <AlergiiView list={alergiiAl} />
