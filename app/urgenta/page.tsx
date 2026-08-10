@@ -418,26 +418,7 @@ export default function Urgenta() {
               ) : (
                 <AlergiiView list={alergiiMed} />
               )}
-              {alergiiMed.filter(a => a && a.trim() !== '').length > 0 && (
-                <div style={{ marginTop:'auto', display:'flex', alignItems:'center', gap:'8px' }}>
-                  <BadgeDoc atestat={alergiiMedAtestat} />
-                  <label style={{ display:'flex', alignItems:'center', gap:'4px', fontSize:'12px', color:'#16705a', cursor:'pointer', fontWeight:500 }}>
-                    📎
-                    <input type="file" accept=".pdf,image/*" style={{ display:'none' }} onChange={async e => {
-                      const f = e.target.files?.[0]
-                      if (!f) return
-                      const { data: { session } } = await supabase.auth.getSession()
-                      if (!session) return
-                      const cale = `${session.user.id}/alergii_med_${Date.now()}_${f.name}`
-                      const { error } = await supabase.storage.from('documente').upload(cale, f)
-                      if (!error) {
-                        await supabase.from('documente_medicale').upsert({ user_id: session.user.id, tip: 'alergii_medicamente', pdf_url: cale, pdf_nume: f.name })
-                        setAlergiiMedAtestat(true)
-                      }
-                    }} />
-                  </label>
-                </div>
-              )}
+              {alergiiMed.filter(a => a && a.trim() !== '').length > 0 && <div style={{ marginTop:'auto' }}><BadgeDoc atestat={alergiiMedAtestat} /></div>}
             </div>
             <div style={{ background:'white', border:'0.5px solid #e5e7eb', borderRadius:'10px', padding:'14px', display:'flex', flexDirection:'column', gap:'8px', minHeight:'120px' }}>
               <div style={lbl}>Alte alergii cunoscute</div>
