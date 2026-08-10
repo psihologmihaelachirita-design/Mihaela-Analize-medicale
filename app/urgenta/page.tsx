@@ -418,7 +418,7 @@ export default function Urgenta() {
               ) : (
                 <AlergiiView list={alergiiMed} />
               )}
-              {alergiiMed.filter(Boolean).length > 0 && (
+              {alergiiMed.filter(a => a && a.trim() !== '').length > 0 && (
                 <div style={{ marginTop:'auto', display:'flex', alignItems:'center', gap:'8px' }}>
                   <BadgeDoc atestat={alergiiMedAtestat} />
                   <label style={{ display:'flex', alignItems:'center', gap:'4px', fontSize:'12px', color:'#16705a', cursor:'pointer', fontWeight:500 }}>
