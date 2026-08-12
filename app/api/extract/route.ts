@@ -531,7 +531,7 @@ Pentru analize cu valoare numerica foloseste tip_rezultat "numeric". Pentru anal
     })
 
   } catch (error) {
-    console.error('Extract error:', error)
-    return NextResponse.json({ error: 'A aparut o eroare la procesare.' }, { status: 500 })
+    console.error('Extract error:', JSON.stringify(error))
+    return NextResponse.json({ error: String(error) }, { status: 500 })
   }
 }
