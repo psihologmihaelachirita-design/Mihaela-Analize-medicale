@@ -71,10 +71,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </ul>
               </div>
               <div>
-                <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'12px' }}>
+                <a href="/pricing" style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'12px', textDecoration:'none' }}>
                   <div style={{ width:'36px', height:'36px', background:'rgba(255,255,255,0.15)', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', color:'white', fontWeight:600 }}>✚</div>
                   <span style={{ fontSize:'18px', fontWeight:600, color:'white' }}>Panoramic MedLog</span>
-                </div>
+                </a>
               </div>
             </div>
             <div style={{ borderTop:'0.5px solid rgba(255,255,255,0.1)', paddingTop:'20px', fontSize:'13px', color:'rgba(255,255,255,0.5)' }}>
