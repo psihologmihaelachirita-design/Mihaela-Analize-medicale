@@ -57,7 +57,7 @@ function parseAlergii(val: string | null): string[] {
     : ['']
 }
 
-interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; specialitate: string; undeUrmarit: string; medicatie: string; atestat: boolean }
+interface DiagnosticItem { id: string; nume: string; dataStart: string; specialist: string; specialitate: string; undeUrmarit: string; medicatie: string; atestat: boolean; pdf_url?: string }
 interface ImplantItem { id: string; nume: string; dataImplant: string; spital: string; observatii: string; atestat: boolean }
 interface InterventieItem { id: string; nume: string; dataInterventie: string; spital: string; chirurg: string; atestat: boolean }
 
