@@ -279,7 +279,14 @@ export default function Urgenta() {
               {!editMode ? (
                 <>
                   <button onClick={() => setEditMode(true)} style={{ padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#111', cursor:'pointer', fontWeight:500 }}>✎ Editează</button>
-                  <button style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>⎙ Printează</button>
+                  <button onClick={() => {
+                    const w = window.open('', '_blank')
+                    if (w) {
+                      w.document.write(`<html><head><style>body{font-family:system-ui;padding:24px;max-width:420px;margin:0 auto}h1{background:#16705a;color:white;padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:500}.row{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin-bottom:8px}.lbl{font-size:11px;color:#888;text-transform:uppercase;margin-bottom:3px}.val{font-size:15px;font-weight:500}</style></head><body><h1>Card urgenta</h1><div class='row'><div class='lbl'>Grup sanguin</div><div class='val'>${grupSanguin || '-'}</div></div><div class='row'><div class='lbl'>Alergii medicamente</div><div class='val'>${alergiiMed.filter(Boolean).join(', ') || '-'}</div></div><div class='row'><div class='lbl'>Alergii alimentare</div><div class='val'>${alergiiAl.filter(Boolean).join(', ') || '-'}</div></div></body></html>`)
+                      w.document.close()
+                      w.print()
+                    }
+                  }} style={{ padding:'9px 18px', background:'#16705a', color:'white', border:'none', borderRadius:'8px', fontSize:'13px', fontWeight:500, cursor:'pointer' }}>⎙ Printează</button>
                 </>
               ) : (
                 <>
