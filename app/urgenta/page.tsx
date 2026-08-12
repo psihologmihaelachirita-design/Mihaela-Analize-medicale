@@ -509,7 +509,19 @@ export default function Urgenta() {
                               <div><label style={lbl}>Unde e urmărit</label><input value={d.undeUrmarit} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, undeUrmarit: e.target.value} : x))} placeholder="ex: Medicover" style={inp} /></div>
                               <div><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: e.target.value} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
                             </div>
-                            <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
+                            <div style={{ display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap' }}>
+                              <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
+                              {d.atestat && d.pdf_url && (
+                                <span onClick={async () => {
+                                  const { data: { session } } = await supabase.auth.getSession()
+                                  if (!session) return
+                                  const { data } = await supabase.storage.from('documente').createSignedUrl(d.pdf_url, 60)
+                                  if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+                                }} style={{ fontSize:'12px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'4px 10px', borderRadius:'6px', background:'#E1F5EE' }}>
+                                  📄 Vezi document
+                                </span>
+                              )}
+                            </div>
                             <label style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#16705a', cursor:'pointer', fontWeight:500 }}>
                               📎 Atașează document
                               <input type="file" accept=".pdf,image/*" style={{ display:'none' }} onChange={async e => {
@@ -521,7 +533,7 @@ export default function Urgenta() {
                                 const { error } = await supabase.storage.from('documente').upload(cale, f)
                                 if (!error) {
                                   await supabase.from('documente_medicale').upsert({ user_id: session.user.id, tip: `diagnostic_${d.id}`, pdf_url: cale, pdf_nume: f.name })
-                                  setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: true} : x))
+                                  setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: true, pdf_url: cale} : x))
                                 }
                               }} />
                             </label>
