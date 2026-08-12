@@ -510,6 +510,21 @@ export default function Urgenta() {
                               <div><label style={lbl}>Medicație aferentă</label><input value={d.medicatie} onChange={e => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, medicatie: e.target.value} : x))} placeholder="ex: Euthyrox 50mcg" style={inp} /></div>
                             </div>
                             <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
+                            <label style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#16705a', cursor:'pointer', fontWeight:500 }}>
+                              📎 Atașează document
+                              <input type="file" accept=".pdf,image/*" style={{ display:'none' }} onChange={async e => {
+                                const f = e.target.files?.[0]
+                                if (!f) return
+                                const { data: { session } } = await supabase.auth.getSession()
+                                if (!session) return
+                                const cale = `${session.user.id}/diagnostic_${d.id}_${Date.now()}_${f.name}`
+                                const { error } = await supabase.storage.from('documente').upload(cale, f)
+                                if (!error) {
+                                  await supabase.from('documente_medicale').upsert({ user_id: session.user.id, tip: `diagnostic_${d.id}`, pdf_url: cale, pdf_nume: f.name })
+                                  setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: true} : x))
+                                }
+                              }} />
+                            </label>
                           </div>
                         ))}
                         <button onClick={() => { const newId = Date.now().toString(); setDiagnostice(prev => [...prev, { id: newId, nume:'', dataStart:'', specialist:'', specialitate:'', undeUrmarit:'', medicatie:'', atestat:false }]); setTimeout(() => document.getElementById(`diag-${newId}`)?.scrollIntoView({ behavior:'smooth', block:'center' }), 100) }} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 16px', background:'white', border:'0.5px solid #e5e7eb', borderRadius:'8px', fontSize:'13px', color:'#16705a', fontWeight:500, cursor:'pointer' }}>+ Adaugă diagnostic</button>
