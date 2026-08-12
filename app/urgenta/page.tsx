@@ -511,11 +511,11 @@ export default function Urgenta() {
                             </div>
                             <div style={{ display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap' }}>
                               <Checkbox checked={d.atestat} onChange={() => setDiagnostice(prev => prev.map(x => x.id === d.id ? {...x, atestat: !x.atestat} : x))} label="Document care atestă acest diagnostic" />
-                              {d.atestat && d.pdf_url && (
+                              {d.atestat && d.pdf_url != null && (
                                 <span onClick={async () => {
                                   const { data: { session } } = await supabase.auth.getSession()
                                   if (!session) return
-                                  const { data } = await supabase.storage.from('documente').createSignedUrl(d.pdf_url, 60)
+                                  const { data } = await supabase.storage.from('documente').createSignedUrl(d.pdf_url!, 60)
                                   if (data?.signedUrl) window.open(data.signedUrl, '_blank')
                                 }} style={{ fontSize:'12px', color:'#16705a', fontWeight:600, cursor:'pointer', padding:'4px 10px', borderRadius:'6px', background:'#E1F5EE' }}>
                                   📄 Vezi document
